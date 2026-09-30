@@ -85,6 +85,10 @@ Every agent must read it before making changes and update it after meaningful wo
 3. **Application-Wide Consistency**:
    - Updated Header, Footer, GlobalSearchModal (`⌘K`), Stations, Expeditions, Observatory, Datasets, Publications, Learn, Media, Activities, and Studio pages to this cohesive aesthetic.
    - Fixed Leaflet map basemap tiles to clean OpenStreetMap layers without API key watermarks.
-4. **Verification**:
+4. **Minimalist Navbar & Hero Cleanup**:
+   - Completely removed the top institutional bar (`Government of India • Ministry of Earth Sciences (MoES) / NCPOR / Headland Sada, Goa / Admin Console`).
+   - Removed the `MoES · NCPOR` badge next to the POLARIS logo, leaving a clean minimalist brand mark.
+   - Removed the top pill chip (`National Polar Science Platform · MoES & NCPOR`) from the hero section to give the Playfair Display headline full prominence over the wave canvas.
+5. **Verification**:
    - `npm run build` ran cleanly with 0 TypeScript/Vite errors.
    - Runtime verified in Chrome DevTools on `http://127.0.0.1:5173/` across multiple viewports and routes.
