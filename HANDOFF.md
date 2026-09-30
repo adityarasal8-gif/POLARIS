@@ -110,7 +110,20 @@ Every agent must read it before making changes and update it after meaningful wo
    - Cleaned up `Footer.tsx` by removing the `MoES · NCPOR` logo badge, removing the postal address block completely, and refining the copyright disclaimer.
    - Added `snap-start` to all sections and the footer for smooth, snappy page-by-page scrolling.
 10. **Hero Search Cleanup & Navbar Search Restoration**:
-    - Removed the docked search bar (`Maitri atmosphere`, `45th ISEA`, input box) from the Hero section on `HomePage.tsx`, leaving the editorial typography and organic wave canvas unobstructed.
+    - Removed the docked search bar from the Hero section on `HomePage.tsx`, leaving the editorial typography and organic wave canvas unobstructed.
     - Restored the Search trigger pill button (`⌘K`) in the top navigation bar (`Header.tsx`) with full keyboard shortcut and drawer support.
     - Verified all wave canvas colors in `AgentShieldCanvas.tsx` remain 100% original and untouched.
+11. **Motion, Transitions & Rich Scientific Information Elevation**:
+    - Added high-performance animation classes and keyframes to `index.css`: `@keyframes marquee` (dual-track infinite horizontal scrolling), `@keyframes float-1`, `float-2`, `float-3` (multi-axis orbital physics), `@keyframes fadeInUp`, `.card-hover-spring` (spring micro-interaction curves), `.animate-ping-subtle`, and `@media (prefers-reduced-motion: reduce)`.
+    - Transformed Hero with 4 corner orbital telemetry chips (`70°46′S · Maitri Station`, `78°55′N · Himadri Svalbard`, `Telemetry Synced · INSAT-3DR`, `NPDC Archive · 892K`), staggered entrance animations, and live authority counters (`4 Active Bases`, `45 Expeditions`, `3,420+ Publications`, `100% Open Datasets`).
+    - Built a seamless infinite kinetic marquee ticker (`animate-marquee`) streaming live weather and polar parameters from Antarctica, Arctic, and Himalayas.
+    - Elevated Section 1 (Geographic Scope) with operational era badges (`1981–Present`), planetary impact metrics, and spring card hover physics.
+    - Elevated Section 2 (Scientific Pipeline) with concrete instrumentation callouts (`Arc4 Polar Vessel`, `Ultrasonic AWS & Sea-Bird CTD`, `ISO 19115 NetCDF`, `WRF Polar Models`, `Crossref DOIs`, `POLARIS Studio`) and spring hover response.
+    - Elevated Section 3 (Observatory Console) to command-center caliber with station blueprints (coordinates, elevation, continuous operational age, wintering crew, satellite uplink) and secondary environmental parameters (apparent wind chill, solar insolation, 3-hour barometric trend, dew point).
+    - Elevated Section 4 (Archive Engine) with query sample record count pills, dataset formats (`NetCDF · CC-BY 4.0`), and card hover springs.
+    - Elevated Section 5 (45th ISEA) to a full mission dossier with 4-parameter operational matrix and vessel classifications (`MV Vasiliy Golovnin Arc4`).
+    - Elevated Section 6 (Research) with Q1 impact factor metrics, research domain badges, and DOI direct copy links.
+    - Elevated Section 7 (Smart Education Hub) with 3 interactive discovery teasers (Climate Quiz, 3D Station CAD, Student Fellowship grants).
+    - Preserved 100% of all wave canvas colors in `AgentShieldCanvas.tsx`.
+    - Sized all 8 sections to consistently achieve `viewportRatio: 0.92` (exact 1-page fit on desktop).
 
