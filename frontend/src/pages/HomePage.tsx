@@ -177,24 +177,24 @@ export const HomePage: React.FC = () => {
           }} 
         />
 
-        {/* Floating Perimeter Scientific Icons (like AgentShield) */}
-        <div className="absolute left-[8%] top-[20%] text-[#D97706]/70 z-1 pointer-events-none drop-shadow-md hidden md:block">
-          <Compass className="w-6 h-6" />
+        {/* Floating Perimeter Scientific Icons (Ambient Background Accents) */}
+        <div className="absolute left-[8%] top-[20%] text-[#D97706]/25 z-1 pointer-events-none hidden md:block">
+          <Compass className="w-5 h-5 stroke-[1.5]" />
         </div>
-        <div className="absolute left-[86%] top-[18%] text-[#2563EB]/70 z-1 pointer-events-none drop-shadow-md hidden md:block">
-          <Globe className="w-6 h-6" />
+        <div className="absolute left-[86%] top-[18%] text-[#2563EB]/25 z-1 pointer-events-none hidden md:block">
+          <Globe className="w-5 h-5 stroke-[1.5]" />
         </div>
-        <div className="absolute left-[6%] top-[62%] text-[#16A34A]/70 z-1 pointer-events-none drop-shadow-md hidden md:block">
-          <Activity className="w-6 h-6" />
+        <div className="absolute left-[6%] top-[62%] text-[#16A34A]/25 z-1 pointer-events-none hidden md:block">
+          <Activity className="w-5 h-5 stroke-[1.5]" />
         </div>
-        <div className="absolute left-[88%] top-[56%] text-[#7C3AED]/70 z-1 pointer-events-none drop-shadow-md hidden md:block">
-          <Radio className="w-6 h-6" />
+        <div className="absolute left-[88%] top-[56%] text-[#7C3AED]/25 z-1 pointer-events-none hidden md:block">
+          <Radio className="w-5 h-5 stroke-[1.5]" />
         </div>
-        <div className="absolute left-[15%] top-[78%] text-[#0EA5E9]/70 z-1 pointer-events-none drop-shadow-md hidden md:block">
-          <Search className="w-6 h-6" />
+        <div className="absolute left-[15%] top-[78%] text-[#0EA5E9]/25 z-1 pointer-events-none hidden md:block">
+          <Search className="w-5 h-5 stroke-[1.5]" />
         </div>
-        <div className="absolute left-[82%] top-[74%] text-[#16A34A]/70 z-1 pointer-events-none drop-shadow-md hidden md:block">
-          <Shield className="w-6 h-6" />
+        <div className="absolute left-[82%] top-[74%] text-[#16A34A]/25 z-1 pointer-events-none hidden md:block">
+          <Shield className="w-5 h-5 stroke-[1.5]" />
         </div>
 
         {/* Center Hero Body */}

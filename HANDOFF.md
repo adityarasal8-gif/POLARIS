@@ -94,6 +94,9 @@ Every agent must read it before making changes and update it after meaningful wo
    - Positioned the brand mark and POLARIS logo completely on the far left edge of the viewport.
    - Removed the search pill trigger from the navbar, leaving the "Live Observatory" pulse CTA positioned exclusively on the far right edge of the viewport.
    - Kept center navigation links (`Home`, `Explore`, `Research`, `Expeditions`, `Data`, `Learn`) evenly spaced in between.
-6. **Verification**:
+6. **Hero Icon Opacity Refinement**:
+   - Lowered the opacity of floating perimeter scientific icons (`Compass`, `Globe`, `Activity`, `Radio`, `Search`, `Shield`) from 70% to 25% (`text-[color]/25`).
+   - Removed harsh drop shadows and tuned stroke widths to `1.5` for a subtle, elegant ambient watermark effect.
+7. **Verification**:
    - `npm run build` ran cleanly with 0 TypeScript/Vite errors.
    - Runtime verified in Chrome DevTools on `http://127.0.0.1:5173/` at 1440x900 viewport with visual screenshot confirmation.
