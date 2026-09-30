@@ -658,7 +658,7 @@ export const HomePage: React.FC = () => {
               </p>
               <div className="pt-2 space-y-2 text-xs font-mono text-[#555558]">
                 <div><strong>Base:</strong> Maitri (Schirmacher Oasis) & Bharati (Larsemann Hills)</div>
-                <div><strong>Voyage:</strong> Cape Town $\rightarrow$ Prydz Bay $\rightarrow$ Princess Astrid Coast</div>
+                <div><strong>Voyage:</strong> Cape Town → Prydz Bay → Princess Astrid Coast</div>
                 <div><strong>Science Themes:</strong> Deep Ice Coring, Ozone Depletion, Paleoseismology</div>
               </div>
             </div>
@@ -717,7 +717,9 @@ export const HomePage: React.FC = () => {
                   </p>
                 </div>
                 <div className="pt-3 border-t border-[#E8E6E0] flex items-center justify-between text-xs font-mono text-[#8E8E91]">
-                  <span className="truncate max-w-[200px]">{paper.authors}</span>
+                  <span className="truncate max-w-[200px]">
+                    {Array.isArray(paper.authors) ? paper.authors.join(', ') : paper.authors}
+                  </span>
                   <span className="text-[#2563EB] font-semibold">DOI: {paper.doi}</span>
                 </div>
               </div>

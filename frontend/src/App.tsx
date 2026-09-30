@@ -100,14 +100,14 @@ export default function App() {
           {/* 404 Fallback */}
           <Route>
             <div className="min-h-[70vh] flex flex-col items-center justify-center p-8 text-center space-y-4">
-              <span className="text-4xl font-mono text-cyan-400 font-bold">404</span>
-              <h1 className="text-2xl font-serif font-bold text-white">Record Not Found in Polar Archive</h1>
-              <p className="text-slate-400 text-sm max-w-md">
+              <span className="text-5xl font-serif text-[#111111] font-light">404</span>
+              <h1 className="text-2xl font-serif font-medium text-[#111111]">Record Not Found in Polar Archive</h1>
+              <p className="text-[#555558] text-sm max-w-md leading-relaxed">
                 The requested URL does not match any index in the National Polar Science Knowledge Platform.
               </p>
               <a
                 href="/"
-                className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded text-xs font-mono transition"
+                className="btn-primary text-xs"
               >
                 Return to Polar Gateway
               </a>
