@@ -4,7 +4,7 @@ import { Database, ExternalLink, Globe, Shield } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="w-full bg-[#111111] border-t border-[#262624] pt-16 pb-12 text-[#8E8E91] text-xs font-sans snap-start">
+    <footer className="w-full bg-[#111111] border-t border-[#262624] pt-16 pb-12 text-[#8E8E91] text-xs font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-14">
           {/* Col 1 & 2: Institutional Identity */}

@@ -185,4 +185,25 @@ Every agent must read it before making changes and update it after meaningful wo
       * Upgraded `StationsPage.tsx` with the panoramic command map deck at the top, synchronizing station selections with the architectural dossier below.
       * Verified in Chrome DevTools: full basemap switching, camera flight to Arctic/Antarctica/Himalayas, layer toggles, and zero console errors.
       * Preserved all original wave canvas colors in `AgentShieldCanvas.tsx` (`#2563EB` Polar Blue system).
+15. **Homepage Visual Pacing, Layout Elevation & Interaction Polish**:
+    - **Pacing & Layout Discipline (`HomePage.tsx`, `Footer.tsx`)**:
+      * Removed rigid artificial `min-h-[calc(100vh-4rem)]` and CSS scroll snapping (`snap-y snap-proximity` and `snap-start`) across all homepage sections and the footer.
+      * Replaced with balanced editorial spacing (`py-16 sm:py-24`) to eliminate 300px+ empty vertical voids on standard 900p/1080p desktop monitors.
+    - **Section 2 — Connected Scientific Pipeline**:
+      * Engineered sequential conduits connecting stages `01` through `06` with subtle connecting lines, step badges, clear methodology deliverables, and hover response.
+    - **Section 3 — Balanced Telemetry Command Deck & Station Spotlight**:
+      * Rebuilt Section 3 into a balanced 2-column command console:
+        - Left (7 cols): Live primary instruments (Dry bulb temperature, sonic anemometer wind, Vaisala barometric pressure, capacitive humidity) + environmental sub-telemetry strip (solar insolation, pressure trend, hybrid grid status).
+        - Right (5 cols): Dynamic station spotlight card with high-resolution station imagery, operational status, coordinates, elevation, continuity, wintering crew, and discipline tags.
+    - **Section 4 — 4-Pillar Cross-Entity Discovery Engine**:
+      * Replaced the previous 3-card layout with a 4-column balanced grid displaying all core scientific pillars: Research Stations, NPDC Datasets, Field Expeditions, and Peer-Reviewed Publications.
+    - **Section 5 — Authentic Antarctic Expedition Imagery**:
+      * Updated hero photography in `backend/polaris.db` and UI to authentic Antarctic pack ice and research vessel imagery (`photo-1517411032315-54ef2cb783bb`).
+    - **Section 6 — Author & DOI Collision Resolution**:
+      * Completely eliminated text overlap and squished layout by redesigning card footers into two clean rows: Row 1 for authors with user glyph + Open Access badge; Row 2 for formatted DOI tag + "Read paper →" link.
+    - **Section 7 — Interactive Rapid Assessment Quiz**:
+      * Added an interactive polar science quiz widget with immediate animated feedback, answer verification, and educational explanation for students and visitors.
+    - **Preservation of Visual Brand Assets**:
+      * 100% of wave canvas ribbon colors in `AgentShieldCanvas.tsx` (amber, sky blue, lavender, emerald, marine teal) remain untouched.
+
 
