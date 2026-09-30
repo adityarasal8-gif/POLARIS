@@ -3,65 +3,134 @@
 
 @layer base {
   :root {
-    /* Polar Editorial Palette */
-    --color-deep-ink: #07151F;
-    --color-ocean: #0D2735;
-    --color-ocean-surface: #143547;
-    --color-ice: #B9DDE7;
-    --color-glacial: #74B8CC;
-    --color-arctic-blue: #DCEEF2;
-    --color-aurora: #5BB7A5;
-    --color-warm-accent: #D7A75D;
+    /* AgentShield Design Palette */
+    --bg: #FAFAF8;
+    --bg-alt: #F4F2EE;
+    --bg-card: #FFFFFF;
+    --ink: #111111;
+    --ink-60: #555558;
+    --ink-40: #8E8E91;
+    --line: #E8E6E0;
+    --accent: #111111;
+    --green: #16A34A;
+    --red: #DC2626;
+    --amber: #D97706;
+    --blue: #2563EB;
+    --cyan: #0EA5E9;
+    --max: 1120px;
+    --nav-h: 60px;
+    --r-xs: 6px;
+    --r-sm: 10px;
+    --r-md: 16px;
+    --r-lg: 24px;
+    --r-xl: 36px;
+    --r-full: 999px;
+    --sh-xs: 0 1px 2px rgba(0,0,0,.04);
+    --sh-sm: 0 2px 8px rgba(0,0,0,.06);
+    --sh-md: 0 8px 24px rgba(0,0,0,.07);
+    --sh-lg: 0 20px 48px rgba(0,0,0,.09);
 
-    /* Light Environmental Mode (Datasets, Publications, Learn, Editorial) */
-    --color-snow: #F7F8F5;
+    /* Polar Context Compat Aliases */
+    --color-deep-ink: #111111;
+    --color-ocean: #F4F2EE;
+    --color-ocean-surface: #FFFFFF;
+    --color-snow: #FAFAF8;
     --color-snow-surface: #FFFFFF;
-    --color-text-dark: #10212B;
-    --color-text-muted-dark: #61747E;
-    --color-border-light: rgba(13, 39, 53, 0.12);
-
-    /* Dark Environmental Mode (Hero, Observatory, Media, Graph) */
-    --color-text-light: #F7F8F5;
-    --color-text-muted-light: #8E9EA7;
-    --color-border-dark: rgba(185, 221, 231, 0.15);
+    --color-text-dark: #111111;
+    --color-text-muted-dark: #555558;
+    --color-border-light: #E8E6E0;
+    --color-glacial: #0EA5E9;
+    --color-aurora: #16A34A;
+    --color-warm-accent: #D97706;
   }
 
   body {
     margin: 0;
     padding: 0;
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
   }
 
-  h1, h2, h3, .font-editorial {
-    font-family: 'Newsreader', Georgia, Cambria, serif;
+  h1, h2, h3, .font-serif, .font-editorial {
+    font-family: 'Playfair Display', Georgia, Cambria, serif;
   }
 
-  .font-sans-ui {
-    font-family: 'Plus Jakarta Sans', sans-serif;
+  .font-sans, .font-sans-ui {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 
-  .font-mono-telemetry {
-    font-family: 'JetBrains Mono', monospace;
+  .font-mono, .font-mono-telemetry {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
   }
 }
 
-/* Custom Polar Scrollbars */
+/* AgentShield Button Primitives */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #FFFFFF;
+  background: var(--ink);
+  border: 1.5px solid var(--ink);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 14px rgba(17, 17, 17, 0.2);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.btn-primary:hover {
+  opacity: 0.85;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(17, 17, 17, 0.25);
+}
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  background: #FFFFFF;
+  border: 1.5px solid var(--line);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.btn-ghost:hover {
+  border-color: var(--ink-40);
+  background: var(--bg-alt);
+  transform: translateY(-1px);
+}
+
+/* Custom Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #07151F;
+  background: #FAFAF8;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1C3D52;
+  background: #E8E6E0;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #74B8CC;
+  background: #8E8E91;
 }
 
 /* Scientific Editorial Utility Classes */

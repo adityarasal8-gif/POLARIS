@@ -52,16 +52,16 @@ export const ObservatoryPage: React.FC = () => {
       zoom: 2,
       minZoom: 2,
       maxZoom: 10,
-      zoomControl: false
+      zoomControl: true,
+      attributionControl: false
     });
 
-    // High-resolution satellite basemap (Esri World Imagery)
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      attribution: 'Tiles &copy; Esri, Maxar, Earthstar Geographics, NASA/USGS',
-      maxZoom: 17
+    // OpenStreetMap clean cartographic tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    L.control.zoom({ position: 'topright' }).addTo(map);
     mapInstanceRef.current = map;
 
     return () => {
@@ -85,23 +85,23 @@ export const ObservatoryPage: React.FC = () => {
         className: 'custom-polar-pin',
         html: `
           <div style="
-            width: ${isSelected ? '28px' : '20px'};
-            height: ${isSelected ? '28px' : '20px'};
-            background-color: ${isSelected ? '#74B8CC' : '#5BB7A5'};
-            border: 2px solid #FFFFFF;
+            width: ${isSelected ? '26px' : '18px'};
+            height: ${isSelected ? '26px' : '18px'};
+            background-color: ${isSelected ? '#111111' : '#FFFFFF'};
+            border: 2px solid #111111;
             border-radius: 50%;
-            box-shadow: 0 0 15px ${isSelected ? '#74B8CC' : '#5BB7A5'};
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
           ">
-            <div style="width: 6px; height: 6px; background-color: #07151F; border-radius: 50%;"></div>
+            <div style="width: 6px; height: 6px; background-color: ${isSelected ? '#FFFFFF' : '#111111'}; border-radius: 50%;"></div>
           </div>
         `,
-        iconSize: [28, 28],
-        iconAnchor: [14, 14]
+        iconSize: [26, 26],
+        iconAnchor: [13, 13]
       });
 
       const marker = L.marker([st.latitude, st.longitude], { icon: customIcon }).addTo(map);
@@ -126,20 +126,20 @@ export const ObservatoryPage: React.FC = () => {
   ] : [];
 
   return (
-    <div className="w-full min-h-screen bg-[#07151F] text-[#F7F8F5] pb-20 font-sans selection:bg-[#74B8CC]/30 selection:text-[#07151F]">
+    <div className="w-full min-h-screen bg-[#FAFAF8] text-[#111111] pb-24 font-sans selection:bg-[#111111] selection:text-white">
       
       {/* 1. Scientific Observatory Header */}
-      <div className="border-b border-[#B9DDE7]/10 bg-[#0A1B28] px-4 sm:px-8 py-8">
+      <div className="border-b border-[#E8E6E0] bg-[#FAFAF8] px-4 sm:px-8 py-10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-3">
-            <div className="inline-flex items-center space-x-2 text-xs font-mono text-[#5BB7A5] font-semibold tracking-widest uppercase">
-              <Radio className="w-4 h-4 text-[#5BB7A5] animate-pulse" />
+            <div className="inline-flex items-center space-x-2 text-xs font-mono text-[#555558] bg-[#F4F2EE] px-3 py-1 rounded-full border border-[#E8E6E0] font-medium tracking-wide uppercase">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-pulse" />
               <span>LIVE POLAR OBSERVATORY CONSOLE · OPEN-METEO TELEMETRY</span>
             </div>
-            <h1 className="text-3xl sm:text-5xl font-serif font-bold text-white tracking-tight">
+            <h1 className="text-3xl sm:text-5xl font-serif font-medium text-[#111111] tracking-tight">
               Real-time atmospheric & polar instrumentation
             </h1>
-            <p className="text-xs sm:text-sm text-[#8E9EA7] font-light max-w-2xl">
+            <p className="text-sm text-[#555558] font-light max-w-2xl">
               Continuous synoptic observations proxied across Indian research bases in Antarctica, the Arctic, and the Western Himalaya.
             </p>
           </div>
@@ -148,17 +148,17 @@ export const ObservatoryPage: React.FC = () => {
             <button
               onClick={loadData}
               disabled={refreshing}
-              className="px-4 py-2.5 rounded-lg bg-[#0D2735] hover:bg-[#143547] border border-[#B9DDE7]/20 text-xs font-mono text-[#DCEEF2] flex items-center gap-2 transition"
+              className="px-4 py-2 rounded-full bg-white hover:bg-[#F4F2EE] border border-[#E8E6E0] text-xs font-mono text-[#111111] flex items-center gap-2 transition shadow-sm font-medium"
             >
-              <RefreshCw className={`w-3.5 h-3.5 text-[#74B8CC] ${refreshing ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 text-[#111111] ${refreshing ? 'animate-spin' : ''}`} />
               <span>{refreshing ? 'Polling Sensors...' : 'Sync Telemetry'}</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* 2. Full-Width Satellite Map Explorer */}
-      <div className="relative w-full h-[450px] sm:h-[520px] bg-[#050F17] border-b border-[#B9DDE7]/15">
+      {/* 2. Full-Width Map Explorer */}
+      <div className="relative w-full h-[450px] sm:h-[500px] bg-[#F4F2EE] border-b border-[#E8E6E0]">
         <div ref={mapContainerRef} className="w-full h-full z-0" />
 
         {/* Floating Station Selector Bar */}
@@ -167,22 +167,22 @@ export const ObservatoryPage: React.FC = () => {
             <button
               key={st.station_id}
               onClick={() => setSelectedStationId(st.station_id)}
-              className={`px-4 py-2 rounded-xl text-xs font-mono backdrop-blur-md transition-all flex items-center gap-2 border ${
+              className={`px-4 py-2 rounded-full text-xs font-mono backdrop-blur-md transition-all flex items-center gap-2 border shadow-sm ${
                 st.station_id === (activeWeather?.station_id || 'maitri')
-                  ? 'bg-[#74B8CC] text-[#07151F] font-bold border-[#74B8CC] shadow-lg'
-                  : 'bg-[#07151F]/85 text-[#8E9EA7] hover:text-white border-[#B9DDE7]/20 hover:bg-[#0D2735]'
+                  ? 'bg-[#111111] text-white font-medium border-[#111111]'
+                  : 'bg-white/95 text-[#555558] hover:text-[#111111] border-[#E8E6E0] hover:bg-white'
               }`}
             >
-              <span className={`w-2 h-2 rounded-full ${st.station_id === (activeWeather?.station_id || 'maitri') ? 'bg-[#07151F]' : 'bg-[#5BB7A5]'}`} />
+              <span className={`w-1.5 h-1.5 rounded-full ${st.station_id === (activeWeather?.station_id || 'maitri') ? 'bg-[#16A34A]' : 'bg-[#8E8E91]'}`} />
               <span>{st.station_name}</span>
-              <span className="text-[10px] opacity-75">({st.region})</span>
+              <span className="text-[10px] opacity-60">({st.region})</span>
             </button>
           ))}
         </div>
 
         {/* Station Coordinates Indicator (Bottom Right) */}
-        <div className="absolute bottom-4 right-4 z-10 bg-[#07151F]/90 backdrop-blur-md px-3.5 py-2 rounded-xl border border-[#B9DDE7]/15 text-xs font-mono text-[#DCEEF2]">
-          <span className="text-[#8E9EA7]">COORDINATES:</span>{' '}
+        <div className="absolute bottom-4 right-4 z-10 bg-white/95 backdrop-blur-md px-3.5 py-2 rounded-xl border border-[#E8E6E0] text-xs font-mono text-[#111111] shadow-sm">
+          <span className="text-[#8E8E91]">COORDINATES:</span>{' '}
           <strong>{activeWeather?.latitude.toFixed(4)}°</strong>,{' '}
           <strong>{activeWeather?.longitude.toFixed(4)}°</strong>
         </div>
@@ -193,91 +193,91 @@ export const ObservatoryPage: React.FC = () => {
         
         {/* Enormous Live Readings */}
         <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#B9DDE7]/10 pb-3">
-            <h2 className="text-2xl font-serif font-bold text-white">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E8E6E0] pb-3">
+            <h2 className="text-2xl font-serif font-medium text-[#111111]">
               {activeWeather?.station_name} Telemetry Feed
             </h2>
-            <div className="text-xs font-mono text-[#5BB7A5] flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#5BB7A5] animate-pulse" />
+            <div className="text-xs font-mono text-[#555558] flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-pulse" />
               <span>LIVE ENVIRONMENTAL CONTEXT · Open-Meteo API</span>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* TEMPERATURE */}
-            <div className="bg-[#0D2735] border border-[#B9DDE7]/15 rounded-3xl p-7 flex flex-col justify-between space-y-4 shadow-xl">
-              <div className="flex items-center justify-between text-xs font-mono text-[#8E9EA7]">
+            <div className="bg-white border border-[#E8E6E0] rounded-3xl p-7 flex flex-col justify-between space-y-4 shadow-sm">
+              <div className="flex items-center justify-between text-xs font-mono text-[#8E8E91]">
                 <span>SURFACE TEMPERATURE</span>
-                <Thermometer className="w-4 h-4 text-[#74B8CC]" />
+                <Thermometer className="w-4 h-4 text-[#111111]" />
               </div>
               <div>
-                <span className="text-5xl sm:text-6xl font-mono font-bold text-white tracking-tight">
+                <span className="text-5xl sm:text-6xl font-mono font-bold text-[#111111] tracking-tight">
                   {loading ? '...' : `${activeWeather?.temperature_c}°C`}
                 </span>
-                <span className="block text-xs font-mono text-[#8E9EA7] mt-1">
+                <span className="block text-xs font-mono text-[#8E8E91] mt-1">
                   Ambient air sensor (1000 hPa)
                 </span>
               </div>
-              <div className="text-[11px] font-mono text-[#74B8CC] pt-2 border-t border-[#B9DDE7]/10">
+              <div className="text-[11px] font-mono text-[#555558] pt-2 border-t border-[#E8E6E0]">
                 {activeWeather?.temperature_c && activeWeather.temperature_c < 0 ? 'Sub-Zero Cryosphere' : 'Positive Melting Regime'}
               </div>
             </div>
 
             {/* WIND VELOCITY */}
-            <div className="bg-[#0D2735] border border-[#B9DDE7]/15 rounded-3xl p-7 flex flex-col justify-between space-y-4 shadow-xl">
-              <div className="flex items-center justify-between text-xs font-mono text-[#8E9EA7]">
+            <div className="bg-white border border-[#E8E6E0] rounded-3xl p-7 flex flex-col justify-between space-y-4 shadow-sm">
+              <div className="flex items-center justify-between text-xs font-mono text-[#8E8E91]">
                 <span>WIND SPEED & VECTOR</span>
-                <Wind className="w-4 h-4 text-[#5BB7A5]" />
+                <Wind className="w-4 h-4 text-[#111111]" />
               </div>
               <div>
-                <span className="text-5xl sm:text-6xl font-mono font-bold text-white tracking-tight">
+                <span className="text-5xl sm:text-6xl font-mono font-bold text-[#111111] tracking-tight">
                   {loading ? '...' : `${activeWeather?.wind_speed_kmh}`}
                 </span>
-                <span className="text-lg text-[#8E9EA7] font-mono ml-1 font-normal">km/h</span>
-                <span className="block text-xs font-mono text-[#8E9EA7] mt-1">
+                <span className="text-lg text-[#8E8E91] font-mono ml-1 font-normal">km/h</span>
+                <span className="block text-xs font-mono text-[#8E8E91] mt-1">
                   Sonic anemometer array
                 </span>
               </div>
-              <div className="text-[11px] font-mono text-[#5BB7A5] pt-2 border-t border-[#B9DDE7]/10">
+              <div className="text-[11px] font-mono text-[#555558] pt-2 border-t border-[#E8E6E0]">
                 {activeWeather?.wind_speed_kmh && activeWeather.wind_speed_kmh > 40 ? 'Severe Katabatic Gale' : 'Normal Drainage Flow'}
               </div>
             </div>
 
             {/* PRESSURE */}
-            <div className="bg-[#0D2735] border border-[#B9DDE7]/15 rounded-3xl p-7 flex flex-col justify-between space-y-4 shadow-xl">
-              <div className="flex items-center justify-between text-xs font-mono text-[#8E9EA7]">
+            <div className="bg-white border border-[#E8E6E0] rounded-3xl p-7 flex flex-col justify-between space-y-4 shadow-sm">
+              <div className="flex items-center justify-between text-xs font-mono text-[#8E8E91]">
                 <span>BAROMETRIC PRESSURE</span>
-                <Gauge className="w-4 h-4 text-[#D7A75D]" />
+                <Gauge className="w-4 h-4 text-[#111111]" />
               </div>
               <div>
-                <span className="text-4xl sm:text-5xl font-mono font-bold text-white tracking-tight">
+                <span className="text-4xl sm:text-5xl font-mono font-bold text-[#111111] tracking-tight">
                   {loading ? '...' : `${activeWeather?.surface_pressure_hpa}`}
                 </span>
-                <span className="text-sm text-[#8E9EA7] font-mono ml-1">hPa</span>
-                <span className="block text-xs font-mono text-[#8E9EA7] mt-1">
+                <span className="text-sm text-[#8E8E91] font-mono ml-1">hPa</span>
+                <span className="block text-xs font-mono text-[#8E8E91] mt-1">
                   Surface barograph
                 </span>
               </div>
-              <div className="text-[11px] font-mono text-[#D7A75D] pt-2 border-t border-[#B9DDE7]/10">
+              <div className="text-[11px] font-mono text-[#555558] pt-2 border-t border-[#E8E6E0]">
                 Atmospheric boundary layer
               </div>
             </div>
 
             {/* HUMIDITY */}
-            <div className="bg-[#0D2735] border border-[#B9DDE7]/15 rounded-3xl p-7 flex flex-col justify-between space-y-4 shadow-xl">
-              <div className="flex items-center justify-between text-xs font-mono text-[#8E9EA7]">
+            <div className="bg-white border border-[#E8E6E0] rounded-3xl p-7 flex flex-col justify-between space-y-4 shadow-sm">
+              <div className="flex items-center justify-between text-xs font-mono text-[#8E8E91]">
                 <span>RELATIVE HUMIDITY</span>
-                <Droplets className="w-4 h-4 text-[#74B8CC]" />
+                <Droplets className="w-4 h-4 text-[#111111]" />
               </div>
               <div>
-                <span className="text-4xl sm:text-5xl font-mono font-bold text-white tracking-tight">
+                <span className="text-4xl sm:text-5xl font-mono font-bold text-[#111111] tracking-tight">
                   {loading ? '...' : `${activeWeather?.relative_humidity_pct}%`}
                 </span>
-                <span className="block text-xs font-mono text-[#8E9EA7] mt-1">
+                <span className="block text-xs font-mono text-[#8E8E91] mt-1">
                   Capacitive thin-film sensor
                 </span>
               </div>
-              <div className="text-[11px] font-mono text-[#8E9EA7] pt-2 border-t border-[#B9DDE7]/10">
+              <div className="text-[11px] font-mono text-[#555558] pt-2 border-t border-[#E8E6E0]">
                 Coupled sublimation rate
               </div>
             </div>
@@ -285,23 +285,23 @@ export const ObservatoryPage: React.FC = () => {
         </div>
 
         {/* 4. 24-Hour Diurnal Telemetry Trends */}
-        <div className="bg-[#0D2735] border border-[#B9DDE7]/15 rounded-3xl p-8 space-y-6 shadow-xl">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#B9DDE7]/10 pb-4">
+        <div className="bg-white border border-[#E8E6E0] rounded-3xl p-8 space-y-6 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E8E6E0] pb-4">
             <div>
-              <h3 className="text-xl font-serif font-bold text-white">
+              <h3 className="text-xl font-serif font-medium text-[#111111]">
                 Diurnal Trend Profile: {activeWeather?.station_name}
               </h3>
-              <p className="text-xs text-[#8E9EA7] font-mono">
+              <p className="text-xs text-[#8E8E91] font-mono">
                 Synoptic atmospheric fluctuations over a 24-hour observational window
               </p>
             </div>
             <div className="flex items-center space-x-4 text-xs font-mono">
-              <span className="flex items-center gap-1.5 text-[#74B8CC]">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#74B8CC]" />
+              <span className="flex items-center gap-1.5 text-[#111111]">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#111111]" />
                 <span>Temp (°C)</span>
               </span>
-              <span className="flex items-center gap-1.5 text-[#5BB7A5]">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#5BB7A5]" />
+              <span className="flex items-center gap-1.5 text-[#8E8E91]">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#8E8E91]" />
                 <span>Wind (km/h)</span>
               </span>
             </div>
@@ -310,31 +310,31 @@ export const ObservatoryPage: React.FC = () => {
           <div className="h-72 w-full pt-4">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={trendData} margin={{ top: 10, right: 30, left: 10, bottom: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#133447" />
-                <XAxis dataKey="hour" stroke="#8E9EA7" tick={{ fontSize: 11, fill: '#8E9EA7' }} />
-                <YAxis stroke="#8E9EA7" tick={{ fontSize: 11, fill: '#8E9EA7' }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#E8E6E0" />
+                <XAxis dataKey="hour" stroke="#8E8E91" tick={{ fontSize: 11, fill: '#8E8E91' }} />
+                <YAxis stroke="#8E8E91" tick={{ fontSize: 11, fill: '#8E8E91' }} />
                 <Tooltip 
-                  contentStyle={{ backgroundColor: '#07151F', borderColor: '#74B8CC', color: '#FFFFFF', borderRadius: '12px' }} 
+                  contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E8E6E0', color: '#111111', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }} 
                 />
-                <Line type="monotone" dataKey="temp" stroke="#74B8CC" strokeWidth={3} dot={{ r: 4 }} />
-                <Line type="monotone" dataKey="wind" stroke="#5BB7A5" strokeWidth={3} dot={{ r: 4 }} />
+                <Line type="monotone" dataKey="temp" stroke="#111111" strokeWidth={2.5} dot={{ r: 4 }} />
+                <Line type="monotone" dataKey="wind" stroke="#8E8E91" strokeWidth={2} strokeDasharray="4 4" dot={{ r: 3 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* 5. Cross-Station Comparative Matrix */}
-        <div className="bg-[#0D2735] border border-[#B9DDE7]/15 rounded-3xl p-8 space-y-4 shadow-xl">
+        <div className="bg-white border border-[#E8E6E0] rounded-3xl p-8 space-y-4 shadow-sm">
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-serif font-bold text-white">
+            <h3 className="text-xl font-serif font-medium text-[#111111]">
               Pan-Polar Meteorological Comparison
             </h3>
-            <span className="text-xs font-mono text-[#8E9EA7]">Synchronous Live Status</span>
+            <span className="text-xs font-mono text-[#8E8E91]">Synchronous Live Status</span>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs font-mono">
-              <thead className="border-b border-[#B9DDE7]/15 text-[#8E9EA7]">
+              <thead className="border-b border-[#E8E6E0] text-[#8E8E91]">
                 <tr>
                   <th className="py-3 px-4">STATION</th>
                   <th className="py-3 px-4">REGION</th>
@@ -345,24 +345,24 @@ export const ObservatoryPage: React.FC = () => {
                   <th className="py-3 px-4">STATUS</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#B9DDE7]/5">
+              <tbody className="divide-y divide-[#E8E6E0]">
                 {stationsWeather.map((s) => (
                   <tr 
                     key={s.station_id} 
                     onClick={() => setSelectedStationId(s.station_id)}
-                    className={`hover:bg-[#143547]/50 cursor-pointer transition ${
-                      s.station_id === selectedStationId ? 'bg-[#143547] text-white font-bold' : 'text-[#DCEEF2]'
+                    className={`hover:bg-[#F4F2EE] cursor-pointer transition ${
+                      s.station_id === selectedStationId ? 'bg-[#F4F2EE] text-[#111111] font-semibold' : 'text-[#555558]'
                     }`}
                   >
-                    <td className="py-4 px-4 font-semibold text-white">{s.station_name}</td>
-                    <td className="py-4 px-4 text-[#8E9EA7]">{s.region}</td>
+                    <td className="py-4 px-4 font-semibold text-[#111111]">{s.station_name}</td>
+                    <td className="py-4 px-4 text-[#8E8E91]">{s.region}</td>
                     <td className="py-4 px-4">{s.latitude.toFixed(2)}°, {s.longitude.toFixed(2)}°</td>
-                    <td className="py-4 px-4 text-[#74B8CC] font-bold">{s.temperature_c}°C</td>
+                    <td className="py-4 px-4 text-[#111111] font-bold">{s.temperature_c}°C</td>
                     <td className="py-4 px-4">{s.wind_speed_kmh} km/h</td>
                     <td className="py-4 px-4">{s.surface_pressure_hpa} hPa</td>
                     <td className="py-4 px-4">
-                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#07151F] text-[#5BB7A5] text-[10px]">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#5BB7A5] animate-pulse" />
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#F4F2EE] border border-[#E8E6E0] text-[#111111] text-[10px]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-pulse" />
                         <span>Online</span>
                       </span>
                     </td>

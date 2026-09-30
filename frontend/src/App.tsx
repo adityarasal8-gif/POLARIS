@@ -53,7 +53,7 @@ export default function App() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col font-sans selection:bg-[#74B8CC]/30 selection:text-[#07151F] text-[#F7F8F5] bg-[#07151F]">
+    <div className="min-h-screen flex flex-col font-sans selection:bg-[#111111] selection:text-[#FFFFFF] text-[#111111] bg-[#FAFAF8]">
       {/* Global Header */}
       <Header 
         onOpenSearch={() => setSearchModalOpen(true)}

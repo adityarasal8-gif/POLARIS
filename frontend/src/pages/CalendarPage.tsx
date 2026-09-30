@@ -95,40 +95,40 @@ export const CalendarPage: React.FC = () => {
   const getPlatformIcon = (platform: string) => {
     switch (platform) {
       case 'instagram': return <InstagramIcon className="w-3.5 h-3.5 text-[#E1306C]" />;
-      case 'x': return <TwitterIcon className="w-3.5 h-3.5 text-[#74B8CC]" />;
-      case 'linkedin': return <LinkedinIcon className="w-3.5 h-3.5 text-[#5BB7A5]" />;
-      case 'youtube': return <YoutubeIcon className="w-3.5 h-3.5 text-[#FF5A5F]" />;
-      default: return <FileText className="w-3.5 h-3.5 text-[#B9DDE7]" />;
+      case 'x': return <TwitterIcon className="w-3.5 h-3.5 text-[#111111]" />;
+      case 'linkedin': return <LinkedinIcon className="w-3.5 h-3.5 text-[#0077B5]" />;
+      case 'youtube': return <YoutubeIcon className="w-3.5 h-3.5 text-[#FF0000]" />;
+      default: return <FileText className="w-3.5 h-3.5 text-[#111111]" />;
     }
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#07151F] text-white py-12 px-4 sm:px-6 lg:px-8">
+    <div className="w-full min-h-screen bg-[#FAFAF8] text-[#111111] py-12 px-4 sm:px-6 lg:px-8 font-sans selection:bg-[#111111] selection:text-white">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Navigation */}
-        <Link href="/studio" className="inline-flex items-center gap-2 text-xs font-mono text-[#74B8CC] hover:text-[#B9DDE7] transition-colors">
+        <Link href="/studio" className="inline-flex items-center gap-2 text-xs font-mono text-[#555558] hover:text-[#111111] transition-colors">
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Return to Content Studio</span>
         </Link>
 
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E8E6E0] pb-6">
           <div className="space-y-1">
-            <div className="inline-flex items-center gap-2 text-xs font-mono text-[#74B8CC] uppercase tracking-wider">
-              <Calendar className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 text-xs font-mono text-[#555558] bg-[#F4F2EE] px-3 py-1 rounded-full border border-[#E8E6E0] font-medium tracking-wide uppercase">
+              <Calendar className="w-3.5 h-3.5 text-[#111111]" />
               <span>Dissemination Governance</span>
             </div>
-            <h1 className="font-editorial text-3xl sm:text-4xl text-white font-normal">
+            <h1 className="font-serif text-3xl sm:text-4xl text-[#111111] font-medium">
               Public Release Calendar
             </h1>
-            <p className="text-xs sm:text-sm text-[#94A3B8]">
+            <p className="text-xs sm:text-sm text-[#555558] font-light">
               Verified scheduled public communications across social feeds and web releases.
             </p>
           </div>
 
           <Link
             href="/studio"
-            className="px-4 py-2.5 rounded-xl bg-[#74B8CC] hover:bg-[#B9DDE7] text-[#07151F] font-bold text-xs font-mono flex items-center gap-1.5 transition-all cursor-pointer shadow-md"
+            className="px-5 py-2.5 rounded-full bg-[#111111] hover:bg-black text-white font-medium text-xs font-mono flex items-center gap-1.5 transition-all cursor-pointer shadow-sm"
           >
             <Plus className="w-4 h-4" />
             <span>Generate New Post</span>
@@ -140,23 +140,23 @@ export const CalendarPage: React.FC = () => {
           {DAYS.map((d) => {
             const itemsForDay = SCHEDULED_DEMO.filter((item) => item.day === d.day);
             return (
-              <div key={d.day} className="border border-white/10 rounded-2xl bg-white/[0.02] p-4 flex flex-col justify-between min-h-[380px]">
+              <div key={d.day} className="border border-[#E8E6E0] rounded-2xl bg-white p-4 flex flex-col justify-between min-h-[380px] shadow-sm">
                 <div>
-                  <div className="border-b border-white/10 pb-2 mb-3">
-                    <h3 className="text-xs font-bold text-white uppercase font-mono tracking-wider">{d.day}</h3>
-                    <p className="text-xs text-[#74B8CC] font-mono">{d.date}</p>
+                  <div className="border-b border-[#E8E6E0] pb-2 mb-3">
+                    <h3 className="text-xs font-bold text-[#111111] uppercase font-mono tracking-wider">{d.day}</h3>
+                    <p className="text-xs text-[#8E8E91] font-mono">{d.date}</p>
                   </div>
 
                   <div className="space-y-2.5">
                     {itemsForDay.map((item) => (
                       <div
                         key={item.id}
-                        className="p-3 rounded-xl bg-[#07151F] border border-white/10 space-y-2 hover:border-[#74B8CC]/40 transition-all"
+                        className="p-3 rounded-xl bg-[#FAFAF8] border border-[#E8E6E0] space-y-2 hover:border-[#111111]/30 transition-all"
                       >
                         <div className="flex items-center justify-between text-[10px] font-mono">
-                          <span className="text-[#94A3B8]">{item.time}</span>
-                          <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase ${
-                            item.status === 'Approved' ? 'bg-[#5BB7A5]/20 text-[#5BB7A5]' : 'bg-[#74B8CC]/20 text-[#74B8CC]'
+                          <span className="text-[#8E8E91]">{item.time}</span>
+                          <span className={`px-2 py-0.5 rounded-full text-[9px] font-semibold uppercase border ${
+                            item.status === 'Approved' ? 'bg-[#F4F2EE] text-[#16A34A] border-[#16A34A]/20' : 'bg-[#F4F2EE] text-[#111111] border-[#E8E6E0]'
                           }`}>
                             {item.status}
                           </span>
@@ -164,10 +164,10 @@ export const CalendarPage: React.FC = () => {
 
                         <div className="flex items-start gap-2">
                           <div className="mt-0.5 shrink-0">{getPlatformIcon(item.platform)}</div>
-                          <h4 className="text-xs font-semibold text-white leading-snug">{item.title}</h4>
+                          <h4 className="text-xs font-semibold text-[#111111] leading-snug">{item.title}</h4>
                         </div>
 
-                        <div className="text-[10px] text-[#647887] font-mono truncate">
+                        <div className="text-[10px] text-[#8E8E91] font-mono truncate">
                           Ref: {item.source}
                         </div>
                       </div>
@@ -175,8 +175,8 @@ export const CalendarPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="pt-3 border-t border-white/5 text-center">
-                  <span className="text-[10px] font-mono text-[#647887]">
+                <div className="pt-3 border-t border-[#E8E6E0] text-center">
+                  <span className="text-[10px] font-mono text-[#8E8E91]">
                     {itemsForDay.length} Scheduled Dispatches
                   </span>
                 </div>

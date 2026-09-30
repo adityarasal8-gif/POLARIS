@@ -33,7 +33,7 @@ export const DatasetDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="w-full min-h-screen bg-[#F7F8F5] text-[#10212B] flex items-center justify-center font-mono text-xs text-[#61747E]">
+      <div className="w-full min-h-screen bg-[#FAFAF8] text-[#111111] flex items-center justify-center font-mono text-xs text-[#8E8E91]">
         Retrieving scientific data record and telemetry streams...
       </div>
     );
@@ -41,9 +41,9 @@ export const DatasetDetailPage: React.FC = () => {
 
   if (!dataset) {
     return (
-      <div className="w-full min-h-screen bg-[#F7F8F5] text-[#10212B] flex flex-col items-center justify-center space-y-4">
-        <h2 className="text-xl font-bold font-serif">Dataset Record Not Found</h2>
-        <Link href="/datasets" className="text-xs text-[#133447] underline font-mono">Back to NPDC Datasets Catalog</Link>
+      <div className="w-full min-h-screen bg-[#FAFAF8] text-[#111111] flex flex-col items-center justify-center space-y-4">
+        <h2 className="text-xl font-medium font-serif">Dataset Record Not Found</h2>
+        <Link href="/datasets" className="text-xs text-[#111111] underline font-mono">Back to NPDC Datasets Catalog</Link>
       </div>
     );
   }
@@ -64,87 +64,88 @@ export const DatasetDetailPage: React.FC = () => {
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#F7F8F5] text-[#10212B] py-12 px-4 sm:px-6 lg:px-8 font-sans selection:bg-[#74B8CC]/30 selection:text-[#07151F]">
-      <div className="max-w-7xl mx-auto space-y-10">
+    <div className="w-full min-h-screen bg-[#FAFAF8] text-[#111111] py-12 px-4 sm:px-6 lg:px-8 font-sans selection:bg-[#111111] selection:text-white">
+      <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Back Link */}
         <Link 
           href="/datasets" 
-          className="inline-flex items-center space-x-2 text-xs font-mono text-[#61747E] hover:text-[#10212B] transition"
+          className="inline-flex items-center space-x-2 text-xs font-mono text-[#555558] hover:text-[#111111] transition"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to NPDC Datasets Catalog</span>
         </Link>
 
-        {/* Dataset Header Card (White Paper Style) */}
-        <div className="bg-white p-8 sm:p-10 rounded-3xl border border-[#0D2735]/10 shadow-sm space-y-6">
+        {/* Dataset Header Card (Crisp White Card) */}
+        <div className="bg-white p-8 sm:p-10 rounded-3xl border border-[#E8E6E0] shadow-sm space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex flex-wrap items-center gap-2.5 text-xs font-mono">
-              <span className="px-3 py-1 rounded-md bg-[#F7F8F5] text-[#10212B] font-bold border border-[#0D2735]/15">
+            <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
+              <span className="px-3 py-1 rounded-full bg-[#F4F2EE] text-[#111111] font-semibold border border-[#E8E6E0]">
                 {dataset.identifier}
               </span>
-              <span className="px-2.5 py-1 rounded bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200 uppercase">
+              <span className="px-2.5 py-1 rounded-full bg-[#F4F2EE] text-[#111111] font-semibold border border-[#E8E6E0] flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]" />
                 {dataset.access_status}
               </span>
-              <span className="px-2.5 py-1 rounded bg-[#F7F8F5] text-[#61747E] border border-[#0D2735]/10">
+              <span className="px-2.5 py-1 rounded-full bg-[#F4F2EE] text-[#555558] border border-[#E8E6E0]">
                 {dataset.science_category}
               </span>
-              <span className="px-2.5 py-1 rounded bg-[#F7F8F5] text-[#61747E] border border-[#0D2735]/10">
+              <span className="px-2.5 py-1 rounded-full bg-[#F4F2EE] text-[#555558] border border-[#E8E6E0]">
                 {dataset.region}
               </span>
             </div>
 
             <button
               onClick={handleDownload}
-              className="px-5 py-2.5 rounded-xl bg-[#0D2735] hover:bg-[#143547] text-white font-bold text-xs uppercase font-mono tracking-wider transition flex items-center space-x-2 shadow-sm"
+              className="px-5 py-2.5 rounded-full bg-[#111111] hover:bg-black text-white font-medium text-xs font-mono tracking-wider transition flex items-center space-x-2 shadow-sm"
             >
-              <Download className="w-4 h-4 text-[#74B8CC]" />
+              <Download className="w-3.5 h-3.5 text-white" />
               <span>Download Sample JSON</span>
             </button>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-[#10212B] tracking-tight leading-tight">
+          <h1 className="text-3xl sm:text-4xl font-serif font-medium text-[#111111] tracking-tight leading-tight">
             {dataset.title}
           </h1>
 
-          <p className="text-sm sm:text-base text-[#61747E] leading-relaxed font-light">
+          <p className="text-sm sm:text-base text-[#555558] leading-relaxed font-light">
             {dataset.description}
           </p>
 
           {/* Key Metadata Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-[#0D2735]/10 text-xs font-mono">
-            <div>
-              <span className="text-[#8E9EA7] block">Temporal Coverage</span>
-              <span className="font-semibold text-[#10212B]">{dataset.temporal_coverage}</span>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-[#E8E6E0] text-xs font-mono">
+            <div className="p-3 bg-[#FAFAF8] rounded-xl border border-[#E8E6E0]/60">
+              <span className="text-[#8E8E91] block text-[10px] uppercase">Temporal Coverage</span>
+              <span className="font-semibold text-[#111111]">{dataset.temporal_coverage}</span>
             </div>
-            <div>
-              <span className="text-[#8E9EA7] block">Spatial Coverage</span>
-              <span className="font-semibold text-[#10212B]">{dataset.spatial_coverage}</span>
+            <div className="p-3 bg-[#FAFAF8] rounded-xl border border-[#E8E6E0]/60">
+              <span className="text-[#8E8E91] block text-[10px] uppercase">Spatial Coverage</span>
+              <span className="font-semibold text-[#111111]">{dataset.spatial_coverage}</span>
             </div>
-            <div>
-              <span className="text-[#8E9EA7] block">Data Format</span>
-              <span className="font-semibold text-[#10212B]">{dataset.data_format}</span>
+            <div className="p-3 bg-[#FAFAF8] rounded-xl border border-[#E8E6E0]/60">
+              <span className="text-[#8E8E91] block text-[10px] uppercase">Data Format</span>
+              <span className="font-semibold text-[#111111]">{dataset.data_format}</span>
             </div>
-            <div>
-              <span className="text-[#8E9EA7] block">DOI Reference</span>
-              <span className="font-semibold text-[#133447]">{dataset.doi || 'NPDC/MOES-2025-01'}</span>
+            <div className="p-3 bg-[#FAFAF8] rounded-xl border border-[#E8E6E0]/60">
+              <span className="text-[#8E8E91] block text-[10px] uppercase">DOI Reference</span>
+              <span className="font-semibold text-[#111111]">{dataset.doi || 'NPDC/MOES-2025-01'}</span>
             </div>
           </div>
         </div>
 
         {/* Interactive Sensor Telemetry Preview Chart */}
         {sampleData.length > 0 && dataKeys.length > 0 && (
-          <div className="bg-white p-8 rounded-3xl border border-[#0D2735]/10 shadow-sm space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#0D2735]/10 pb-4">
+          <div className="bg-white p-8 rounded-3xl border border-[#E8E6E0] shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E8E6E0] pb-4">
               <div>
-                <h3 className="text-lg font-serif font-bold text-[#10212B]">
+                <h3 className="text-lg font-serif font-medium text-[#111111]">
                   Calibrated Telemetry Stream Preview
                 </h3>
-                <p className="text-xs text-[#61747E] font-mono">
+                <p className="text-xs text-[#8E8E91] font-mono">
                   Visualizing parameters ({dataKeys.join(', ')}) over {xKey}
                 </p>
               </div>
-              <span className="text-xs font-mono text-[#5BB7A5] font-semibold">
+              <span className="text-xs font-mono text-[#555558] font-semibold bg-[#F4F2EE] px-3 py-1 rounded-full border border-[#E8E6E0]">
                 {sampleData.length} Data Points Sampled
               </span>
             </div>
@@ -152,25 +153,25 @@ export const DatasetDetailPage: React.FC = () => {
             <div className="h-80 w-full pt-4">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={sampleData} margin={{ top: 10, right: 30, left: 10, bottom: 20 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E8E6E0" />
                   <XAxis 
                     dataKey={xKey} 
-                    stroke="#8E9EA7" 
-                    tick={{ fontSize: 11, fill: '#61747E' }} 
+                    stroke="#8E8E91" 
+                    tick={{ fontSize: 11, fill: '#8E8E91' }} 
                   />
                   <YAxis 
                     stroke="#8E9EA7" 
-                    tick={{ fontSize: 11, fill: '#61747E' }} 
+                    tick={{ fontSize: 11, fill: '#8E8E91' }} 
                   />
                   <Tooltip 
-                    contentStyle={{ backgroundColor: '#07151F', borderColor: '#74B8CC', color: '#FFFFFF', borderRadius: '8px' }} 
+                    contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E8E6E0', color: '#111111', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }} 
                   />
                   {dataKeys.slice(0, 3).map((key, i) => (
                     <Line
                       key={key}
                       type="monotone"
                       dataKey={key}
-                      stroke={i === 0 ? '#133447' : i === 1 ? '#5BB7A5' : '#D7A75D'}
+                      stroke={i === 0 ? '#111111' : i === 1 ? '#8E8E91' : '#555558'}
                       strokeWidth={2.5}
                       dot={{ r: 3 }}
                       activeDot={{ r: 6 }}
@@ -184,28 +185,28 @@ export const DatasetDetailPage: React.FC = () => {
 
         {/* Tabular Data Sample */}
         {sampleData.length > 0 && (
-          <div className="bg-white p-8 rounded-3xl border border-[#0D2735]/10 shadow-sm space-y-4">
+          <div className="bg-white p-8 rounded-3xl border border-[#E8E6E0] shadow-sm space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-serif font-bold text-[#10212B]">
+              <h3 className="text-lg font-serif font-medium text-[#111111]">
                 Sample Record Inspector
               </h3>
-              <span className="text-xs font-mono text-[#61747E]">Previewing First 8 Calibrated Records</span>
+              <span className="text-xs font-mono text-[#8E8E91]">Previewing First 8 Calibrated Records</span>
             </div>
 
-            <div className="overflow-x-auto border border-[#0D2735]/10 rounded-xl">
+            <div className="overflow-x-auto border border-[#E8E6E0] rounded-xl">
               <table className="w-full text-left text-xs font-mono">
-                <thead className="bg-[#F7F8F5] border-b border-[#0D2735]/10 text-[#61747E]">
+                <thead className="bg-[#FAFAF8] border-b border-[#E8E6E0] text-[#8E8E91]">
                   <tr>
                     {Object.keys(sampleData[0] || {}).map((col) => (
                       <th key={col} className="p-3.5 uppercase tracking-wider">{col}</th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#0D2735]/5">
+                <tbody className="divide-y divide-[#E8E6E0]">
                   {sampleData.slice(0, 8).map((row: any, idx: number) => (
-                    <tr key={idx} className="hover:bg-[#F7F8F5]/80 transition">
+                    <tr key={idx} className="hover:bg-[#FAFAF8] transition">
                       {Object.values(row).map((val: any, cIdx: number) => (
-                        <td key={cIdx} className="p-3.5 text-[#10212B]">{String(val)}</td>
+                        <td key={cIdx} className="p-3.5 text-[#111111]">{String(val)}</td>
                       ))}
                     </tr>
                   ))}
@@ -217,30 +218,30 @@ export const DatasetDetailPage: React.FC = () => {
 
         {/* Provenance & Connected Research */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#0D2735]/10 shadow-sm space-y-3">
-            <h4 className="text-sm font-serif font-bold text-[#10212B] uppercase tracking-wider">
+          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E8E6E0] shadow-sm space-y-3">
+            <h4 className="text-sm font-serif font-medium text-[#111111] uppercase tracking-wider">
               Data Custodianship & Standards
             </h4>
-            <p className="text-xs text-[#61747E] leading-relaxed font-light">
+            <p className="text-xs text-[#555558] leading-relaxed font-light">
               {dataset.provenance || 'Calibrated under NCPOR observational protocols. Raw sensor telemetry processed, QA/QC validated, and ingested into the National Polar Data Center registry.'}
             </p>
-            <div className="text-xs font-mono text-[#133447] pt-2">
+            <div className="text-xs font-mono text-[#111111] pt-2">
               <strong>Provider:</strong> {dataset.provider}
             </div>
           </div>
 
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#0D2735]/10 shadow-sm space-y-3">
-            <h4 className="text-sm font-serif font-bold text-[#10212B] uppercase tracking-wider">
+          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E8E6E0] shadow-sm space-y-3">
+            <h4 className="text-sm font-serif font-medium text-[#111111] uppercase tracking-wider">
               Connected Polar Knowledge
             </h4>
             <div className="space-y-2 text-xs font-mono">
-              <Link href="/expeditions" className="flex items-center justify-between p-2.5 rounded-lg bg-[#F7F8F5] hover:bg-[#EAEAEA] text-[#10212B] transition">
+              <Link href="/expeditions" className="flex items-center justify-between p-3 rounded-xl bg-[#FAFAF8] hover:bg-[#F4F2EE] border border-[#E8E6E0] text-[#111111] transition">
                 <span>Originating Expedition: {dataset.expedition_id || '45th ISEA'}</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-3.5 h-3.5 text-[#8E8E91]" />
               </Link>
-              <Link href="/publications" className="flex items-center justify-between p-2.5 rounded-lg bg-[#F7F8F5] hover:bg-[#EAEAEA] text-[#10212B] transition">
+              <Link href="/publications" className="flex items-center justify-between p-3 rounded-xl bg-[#FAFAF8] hover:bg-[#F4F2EE] border border-[#E8E6E0] text-[#111111] transition">
                 <span>Associated Peer-Reviewed Paper</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-3.5 h-3.5 text-[#8E8E91]" />
               </Link>
             </div>
           </div>

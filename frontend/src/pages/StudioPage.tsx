@@ -58,48 +58,45 @@ export const StudioPage: React.FC = () => {
       exps.forEach(e => items.push({ id: e.id, name: `${e.code} — ${e.name}`, type: 'expedition' }));
       dss.forEach(d => items.push({ id: d.id, name: `${d.identifier}: ${d.title}`, type: 'dataset' }));
       setSourcesList(items);
-    }).catch(console.error);
 
-    fetchContentDrafts().then((drafts) => {
-      if (drafts.length > 0) setActiveDraft(drafts[0]);
+      // Pre-fetch draft if available
+      fetchContentDrafts().then((drafts) => {
+        if (drafts.length > 0) setActiveDraft(drafts[0]);
+      }).catch(console.error);
     }).catch(console.error);
   }, []);
 
   const handleGenerate = async () => {
     setGenerating(true);
     setGenerationStep(0);
-    setReviewSuccess(null);
 
-    const interval = setInterval(() => {
-      setGenerationStep((prev) => {
-        if (prev < GENERATION_STEPS.length - 1) return prev + 1;
-        return prev;
-      });
-    }, 400);
+    const stepInterval = setInterval(() => {
+      setGenerationStep(prev => (prev < GENERATION_STEPS.length - 1 ? prev + 1 : prev));
+    }, 450);
 
     try {
       const draft = await generateContent(selectedSourceType, selectedSourceId);
-      clearInterval(interval);
-      setTimeout(() => {
-        setActiveDraft(draft);
-        setGenerating(false);
-      }, 400);
+      clearInterval(stepInterval);
+      setActiveDraft(draft);
+      setReviewSuccess('Generated verified outreach package.');
+      setTimeout(() => setReviewSuccess(null), 4000);
     } catch (err) {
-      clearInterval(interval);
-      console.error('Content generation error:', err);
+      clearInterval(stepInterval);
+      console.error('Generation failed:', err);
+    } finally {
       setGenerating(false);
     }
   };
 
-  const handleReviewAction = async (action: string) => {
+  const handleReviewAction = async (action: 'approve' | 'reject' | 'schedule') => {
     if (!activeDraft) return;
     try {
-      const res = await reviewContentDraft(activeDraft.id, action, 'Chief Content Editor', '2026-10-15 14:00 UTC');
-      setActiveDraft({ ...activeDraft, status: res.status as any });
-      setReviewSuccess(`Outreach package updated to status: "${res.status}"`);
-      setTimeout(() => setReviewSuccess(null), 3500);
+      const updated = await reviewContentDraft(activeDraft.id, action);
+      setActiveDraft(updated);
+      setReviewSuccess(`Draft state changed to: ${updated.status}`);
+      setTimeout(() => setReviewSuccess(null), 3000);
     } catch (err) {
-      console.error('Review action failed:', err);
+      console.error('Review failed:', err);
     }
   };
 
@@ -109,22 +106,22 @@ export const StudioPage: React.FC = () => {
     setTimeout(() => setCopiedKey(null), 2000);
   };
 
-  const filteredSources = sourcesList.filter((s) => s.type === selectedSourceType);
+  const filteredSources = sourcesList.filter(s => s.type === selectedSourceType);
 
   return (
-    <div className="w-full min-h-screen bg-[#07151F] text-white">
-      {/* Editorial Header */}
-      <section className="pt-24 pb-8 px-4 sm:px-6 lg:px-8 border-b border-white/10 bg-gradient-to-b from-[#0D2735] to-[#07151F]">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-[#B9DDE7] uppercase tracking-widest">
-              <FileText className="w-3.5 h-3.5 text-[#74B8CC]" />
+    <div className="w-full min-h-screen bg-[#FAFAF8] text-[#111111] font-sans selection:bg-[#111111] selection:text-white pb-20">
+      {/* Header Section */}
+      <section className="pt-16 pb-12 px-4 sm:px-6 lg:px-8 border-b border-[#E8E6E0] bg-[#F4F2EE]">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="space-y-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-[#E8E6E0] text-xs font-mono text-[#555558] uppercase tracking-wide font-medium shadow-sm">
+              <FileText className="w-3.5 h-3.5 text-[#111111]" />
               <span>Scientific Communication & Outreach Desk</span>
             </div>
-            <h1 className="font-editorial text-3xl sm:text-4xl text-white font-normal">
+            <h1 className="font-serif text-3xl sm:text-4xl text-[#111111] font-medium">
               Institutional Editorial Workspace
             </h1>
-            <p className="text-xs sm:text-sm text-[#94A3B8] max-w-2xl">
+            <p className="text-xs sm:text-sm text-[#555558] max-w-2xl font-light">
               Transform validated expedition charters and NPDC datasets into multi-platform public outreach packages with traceable scientific citations.
             </p>
           </div>
@@ -132,45 +129,45 @@ export const StudioPage: React.FC = () => {
           <div className="flex items-center gap-3">
             <Link
               href="/studio/calendar"
-              className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono text-white flex items-center gap-2 transition-colors"
+              className="px-4 py-2 rounded-full bg-white hover:bg-[#FAFAF8] border border-[#E8E6E0] text-xs font-mono text-[#111111] flex items-center gap-2 transition-colors shadow-sm font-medium"
             >
-              <Calendar className="w-3.5 h-3.5 text-[#74B8CC]" />
+              <Calendar className="w-3.5 h-3.5 text-[#111111]" />
               <span>Release Calendar</span>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Workflow Ribbon: SOURCE → EXTRACT → GENERATE → REVIEW → APPROVE → SCHEDULE */}
-      <div className="border-b border-white/10 bg-white/[0.02]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between text-xs font-mono overflow-x-auto text-[#647887]">
-          <div className="flex items-center gap-2 text-[#74B8CC] font-semibold shrink-0">
-            <span className="w-5 h-5 rounded-full bg-[#74B8CC]/20 flex items-center justify-center text-[11px]">1</span>
+      {/* Workflow Ribbon */}
+      <div className="border-b border-[#E8E6E0] bg-[#FAFAF8]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between text-xs font-mono overflow-x-auto text-[#8E8E91]">
+          <div className="flex items-center gap-1.5 text-[#111111] font-semibold shrink-0">
+            <span className="w-4 h-4 rounded-full bg-[#111111] text-white flex items-center justify-center text-[10px]">1</span>
             <span>SOURCE</span>
           </div>
           <span className="px-2">→</span>
-          <div className="flex items-center gap-2 text-[#74B8CC] font-semibold shrink-0">
-            <span className="w-5 h-5 rounded-full bg-[#74B8CC]/20 flex items-center justify-center text-[11px]">2</span>
+          <div className="flex items-center gap-1.5 text-[#111111] font-semibold shrink-0">
+            <span className="w-4 h-4 rounded-full bg-[#111111] text-white flex items-center justify-center text-[10px]">2</span>
             <span>EXTRACT</span>
           </div>
           <span className="px-2">→</span>
-          <div className="flex items-center gap-2 text-[#74B8CC] font-semibold shrink-0">
-            <span className="w-5 h-5 rounded-full bg-[#74B8CC]/20 flex items-center justify-center text-[11px]">3</span>
+          <div className="flex items-center gap-1.5 text-[#111111] font-semibold shrink-0">
+            <span className="w-4 h-4 rounded-full bg-[#111111] text-white flex items-center justify-center text-[10px]">3</span>
             <span>GENERATE</span>
           </div>
           <span className="px-2">→</span>
-          <div className={`flex items-center gap-2 shrink-0 ${activeDraft ? 'text-[#B9DDE7] font-semibold' : ''}`}>
-            <span className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-[11px]">4</span>
+          <div className={`flex items-center gap-1.5 shrink-0 ${activeDraft ? 'text-[#111111] font-semibold' : ''}`}>
+            <span className="w-4 h-4 rounded-full bg-[#E8E6E0] text-[#111111] flex items-center justify-center text-[10px]">4</span>
             <span>REVIEW</span>
           </div>
           <span className="px-2">→</span>
-          <div className={`flex items-center gap-2 shrink-0 ${activeDraft?.status === 'Approved' ? 'text-[#5BB7A5] font-semibold' : ''}`}>
-            <span className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-[11px]">5</span>
+          <div className={`flex items-center gap-1.5 shrink-0 ${activeDraft?.status === 'Approved' ? 'text-[#16A34A] font-semibold' : ''}`}>
+            <span className="w-4 h-4 rounded-full bg-[#E8E6E0] text-[#111111] flex items-center justify-center text-[10px]">5</span>
             <span>APPROVE</span>
           </div>
           <span className="px-2">→</span>
-          <div className={`flex items-center gap-2 shrink-0 ${activeDraft?.status === 'Scheduled' ? 'text-[#D7A75D] font-semibold' : ''}`}>
-            <span className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-[11px]">6</span>
+          <div className={`flex items-center gap-1.5 shrink-0 ${activeDraft?.status === 'Scheduled' ? 'text-[#111111] font-semibold' : ''}`}>
+            <span className="w-4 h-4 rounded-full bg-[#E8E6E0] text-[#111111] flex items-center justify-center text-[10px]">6</span>
             <span>SCHEDULE</span>
           </div>
         </div>
@@ -179,8 +176,8 @@ export const StudioPage: React.FC = () => {
       {/* Review Feedback Alert */}
       {reviewSuccess && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
-          <div className="p-3 rounded-xl bg-[#5BB7A5]/20 border border-[#5BB7A5] text-[#B9DDE7] flex items-center gap-2 text-xs font-mono">
-            <CheckCircle2 className="w-4 h-4 text-[#5BB7A5]" />
+          <div className="p-3 rounded-2xl bg-white border border-[#E8E6E0] text-[#111111] flex items-center gap-2 text-xs font-mono shadow-sm">
+            <CheckCircle2 className="w-4 h-4 text-[#16A34A]" />
             <span>{reviewSuccess}</span>
           </div>
         </div>
@@ -191,19 +188,19 @@ export const StudioPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
           {/* PANE 1: SOURCE MATERIAL (3 cols) */}
-          <div className="lg:col-span-3 space-y-5 border border-white/10 rounded-2xl bg-white/[0.02] p-5">
-            <div className="border-b border-white/10 pb-3">
-              <span className="text-[11px] font-mono uppercase tracking-widest text-[#74B8CC] block">
+          <div className="lg:col-span-3 space-y-5 border border-[#E8E6E0] rounded-2xl bg-white p-5 shadow-sm">
+            <div className="border-b border-[#E8E6E0] pb-3">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-[#8E8E91] block">
                 Pane 01 · Input
               </span>
-              <h2 className="font-editorial text-xl text-white font-normal mt-0.5">
+              <h2 className="font-serif text-xl text-[#111111] font-medium mt-0.5">
                 Source Material
               </h2>
             </div>
 
             <div className="space-y-4 text-xs font-mono">
               <div className="space-y-1.5">
-                <label className="text-[#94A3B8] uppercase text-[10px] block">Document Domain</label>
+                <label className="text-[#8E8E91] uppercase text-[10px] block">Document Domain</label>
                 <select
                   value={selectedSourceType}
                   onChange={(e) => {
@@ -211,7 +208,7 @@ export const StudioPage: React.FC = () => {
                     const first = sourcesList.find(s => s.type === e.target.value);
                     if (first) setSelectedSourceId(first.id);
                   }}
-                  className="w-full bg-[#07151F] border border-white/15 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-[#74B8CC] cursor-pointer"
+                  className="w-full bg-[#FAFAF8] border border-[#E8E6E0] rounded-xl px-3 py-2.5 text-[#111111] focus:outline-none focus:border-[#111111] cursor-pointer"
                 >
                   <option value="expedition">Expedition Charter & Log</option>
                   <option value="dataset">Validated NPDC Dataset</option>
@@ -219,14 +216,14 @@ export const StudioPage: React.FC = () => {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[#94A3B8] uppercase text-[10px] block">Reference Record</label>
+                <label className="text-[#8E8E91] uppercase text-[10px] block">Reference Record</label>
                 <select
                   value={selectedSourceId}
                   onChange={(e) => setSelectedSourceId(e.target.value)}
-                  className="w-full bg-[#07151F] border border-white/15 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-[#74B8CC] cursor-pointer"
+                  className="w-full bg-[#FAFAF8] border border-[#E8E6E0] rounded-xl px-3 py-2.5 text-[#111111] focus:outline-none focus:border-[#111111] cursor-pointer"
                 >
                   {filteredSources.map((s) => (
-                    <option key={s.id} value={s.id} className="bg-[#07151F] text-white">
+                    <option key={s.id} value={s.id}>
                       {s.name}
                     </option>
                   ))}
@@ -237,7 +234,7 @@ export const StudioPage: React.FC = () => {
                 <button
                   onClick={handleGenerate}
                   disabled={generating}
-                  className="w-full py-3 rounded-xl bg-[#74B8CC] hover:bg-[#B9DDE7] text-[#07151F] font-bold text-xs font-mono transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md disabled:opacity-50"
+                  className="w-full py-3 rounded-full bg-[#111111] hover:bg-black text-white font-medium text-xs font-mono transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm disabled:opacity-50"
                 >
                   {generating ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -249,14 +246,14 @@ export const StudioPage: React.FC = () => {
               </div>
 
               {generating && (
-                <div className="p-3 rounded-xl bg-white/[0.04] border border-[#74B8CC]/30 space-y-2 text-[11px] text-[#B9DDE7]">
+                <div className="p-3 rounded-xl bg-[#FAFAF8] border border-[#E8E6E0] space-y-2 text-[11px] text-[#111111]">
                   <div className="flex items-center gap-2">
-                    <Loader2 className="w-3.5 h-3.5 animate-spin text-[#74B8CC]" />
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-[#111111]" />
                     <span>{GENERATION_STEPS[generationStep]}</span>
                   </div>
-                  <div className="w-full bg-white/10 h-1 rounded-full overflow-hidden">
+                  <div className="w-full bg-[#E8E6E0] h-1 rounded-full overflow-hidden">
                     <div
-                      className="bg-[#74B8CC] h-full transition-all duration-300"
+                      className="bg-[#111111] h-full transition-all duration-300"
                       style={{ width: `${((generationStep + 1) / GENERATION_STEPS.length) * 100}%` }}
                     />
                   </div>
@@ -264,31 +261,31 @@ export const StudioPage: React.FC = () => {
               )}
             </div>
 
-            <div className="pt-4 border-t border-white/10 space-y-2 text-[11px] text-[#647887]">
-              <span className="font-mono text-[#94A3B8] block">Extraction Pipeline:</span>
-              <p className="leading-relaxed">
+            <div className="pt-4 border-t border-[#E8E6E0] space-y-2 text-[11px] text-[#555558]">
+              <span className="font-mono text-[#8E8E91] block">Extraction Pipeline:</span>
+              <p className="leading-relaxed font-light">
                 NCPOR scientific entities are deterministically mapped to verified database coordinates before synthesis.
               </p>
             </div>
           </div>
 
           {/* PANE 2: GENERATED CONTENT (6 cols) */}
-          <div className="lg:col-span-6 space-y-4 border border-white/10 rounded-2xl bg-white/[0.02] p-5 sm:p-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
+          <div className="lg:col-span-6 space-y-4 border border-[#E8E6E0] rounded-2xl bg-white p-5 sm:p-6 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E8E6E0] pb-4">
               <div>
-                <span className="text-[11px] font-mono uppercase tracking-widest text-[#74B8CC] block">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-[#8E8E91] block">
                   Pane 02 · Editorial Output
                 </span>
-                <h2 className="font-editorial text-xl text-white font-normal mt-0.5">
+                <h2 className="font-serif text-xl text-[#111111] font-medium mt-0.5">
                   {activeDraft?.title || 'Editorial Draft'}
                 </h2>
               </div>
 
               {activeDraft && (
-                <span className={`text-[10px] font-mono px-2.5 py-1 rounded border font-semibold uppercase ${
-                  activeDraft.status === 'Approved' ? 'bg-[#5BB7A5]/20 border-[#5BB7A5] text-[#5BB7A5]' :
-                  activeDraft.status === 'Scheduled' ? 'bg-[#D7A75D]/20 border-[#D7A75D] text-[#D7A75D]' :
-                  'bg-white/10 border-white/20 text-[#B9DDE7]'
+                <span className={`text-[10px] font-mono px-3 py-1 rounded-full border font-semibold uppercase ${
+                  activeDraft.status === 'Approved' ? 'bg-[#F4F2EE] border-[#16A34A]/20 text-[#16A34A]' :
+                  activeDraft.status === 'Scheduled' ? 'bg-[#F4F2EE] border-[#E8E6E0] text-[#111111]' :
+                  'bg-[#F4F2EE] border-[#E8E6E0] text-[#555558]'
                 }`}>
                   {activeDraft.status}
                 </span>
@@ -296,7 +293,7 @@ export const StudioPage: React.FC = () => {
             </div>
 
             {/* Platform Selector Tabs */}
-            <div className="flex border-b border-white/10 overflow-x-auto text-xs font-mono">
+            <div className="flex border-b border-[#E8E6E0] overflow-x-auto text-xs font-mono">
               {[
                 { id: 'instagram', label: 'Instagram', icon: InstagramIcon },
                 { id: 'x', label: 'X (Twitter)', icon: TwitterIcon },
@@ -312,8 +309,8 @@ export const StudioPage: React.FC = () => {
                     onClick={() => setActiveTab(tab.id as any)}
                     className={`px-3 py-2.5 font-medium flex items-center gap-1.5 border-b-2 transition-all cursor-pointer whitespace-nowrap ${
                       activeTab === tab.id
-                        ? 'border-[#74B8CC] text-white bg-white/5'
-                        : 'border-transparent text-[#647887] hover:text-white'
+                        ? 'border-[#111111] text-[#111111] bg-[#FAFAF8]'
+                        : 'border-transparent text-[#8E8E91] hover:text-[#111111]'
                     }`}
                   >
                     <Icon className="w-3.5 h-3.5" />
@@ -326,7 +323,7 @@ export const StudioPage: React.FC = () => {
             {/* Formatted Output Container */}
             {activeDraft ? (
               <div className="space-y-4">
-                <div className="flex items-center justify-between text-xs font-mono text-[#647887]">
+                <div className="flex items-center justify-between text-xs font-mono text-[#8E8E91]">
                   <span>Formatted Platform Preview</span>
                   <button
                     onClick={() => {
@@ -339,14 +336,14 @@ export const StudioPage: React.FC = () => {
                         activeDraft.newsletter_summary;
                       handleCopy(text, activeTab);
                     }}
-                    className="flex items-center gap-1 text-[#74B8CC] hover:text-white transition-colors cursor-pointer"
+                    className="flex items-center gap-1 text-[#111111] hover:underline transition-colors cursor-pointer font-medium"
                   >
-                    {copiedKey === activeTab ? <Check className="w-3.5 h-3.5 text-[#5BB7A5]" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copiedKey === activeTab ? <Check className="w-3.5 h-3.5 text-[#16A34A]" /> : <Copy className="w-3.5 h-3.5" />}
                     <span>{copiedKey === activeTab ? 'Copied' : 'Copy Content'}</span>
                   </button>
                 </div>
 
-                <div className="p-5 rounded-xl bg-[#07151F] border border-white/10 text-xs sm:text-sm leading-relaxed whitespace-pre-line text-[#CBD5E1] min-h-[260px]">
+                <div className="p-5 rounded-2xl bg-[#FAFAF8] border border-[#E8E6E0] text-xs sm:text-sm leading-relaxed whitespace-pre-line text-[#111111] min-h-[260px] font-sans">
                   {activeTab === 'instagram' && activeDraft.instagram_post}
                   {activeTab === 'x' && activeDraft.x_post}
                   {activeTab === 'linkedin' && activeDraft.linkedin_post}
@@ -359,38 +356,38 @@ export const StudioPage: React.FC = () => {
                 <div className="pt-2 flex flex-wrap items-center gap-2">
                   <button
                     onClick={() => handleReviewAction('approve')}
-                    className="px-4 py-2 rounded-xl bg-[#5BB7A5]/20 hover:bg-[#5BB7A5]/30 border border-[#5BB7A5]/50 text-[#5BB7A5] text-xs font-mono font-bold transition-colors cursor-pointer"
+                    className="px-4 py-2 rounded-full bg-[#111111] hover:bg-black text-white text-xs font-mono font-medium transition-colors cursor-pointer shadow-sm"
                   >
                     Approve Package
                   </button>
                   <button
                     onClick={() => handleReviewAction('schedule')}
-                    className="px-4 py-2 rounded-xl bg-[#74B8CC]/20 hover:bg-[#74B8CC]/30 border border-[#74B8CC]/50 text-[#74B8CC] text-xs font-mono font-bold transition-colors cursor-pointer"
+                    className="px-4 py-2 rounded-full bg-[#F4F2EE] hover:bg-[#E8E6E0] border border-[#E8E6E0] text-[#111111] text-xs font-mono font-medium transition-colors cursor-pointer"
                   >
                     Schedule for Release
                   </button>
                   <button
                     onClick={() => handleReviewAction('reject')}
-                    className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-[#94A3B8] text-xs font-mono transition-colors cursor-pointer"
+                    className="px-4 py-2 rounded-full bg-white hover:bg-[#F4F2EE] border border-[#E8E6E0] text-[#555558] text-xs font-mono transition-colors cursor-pointer"
                   >
                     Reject Draft
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="py-24 text-center text-xs text-[#647887]">
+              <div className="py-24 text-center text-xs text-[#8E8E91]">
                 Select a source record and click 'Synthesize Package' to begin.
               </div>
             )}
           </div>
 
           {/* PANE 3: SOURCE REFERENCES & FACT CHECK (3 cols) */}
-          <div className="lg:col-span-3 space-y-5 border border-white/10 rounded-2xl bg-white/[0.02] p-5">
-            <div className="border-b border-white/10 pb-3">
-              <span className="text-[11px] font-mono uppercase tracking-widest text-[#74B8CC] block">
+          <div className="lg:col-span-3 space-y-5 border border-[#E8E6E0] rounded-2xl bg-white p-5 shadow-sm">
+            <div className="border-b border-[#E8E6E0] pb-3">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-[#8E8E91] block">
                 Pane 03 · Provenance
               </span>
-              <h2 className="font-editorial text-xl text-white font-normal mt-0.5">
+              <h2 className="font-serif text-xl text-[#111111] font-medium mt-0.5">
                 Traceable Citations
               </h2>
             </div>
@@ -398,45 +395,45 @@ export const StudioPage: React.FC = () => {
             {activeDraft ? (
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <span className="text-[11px] font-mono text-[#94A3B8] uppercase">
+                  <span className="text-[10px] font-mono text-[#8E8E91] uppercase">
                     Field Citation Links
                   </span>
                   <div className="space-y-2">
                     {activeDraft.citations.map((c, idx) => (
-                      <div key={idx} className="p-3 rounded-xl bg-[#07151F] border border-white/10 text-xs font-mono space-y-0.5">
-                        <span className="text-[#74B8CC] text-[10px] block uppercase">{c.source_field}</span>
-                        <span className="text-white text-xs break-all">{c.reference}</span>
+                      <div key={idx} className="p-3 rounded-xl bg-[#FAFAF8] border border-[#E8E6E0] text-xs font-mono space-y-0.5">
+                        <span className="text-[#8E8E91] text-[10px] block uppercase font-medium">{c.source_field}</span>
+                        <span className="text-[#111111] text-xs break-all font-semibold">{c.reference}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="space-y-2 pt-2 border-t border-white/10">
-                  <span className="text-[11px] font-mono text-[#94A3B8] uppercase">
+                <div className="space-y-2 pt-2 border-t border-[#E8E6E0]">
+                  <span className="text-[10px] font-mono text-[#8E8E91] uppercase">
                     Fact Verification Status
                   </span>
-                  <div className="space-y-1.5 text-xs text-[#CBD5E1]">
+                  <div className="space-y-1.5 text-xs text-[#555558]">
                     <div className="flex items-center gap-2">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#5BB7A5]" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#16A34A]" />
                       <span>Coordinate consistency verified</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#5BB7A5]" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#16A34A]" />
                       <span>Expedition roster verified</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#5BB7A5]" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#16A34A]" />
                       <span>Zero hallucinated DOI / citations</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-white/10 text-[10px] font-mono text-[#647887]">
+                <div className="pt-4 border-t border-[#E8E6E0] text-[10px] font-mono text-[#8E8E91]">
                   Draft ID: {activeDraft.id} · Generated via NCPOR Deterministic Parser
                 </div>
               </div>
             ) : (
-              <div className="py-20 text-center text-xs text-[#647887]">
+              <div className="py-20 text-center text-xs text-[#8E8E91]">
                 Citation records will populate after source synthesis.
               </div>
             )}

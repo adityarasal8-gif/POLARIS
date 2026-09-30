@@ -10,7 +10,7 @@ Every agent must read it before making changes and update it after meaningful wo
   - SQLite database `/Users/lol/Docs/antigravity/polarsetu/backend/polaris.db` seeded with 10 expeditions, 20 datasets, 15 publications, 30 media assets, 4 research stations, 15 activities, 10 researchers, and content drafts.
   - Vite v8 + React 19 + TypeScript frontend running on `http://127.0.0.1:5173` with reverse proxy to backend `/api`.
   - Frontend production build verified clean with 0 TypeScript errors via `npm run build`.
-- **Recent progress**: Complete UI/UX rebuild executed from the ground up. Transformed the entire frontend from an AI-generated dashboard prototype into a production-grade scientific exploration platform (inspired by NASA scientific visualization, British Antarctic Survey storytelling, and National Geographic editorial presentation). Replaced all monotonous cyan/navy card grids with a custom Polar Editorial design system with alternating light/dark environments.
+- **Recent progress**: Transformed the visual identity and hero architecture inspired by the AgentShield design system (`https://agentshield-sigma.vercel.app`), adopting the warm cream/alabaster canvas (`#FAFAF8`), warm stone surfaces (`#F4F2EE`), hairline borders (`#E8E6E0`), rich ink typography (`#111111`), playfair serif headlines, organic multi-layered sine wave bezier ribbon canvas, dot-matrix grid, floating science icons, pill navigation, docked search bar with quick tags, and continuous telemetry ticker marquee. All authentic polar science content (MoES, NCPOR, SIH26063) remains 100% functional and intact.
 - **Current blockers**: None. Both frontend and backend are running and verified.
 - **Known risks**: None.
 
@@ -18,72 +18,73 @@ Every agent must read it before making changes and update it after meaningful wo
 
 - **Decision**: Built POLARIS as an integrated knowledge repository, interactive observatory, and source-grounded dissemination portal for Indian polar science.
 - **Reason**: Direct response to SIH26063 problem statement and real NCPOR/NPDC ecosystem fragmentation.
-- **Design Philosophy & Visual Language**:
-  - Eliminated repetitive SaaS card layouts, repeated cyan borders, and hackathon badges from public navigation.
-  - Alternating Visual Environments:
-    * Dark Ink (`#07151F`): Hero, Observatory, Polar Stations Map, Expeditions Journal, Media Archive, Knowledge Graph, Repository, Studio.
-    * Clean Light Snow (`#F7F8F5`): NPDC Datasets Catalog & Detail Records, Publications Library, Student Learn Hub.
-  - Page Personality Matrix:
-    * Home: Cinematic editorial narrative with 10 deliberate stages.
-    * Expeditions: Documentary field journal with chronological campaign records.
-    * Stations: Geographic map explorer with split-screen Leaflet satellite view.
-    * Observatory: Scientific instrumentation console with giant live telemetry readings and 24h diurnal charts.
-    * Repository: Cross-entity knowledge search & relational discovery.
-    * Datasets: NPDC research data portal with left-rail faceted filtering and tabular schema rows.
-    * Publications: Scholarly research library with DOI badges and citation generator.
-    * Media: Image-first photojournalistic archive with verified credits and full-screen lightbox.
-    * Activities: Institutional journalism dispatches and bulletins.
-    * Knowledge Graph: Full-bleed radial relational visualization with entity drawer.
-    * Learn: Educational science portal with interactive lesson reader, cryosphere lexicon, and quiz.
-    * Studio: Professional 3-pane editorial desk with 6-stage verification workflow.
-    * Admin: Dedicated administrative governance console.
-- **Live Environmental Data**: Proxied via backend `GET /api/observatory/live` using Open-Meteo REST API, attributed honestly as `LIVE ENVIRONMENTAL CONTEXT · Source: Open-Meteo`.
-- **Search Engine**: Multi-token ranked search across 6 entity tables in SQLite with relationship counting.
-- **AI Dissemination Studio**: Deterministic source-grounded content generator with strict citation traceability (Website article, Instagram carousel, X post, LinkedIn brief, YouTube description, Newsletter explainer).
+- **Design Philosophy & Visual Language (AgentShield-Inspired Warm Editorial Aesthetic)**:
+  - Eliminated repetitive SaaS dark card grids, heavy neon borders, and prototype tropes.
+  - Implemented the curated AgentShield warm editorial palette:
+    * Canvas: `#FAFAF8` (warm alabaster cream)
+    * Surface 1: `#FFFFFF` (crisp white cards)
+    * Surface 2: `#F4F2EE` (warm stone secondary background)
+    * Primary Text: `#111111` (rich ink)
+    * Muted Body Text: `#555558` (charcoal stone)
+    * Border / Separator: `#E8E6E0` (hairline warm border)
+    * Subtle Metadata: `#8E8E91` (slate warm gray)
+    * Accent: `#16A34A` (living green pulse indicator)
+  - Typography: Google Fonts `Playfair Display` (expressive serif for titles & editorial storytelling), `Inter` (neutral UI & body text), and `JetBrains Mono` (precision telemetry & metadata).
+  - Hero Section Architecture:
+    * Top pill badge: `• National Polar Science Platform · MoES & NCPOR`
+    * Large editorial serif headline with italicized punch: *"At the edge of the Earth, India is reading the planet."*
+    * Dynamic 4-layer sinusoidal ribbon canvas (`AgentShieldCanvas.tsx`) with cubic bezier smoothing, time oscillation, and interactive mouse ripple deformation.
+    * Dot-matrix background pattern with gentle radial fade.
+    * Floating orbital scientific glyphs (compass, globe, signal wave, pulse, shield).
+    * Dual pill action buttons (`Explore polar research →` in rich ink and `Live observatory` in white card).
+    * Floating docked pill search bar with quick query pills and action button.
+    * Running live telemetry ticker marquee streaming Antarctic, Arctic, and Himalayan sensor feeds.
+  - Map Visualization: OpenStreetMap cartographic tiles without API key restrictions or watermarks.
 - **Date**: 2026-09-30
 
 ## Verification Summary
 
 - `GET /api/health` -> 200 OK
 - `GET /api/stats` -> 200 OK (10 expeditions, 20 datasets, 15 publications, 30 media assets, 4 stations, 15 activities, 10 researchers)
-- `GET /api/observatory/live` -> 200 OK (live Maitri -23.2°C, Bharati -12.2°C, Himadri -3.7°C, Himansh 4.0°C)
+- `GET /api/observatory/live` -> 200 OK (live Maitri -22.6°C, Bharati -12.2°C, Himadri -3.7°C, Himansh 4.0°C)
 - `GET /api/search?q=Maitri%20atmosphere` -> 200 OK (returns 20 interconnected results across all 6 entities)
 - `POST /api/content/generate` -> 200 OK (synthesizes structured multi-platform draft with citations)
 - Frontend production build: `npm run build` completed cleanly with **0 TypeScript and Vite compilation errors**.
-- All 16 frontend routes verified with HTTP 200 OK:
-  - `/` (Home: 10-stage cinematic narrative)
+- All 16 frontend routes verified with HTTP 200 OK and inspected via Chrome DevTools:
+  - `/` (Home: AgentShield wave canvas, dot matrix, editorial headline, docked search, live telemetry marquee)
   - `/repository` (Unified relational search engine)
   - `/expeditions` & `/expeditions/:id` (Expedition journal & scientific mission dossier)
-  - `/datasets` & `/datasets/:id` (Light-mode data explorer & scientific data record)
-  - `/publications` (Light-mode academic library with APA/BibTeX citation export)
-  - `/media` (Photojournalistic archive with verified photo credits & lightbox)
-  - `/activities` (Institutional journalism)
-  - `/stations` (Geographic map explorer)
-  - `/observatory` (Scientific instrumentation console with real-scale telemetry)
-  - `/knowledge-graph` (Concentric radial interactive visualization)
-  - `/learn` (Smart education portal with interactive reader, lexicon & quiz)
-  - `/studio` & `/studio/calendar` (Editorial desk with 3-pane review)
+  - `/datasets` & `/datasets/:id` (NPDC tabular data catalog & telemetry inspector)
+  - `/publications` (Scholarly library with DOI chips and APA/BibTeX citation modal)
+  - `/media` (Photojournalistic gallery with verified credits & full-screen lightbox)
+  - `/activities` (Institutional journalism bulletins & field announcements)
+  - `/stations` (Geographic map explorer with clean OSM tiles and station dossiers)
+  - `/observatory` (Real-time telemetry instrumentation console with diurnal trend charts)
+  - `/knowledge-graph` (Interactive relational polar science network)
+  - `/learn` (Interactive lessons, cryospheric lexicon & challenge quiz)
+  - `/studio` & `/studio/calendar` (Editorial desk with 3-pane review & release schedule)
   - `/admin` (Dedicated administrative console)
 
 ## Session Updates
 
-### Session Update - 2026-09-30 (Complete UI/UX Rebuild)
+### Session Update - 2026-09-30 (AgentShield Color Palette & Hero Re-architecture)
 
 #### Objective
-- Rebuild the entire POLARIS frontend visual system and information architecture from scratch to eliminate the "AI-generated dashboard / hackathon prototype" look, while preserving all working backend APIs, SQLite models, seeded data, and client routes.
+- Integrate the visual aesthetic and hero section architecture from AgentShield (`https://agentshield-sigma.vercel.app`) into POLARIS, adopting the warm cream/alabaster color palette, typography, wave canvas, dot matrix, and pill UI design while keeping 100% of the authentic polar science content (MoES, NCPOR, SIH26063) intact.
 
 #### Completed
-1. **Design System & Typography**:
-   - Replaced monotonous navy/cyan palette with a polar editorial palette: Deep Ink (`#07151F`), Ocean (`#0D2735`), Snow (`#F7F8F5`), Ice (`#B9DDE7`), Glacial (`#74B8CC`), Aurora (`#5BB7A5`), Warm Research Accent (`#D7A75D`).
-   - Integrated Google Fonts: `Newsreader` (editorial serif for headlines), `Plus Jakarta Sans` (modern sans for body/UI), and `JetBrains Mono` (telemetry/metadata).
-   - Removed repeated rounded cards, glowing cyan borders, and generic glassmorphism.
-2. **Navigation & Institutional Identity**:
-   - Header rebuilt into a national scientific platform navigation: removed `SIH26063 DEMONSTRATION PORTAL` banner, removed `LIVE TELEMETRY ON` badge, and moved public role switcher into `/admin`.
-   - Footer rebuilt into a national scientific institute footer with MoES/NCPOR governance, research programs, data policy, and discrete SIH26063 prototype disclosure.
-3. **Complete Page Recomposition**:
-   - Every page given a distinct visual identity matching its functional purpose.
-   - Alternating dark and light visual environments implemented across the application.
-   - Transparent data labeling applied to all live feeds (`LIVE ENVIRONMENTAL CONTEXT · Source: Open-Meteo`).
+1. **Color System & Tokens**:
+   - Replaced dark navy backgrounds with AgentShield warm alabaster `#FAFAF8`, card surfaces `#FFFFFF`, warm stone `#F4F2EE`, hairline borders `#E8E6E0`, rich ink `#111111`, and live green `#16A34A`.
+   - Updated `index.html` and `index.css` to load `Playfair Display`, `Inter`, and `JetBrains Mono`.
+2. **Hero Section Architecture (`AgentShieldCanvas.tsx` + `HomePage.tsx`)**:
+   - Created `AgentShieldCanvas.tsx` with high-DPI canvas rendering 4 sinusoidal bezier waves with mouse-proximity ripple animation.
+   - Built the dot-matrix grid overlay with radial vignette mask.
+   - Added floating orbital scientific glyphs.
+   - Designed the editorial hero headline, dual pill buttons, and docked pill search bar with quick query tags (`Maitri atmosphere`, `45th ISEA`, `Chhota Shigri`, `Kongsfjorden CTD`).
+   - Implemented the continuous telemetry ticker marquee streaming real-time Antarctic and Arctic temperatures.
+3. **Application-Wide Consistency**:
+   - Updated Header, Footer, GlobalSearchModal (`⌘K`), Stations, Expeditions, Observatory, Datasets, Publications, Learn, Media, Activities, and Studio pages to this cohesive aesthetic.
+   - Fixed Leaflet map basemap tiles to clean OpenStreetMap layers without API key watermarks.
 4. **Verification**:
-   - Executed `npm run build`: 0 TypeScript or bundle errors.
-   - Inspected all routes in Chrome DevTools at desktop (1440x900) and mobile (390x844). Verified layout integrity, typography hierarchy, responsive touch targets, and interactive features.
+   - `npm run build` ran cleanly with 0 TypeScript/Vite errors.
+   - Runtime verified in Chrome DevTools on `http://127.0.0.1:5173/` across multiple viewports and routes.

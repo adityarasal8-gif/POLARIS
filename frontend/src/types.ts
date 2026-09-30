@@ -127,6 +127,8 @@ export interface Activity {
   expedition_id?: string;
   source: string;
   image_url?: string;
+  tags?: string[];
+  url?: string;
 }
 
 export interface Researcher {

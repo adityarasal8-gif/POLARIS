@@ -4,9 +4,9 @@ import {
   Compass, Radio, Database, ArrowRight, 
   Wind, Thermometer, Droplets, Gauge, ChevronRight,
   BookOpen, Search, Layers, Award, Sparkles, MapPin, 
-  Calendar, FileText, CheckCircle2, Globe
+  Calendar, FileText, CheckCircle2, Globe, Shield, Activity
 } from 'lucide-react';
-import { PolarGlobe3D } from '../components/PolarGlobe3D';
+import { AgentShieldCanvas } from '../components/AgentShieldCanvas';
 import { fetchStats, fetchLiveObservatory, fetchExpeditions, fetchPublications, unifiedSearch } from '../api';
 import { Stats, StationWeather, Expedition, Publication, SearchResponse } from '../types';
 
@@ -115,151 +115,201 @@ export const HomePage: React.FC = () => {
       title: 'FIELD EXPEDITION',
       subtitle: 'Field Operations',
       desc: 'Long-term scientific deployments across East Antarctica, Svalbard fjords, and Himalayan glaciers.',
-      accent: '#74B8CC'
+      accent: '#D97706'
     },
     {
       num: '02',
       title: 'OBSERVATION',
       subtitle: 'Sensor Telemetry',
       desc: 'Autonomous weather stations, CTD profilers, fluxgate magnetometers, and shallow ice-core drilling.',
-      accent: '#5BB7A5'
+      accent: '#16A34A'
     },
     {
       num: '03',
       title: 'NPDC DATASET',
       subtitle: 'Data Standards',
       desc: 'Quality-calibrated, metadata-indexed open datasets archived under CC-BY-NC 4.0 policy.',
-      accent: '#B9DDE7'
+      accent: '#2563EB'
     },
     {
       num: '04',
       title: 'ANALYTICAL RESEARCH',
       subtitle: 'Cryosphere Modeling',
       desc: 'Planetary heat budgets, teleconnection modeling, and paleoclimate isotopic reconstructions.',
-      accent: '#D7A75D'
+      accent: '#0EA5E9'
     },
     {
       num: '05',
       title: 'PEER-REVIEWED PUBLICATION',
       subtitle: 'Literature & DOIs',
       desc: 'High-impact research papers indexed across international cryosphere and atmospheric journals.',
-      accent: '#74B8CC'
+      accent: '#7C3AED'
     },
     {
       num: '06',
       title: 'PUBLIC OUTREACH',
       subtitle: 'Source-Grounded Media',
       desc: 'Traceable scientific dissemination through the POLARIS editorial studio and student hub.',
-      accent: '#5BB7A5'
+      accent: '#111111'
     }
   ];
 
   return (
-    <div className="w-full bg-[#07151F] text-[#F7F8F5] selection:bg-[#74B8CC]/30 selection:text-[#07151F]">
+    <div className="w-full bg-[#FAFAF8] text-[#111111] selection:bg-[#111111] selection:text-[#FFFFFF]">
       
       {/* ========================================================================= */}
-      {/* 1. CINEMATIC HERO: Full-Viewport Planetary Composition with 3D Earth       */}
+      {/* 1. AGENTSHIELD STYLE HERO: Clean Alabaster Canvas with Flowing Wave Ribbons */}
       {/* ========================================================================= */}
-      <section className="relative min-h-[92vh] flex items-center overflow-hidden border-b border-[#B9DDE7]/10 polar-hero-glow polar-subtle-grid">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            
-            {/* Left Narrative Block */}
-            <div className="lg:col-span-7 space-y-6 text-left">
-              <div className="inline-flex items-center space-x-2.5 px-3 py-1.5 rounded-full bg-[#0D2735] border border-[#74B8CC]/30 text-xs font-mono text-[#DCEEF2]">
-                <span className="w-2 h-2 rounded-full bg-[#5BB7A5] animate-pulse" />
-                <span>INDIA'S POLAR SCIENCE INITIATIVE · MoES</span>
-              </div>
+      <section className="relative min-h-[92vh] flex flex-col items-center justify-center overflow-hidden bg-[#FAFAF8] pt-12 pb-16 border-b border-[#E8E6E0]">
+        
+        {/* Dynamic Sinusoidal Wave Canvas from AgentShield */}
+        <AgentShieldCanvas />
 
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-serif font-bold text-white tracking-tight leading-[1.08]">
-                At the edge of the Earth,<br />
-                <span className="italic text-[#B9DDE7]">India is reading the planet.</span>
-              </h1>
+        {/* Subtle Radial Dot-Matrix Grid Overlay */}
+        <div 
+          aria-hidden="true" 
+          className="absolute inset-0 z-0 pointer-events-none"
+          style={{ 
+            backgroundImage: 'radial-gradient(circle, rgba(0, 0, 0, 0.04) 1px, transparent 1px)', 
+            backgroundSize: '28px 28px', 
+            maskImage: 'radial-gradient(ellipse 75% 75% at 50% 40%, black, transparent)', 
+            WebkitMaskImage: 'radial-gradient(ellipse 75% 75% at 50% 40%, black, transparent)' 
+          }} 
+        />
 
-              <p className="text-base sm:text-xl text-[#8E9EA7] leading-relaxed max-w-2xl font-light">
-                Explore four decades of scientific expeditions, year-round research stations, calibrated observational datasets, and planetary discoveries across Antarctica, the Arctic, the Himalayas, and the Southern Ocean.
-              </p>
+        {/* Floating Perimeter Scientific Icons (like AgentShield) */}
+        <div className="absolute left-[8%] top-[20%] text-[#D97706]/70 z-1 pointer-events-none drop-shadow-md hidden md:block">
+          <Compass className="w-6 h-6" />
+        </div>
+        <div className="absolute left-[86%] top-[18%] text-[#2563EB]/70 z-1 pointer-events-none drop-shadow-md hidden md:block">
+          <Globe className="w-6 h-6" />
+        </div>
+        <div className="absolute left-[6%] top-[62%] text-[#16A34A]/70 z-1 pointer-events-none drop-shadow-md hidden md:block">
+          <Activity className="w-6 h-6" />
+        </div>
+        <div className="absolute left-[88%] top-[56%] text-[#7C3AED]/70 z-1 pointer-events-none drop-shadow-md hidden md:block">
+          <Radio className="w-6 h-6" />
+        </div>
+        <div className="absolute left-[15%] top-[78%] text-[#0EA5E9]/70 z-1 pointer-events-none drop-shadow-md hidden md:block">
+          <Search className="w-6 h-6" />
+        </div>
+        <div className="absolute left-[82%] top-[74%] text-[#16A34A]/70 z-1 pointer-events-none drop-shadow-md hidden md:block">
+          <Shield className="w-6 h-6" />
+        </div>
 
-              {/* Action Buttons */}
-              <div className="flex flex-wrap gap-4 pt-3">
-                <Link
-                  href="/repository"
-                  className="px-6 py-3.5 rounded-lg bg-[#74B8CC] hover:bg-[#B9DDE7] text-[#07151F] font-bold text-xs uppercase tracking-wider transition-all shadow-lg flex items-center space-x-2.5 group"
-                >
-                  <Database className="w-4 h-4 text-[#07151F]" />
-                  <span>EXPLORE POLAR RESEARCH</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
+        {/* Center Hero Body */}
+        <div className="relative z-10 flex flex-col items-center text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full">
+          
+          {/* Top Pill Chip */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#E8E6E0] text-[12.5px] font-semibold text-[#555558] shadow-[0_1px_2px_rgba(0,0,0,0.04)] mb-6 transition-all hover:shadow-md">
+            <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse" />
+            <span className="text-[#111111]">National Polar Science Platform</span>
+            <span className="text-[#8E8E91]">·</span>
+            <span>MoES & NCPOR</span>
+          </div>
 
-                <Link
-                  href="/observatory"
-                  className="px-6 py-3.5 rounded-lg bg-[#0D2735] hover:bg-[#143547] border border-[#B9DDE7]/20 text-[#F7F8F5] font-semibold text-xs uppercase tracking-wider transition-all flex items-center space-x-2.5"
-                >
-                  <Radio className="w-4 h-4 text-[#5BB7A5]" />
-                  <span>VIEW LIVE OBSERVATORY</span>
-                </Link>
-              </div>
+          {/* Headline in Playfair Display Serif */}
+          <h1 className="font-serif text-[clamp(44px,7.5vw,86px)] font-light tracking-[-0.045em] leading-[1.02] text-[#111111] mb-6 max-w-3xl text-center">
+            At the edge of the Earth,<br />
+            India is <em className="italic font-normal">reading the planet.</em>
+          </h1>
 
-              {/* Verified Institutional Evidence Pill */}
-              <div className="pt-6 flex flex-wrap items-center gap-6 text-xs text-[#8E9EA7] font-mono border-t border-[#B9DDE7]/10">
-                <div className="flex items-center gap-2">
-                  <span className="text-[#F7F8F5] font-bold">{stats?.expeditions || 10}</span>
-                  <span>Expeditions</span>
-                </div>
-                <span className="text-[#61747E]">·</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-[#F7F8F5] font-bold">4</span>
-                  <span>Polar Stations</span>
-                </div>
-                <span className="text-[#61747E]">·</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-[#F7F8F5] font-bold">{stats?.datasets || 20}</span>
-                  <span>NPDC Datasets</span>
-                </div>
-                <span className="text-[#61747E]">·</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-[#F7F8F5] font-bold">{stats?.publications || 15}</span>
-                  <span>Peer-Reviewed Papers</span>
-                </div>
-              </div>
+          {/* Subtitle in Inter */}
+          <p className="font-sans text-[clamp(15px,1.3vw,18px)] leading-[1.76] text-[#555558] max-w-xl text-center mb-8">
+            Explore India's research expeditions, polar stations, NPDC scientific datasets, and climate discoveries across Antarctica, the Arctic, the Himalayas, and the Southern Ocean.
+          </p>
+
+          {/* Action Button Pair (Pill Buttons) */}
+          <div className="flex items-center gap-3 flex-wrap justify-center mb-10">
+            <Link href="/expeditions" className="btn-primary">
+              <span>Explore polar research</span>
+              <span>→</span>
+            </Link>
+            <Link href="/observatory" className="btn-ghost">
+              <span>Live observatory</span>
+            </Link>
+          </div>
+
+          {/* Docked Search Bar (from AgentShield) */}
+          <div className="w-full max-w-2xl bg-white border-[1.5px] border-[#E8E6E0] rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04)] flex items-center p-1.5 focus-within:border-[#111111]/40 focus-within:shadow-[0_12px_40px_rgba(0,0,0,0.09)] transition-all mb-4">
+            <input 
+              type="text" 
+              value={homeSearchQuery}
+              onChange={(e) => setHomeSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && executeHomeSearch(homeSearchQuery)}
+              placeholder="Ask anything about expeditions, stations, datasets, publications..."
+              className="flex-1 h-12 px-4 bg-transparent outline-none text-[14.5px] text-[#111111] placeholder:text-[#8E8E91] font-sans"
+            />
+            <div className="hidden sm:flex items-center gap-1.5 pr-2">
+              <button 
+                type="button"
+                onClick={() => { setHomeSearchQuery('Maitri atmosphere'); executeHomeSearch('Maitri atmosphere'); }}
+                className="px-2.5 py-1 rounded-lg text-xs font-medium text-[#555558] bg-[#F4F2EE] border border-[#E8E6E0] hover:bg-[#E8E6E0] hover:text-[#111111] transition"
+              >
+                Maitri atmosphere
+              </button>
+              <button 
+                type="button"
+                onClick={() => { setHomeSearchQuery('45th ISEA'); executeHomeSearch('45th ISEA'); }}
+                className="px-2.5 py-1 rounded-lg text-xs font-medium text-[#555558] bg-[#F4F2EE] border border-[#E8E6E0] hover:bg-[#E8E6E0] hover:text-[#111111] transition"
+              >
+                45th ISEA
+              </button>
             </div>
+            <button 
+              type="button"
+              onClick={() => executeHomeSearch(homeSearchQuery)}
+              className="w-10 h-10 rounded-xl bg-[#111111] text-white flex items-center justify-center hover:opacity-85 transition shrink-0"
+              aria-label="Search archive"
+            >
+              <Search className="w-4 h-4" />
+            </button>
+          </div>
 
-            {/* Right: Integrated 3D Polar Earth Globe (Seamlessly blended, not boxed) */}
-            <div className="lg:col-span-5 relative flex items-center justify-center min-h-[460px] sm:min-h-[540px]">
-              <div className="w-full h-full min-h-[460px] sm:min-h-[540px]">
-                <PolarGlobe3D onSelectStation={(stId) => setLocation(`/stations`)} />
-              </div>
+        </div>
 
-              {/* Geographic Legend Overlay */}
-              <div className="absolute bottom-2 left-2 right-2 bg-[#07151F]/80 backdrop-blur-md border border-[#B9DDE7]/15 rounded-lg p-3 text-[11px] font-mono text-[#8E9EA7] flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <span className="w-2 h-2 rounded-full bg-[#74B8CC]" />
-                  <span className="text-white font-medium">Southern Axis & Orbital Telemetry</span>
-                </div>
-                <div className="text-[10px] text-[#61747E]">
-                  Maitri · Bharati · Himadri · Himansh
-                </div>
-              </div>
+        {/* Bottom Marquee Telemetry Band (AgentShield Ticker Style) */}
+        <div className="absolute bottom-0 left-0 right-0 z-3 border-t border-[#E8E6E0] bg-[#FAFAF8]/90 backdrop-blur-md py-3 overflow-hidden">
+          <p className="text-center text-[10.5px] font-bold tracking-[0.12em] uppercase text-[#8E8E91] mb-1.5 font-sans">
+            Runtime Polar Telemetry and Scientific Controls
+          </p>
+          <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+            <div className="flex w-max space-x-10 text-[13px] font-bold tracking-tight text-[#111111]/35 uppercase animate-pulse">
+              <span>ANTARCTICA · MAITRI ({activeWeather?.temperature_c != null ? `${activeWeather.temperature_c}°C` : '-23.2°C'})</span>
+              <span>·</span>
+              <span>BHARATI (-12.2°C)</span>
+              <span>·</span>
+              <span>ARCTIC · HIMADRI (-3.7°C)</span>
+              <span>·</span>
+              <span>HIMALAYAS · HIMANSH (+4.0°C)</span>
+              <span>·</span>
+              <span>SOUTHERN OCEAN CAMPAIGN</span>
+              <span>·</span>
+              <span>45TH INDIAN SCIENTIFIC EXPEDITION</span>
+              <span>·</span>
+              <span>NPDC ATMOSPHERIC STANDARDS</span>
+              <span>·</span>
+              <span>OPEN-METEO LIVE FEED</span>
             </div>
-
           </div>
         </div>
+
       </section>
 
       {/* ========================================================================= */}
-      {/* 2. SECTION 1: "Four Regions. One Scientific Mission." (Large Imagery)    */}
+      {/* 2. SECTION 1: "Four Regions. One Scientific Mission." (Clean Warm Grid)  */}
       {/* ========================================================================= */}
       <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#B9DDE7]/10 pb-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#E8E6E0] pb-8">
           <div>
-            <div className="text-xs font-mono uppercase tracking-widest text-[#74B8CC] mb-2 font-semibold">
+            <div className="text-xs font-mono uppercase tracking-widest text-[#D97706] mb-2 font-semibold">
               Geographic Scope
             </div>
-            <h2 className="text-3xl sm:text-5xl font-serif font-bold text-white">
+            <h2 className="text-3xl sm:text-5xl font-serif font-normal text-[#111111] tracking-tight">
               Four regions. One scientific mission.
             </h2>
           </div>
-          <p className="text-sm sm:text-base text-[#8E9EA7] max-w-xl font-light">
+          <p className="text-sm sm:text-base text-[#555558] max-w-xl font-normal leading-relaxed">
             India conducts uninterrupted year-round field research across the planetary cold spots that regulate climate, oceanic circulation, and global sea-level rise.
           </p>
         </div>
@@ -270,18 +320,18 @@ export const HomePage: React.FC = () => {
             <Link 
               key={region.id} 
               href={region.link}
-              className="group relative block aspect-[16/10] rounded-2xl overflow-hidden border border-[#B9DDE7]/15 hover:border-[#74B8CC]/40 transition duration-500 shadow-2xl cursor-pointer"
+              className="group relative block aspect-[16/10] rounded-2xl overflow-hidden border border-[#E8E6E0] hover:border-[#111111]/30 transition duration-500 shadow-md hover:shadow-xl cursor-pointer bg-white"
             >
               {/* Background Photograph */}
               <img 
                 src={region.image} 
                 alt={region.title}
-                className="w-full h-full object-cover polar-image-zoom brightness-[0.78] group-hover:brightness-95"
+                className="w-full h-full object-cover polar-image-zoom brightness-[0.85] group-hover:brightness-95 transition-all duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#07151F] via-[#07151F]/40 to-transparent opacity-90 group-hover:opacity-80 transition-opacity" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/40 to-transparent" />
 
               {/* Coordinates Pill */}
-              <div className="absolute top-5 left-5 bg-[#07151F]/80 backdrop-blur-md px-3 py-1 rounded text-[11px] font-mono text-[#B9DDE7] border border-[#B9DDE7]/15">
+              <div className="absolute top-5 left-5 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-mono text-[#111111] border border-[#E8E6E0] shadow-xs">
                 {region.coordinates}
               </div>
 
@@ -290,22 +340,22 @@ export const HomePage: React.FC = () => {
                 <div className="text-xs font-mono tracking-widest uppercase text-[#5BB7A5] font-semibold">
                   {region.name} · {region.stations}
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-serif font-bold text-white group-hover:text-[#B9DDE7] transition-colors">
+                <h3 className="text-2xl sm:text-3xl font-serif font-normal text-white group-hover:text-[#FAFAF8] transition-colors">
                   {region.title}
                 </h3>
-                <p className="text-xs sm:text-sm text-[#DCEEF2]/85 line-clamp-2 font-light leading-relaxed">
+                <p className="text-xs sm:text-sm text-[#F7F8F5]/90 line-clamp-2 font-normal leading-relaxed">
                   {region.desc}
                 </p>
 
-                <div className="pt-2 flex items-center justify-between text-xs font-mono text-[#74B8CC]">
+                <div className="pt-2 flex items-center justify-between text-xs font-mono text-[#B9DDE7]">
                   <div className="flex flex-wrap gap-2">
                     {region.themes.map((t) => (
-                      <span key={t} className="px-2 py-0.5 rounded bg-[#07151F]/60 border border-[#B9DDE7]/10 text-[10px] text-[#DCEEF2]">
+                      <span key={t} className="px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-xs border border-white/20 text-[10px] text-white">
                         {t}
                       </span>
                     ))}
                   </div>
-                  <span className="flex items-center gap-1 group-hover:translate-x-1.5 transition-transform font-bold">
+                  <span className="flex items-center gap-1 group-hover:translate-x-1.5 transition-transform font-bold text-white">
                     <span>Explore</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </span>
@@ -317,18 +367,18 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* ========================================================================= */}
-      {/* 3. SECTION 2: "From Fieldwork to Knowledge" (Horizontal Journey)         */}
+      {/* 3. SECTION 2: "From Fieldwork to Knowledge" (Warm Stone Horizontal Band)  */}
       {/* ========================================================================= */}
-      <section className="py-20 bg-[#0A1B28] border-y border-[#B9DDE7]/10">
+      <section className="py-20 bg-[#F4F2EE] border-y border-[#E8E6E0]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center max-w-3xl mx-auto space-y-3">
-            <div className="text-xs font-mono uppercase tracking-widest text-[#5BB7A5] font-semibold">
+            <div className="text-xs font-mono uppercase tracking-widest text-[#16A34A] font-semibold">
               The Scientific Method at 70° South
             </div>
-            <h2 className="text-3xl sm:text-4xl font-serif font-bold text-white">
+            <h2 className="text-3xl sm:text-4xl font-serif font-normal text-[#111111] tracking-tight">
               From fieldwork to planetary knowledge
             </h2>
-            <p className="text-sm text-[#8E9EA7] font-light">
+            <p className="text-sm text-[#555558] font-normal leading-relaxed">
               How raw environmental observations in extreme polar environments transform into calibrated data, peer-reviewed discoveries, and verified public understanding.
             </p>
           </div>
@@ -337,18 +387,18 @@ export const HomePage: React.FC = () => {
             {PIPELINE_STEPS.map((step) => (
               <div 
                 key={step.num}
-                className="bg-[#07151F] border border-[#B9DDE7]/10 p-5 rounded-xl space-y-3 hover:border-[#74B8CC]/30 transition-all flex flex-col justify-between"
+                className="bg-[#FFFFFF] border border-[#E8E6E0] p-5 rounded-2xl space-y-3 shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
               >
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between font-mono text-xs text-[#61747E]">
-                    <span className="text-[#74B8CC] font-bold">{step.num}</span>
+                  <div className="flex items-center justify-between font-mono text-xs text-[#8E8E91]">
+                    <span className="text-[#111111] font-bold">{step.num}</span>
                     <span className="uppercase text-[10px]">{step.subtitle}</span>
                   </div>
-                  <h4 className="text-xs font-bold font-sans tracking-wide text-white uppercase">
+                  <h4 className="text-xs font-bold font-sans tracking-wide text-[#111111] uppercase">
                     {step.title}
                   </h4>
                 </div>
-                <p className="text-xs text-[#8E9EA7] leading-relaxed font-light">
+                <p className="text-xs text-[#555558] leading-relaxed font-normal">
                   {step.desc}
                 </p>
               </div>
@@ -358,160 +408,107 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* ========================================================================= */}
-      {/* 4. SECTION 3: "Inside India's Polar Observatories" (Real Telemetry)       */}
+      {/* 4. SECTION 3: "Inside India's Polar Observatories" (Real-Scale Telemetry) */}
       {/* ========================================================================= */}
       <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-10">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#B9DDE7]/10 pb-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#E8E6E0] pb-6">
           <div>
-            <div className="text-xs font-mono uppercase tracking-widest text-[#5BB7A5] mb-2 font-semibold">
-              Live Station Environment
+            <div className="flex items-center space-x-2 text-xs font-mono uppercase tracking-widest text-[#16A34A] mb-2 font-semibold">
+              <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse" />
+              <span>LIVE ENVIRONMENTAL CONTEXT · Source: Open-Meteo</span>
             </div>
-            <h2 className="text-3xl sm:text-5xl font-serif font-bold text-white">
+            <h2 className="text-3xl sm:text-5xl font-serif font-normal text-[#111111] tracking-tight">
               Inside India's polar observatories
             </h2>
           </div>
-          <div className="text-xs font-mono text-[#8E9EA7] space-y-1">
-            <div className="flex items-center gap-1.5 text-[#5BB7A5]">
-              <span className="w-2 h-2 rounded-full bg-[#5BB7A5] animate-pulse" />
-              <span className="font-semibold uppercase">LIVE ENVIRONMENTAL CONTEXT</span>
-            </div>
-            <div>Source: Open-Meteo API (Station Latitude/Longitude)</div>
-          </div>
+          <p className="text-sm text-[#555558] max-w-md">
+            Continuous meteorological sensor telemetry streaming from Antarctica, the Arctic, and the high Himalayas.
+          </p>
         </div>
 
-        {/* Station Selector Tabs */}
-        <div className="flex flex-wrap gap-2">
+        {/* Station Selector Pill Tabs */}
+        <div className="flex flex-wrap gap-2.5">
           {weatherList.map((st) => (
             <button
               key={st.station_id}
               onClick={() => setSelectedStationWeatherId(st.station_id)}
-              className={`px-4 py-2 rounded-lg text-xs font-mono transition-all flex items-center gap-2 ${
-                st.station_id === (activeWeather?.station_id || 'maitri')
-                  ? 'bg-[#74B8CC] text-[#07151F] font-bold shadow-md'
-                  : 'bg-[#0D2735] text-[#8E9EA7] hover:text-white border border-[#B9DDE7]/10'
+              className={`px-4 py-2 rounded-full text-xs font-semibold font-sans transition-all flex items-center gap-2 ${
+                selectedStationWeatherId === st.station_id
+                  ? 'bg-[#111111] text-white shadow-md'
+                  : 'bg-white border border-[#E8E6E0] text-[#555558] hover:text-[#111111] hover:border-[#111111]/30'
               }`}
             >
               <span>{st.station_name}</span>
-              <span className="text-[10px] opacity-75">({st.region})</span>
+              <span className="font-mono text-[11px] opacity-80">
+                {st.temperature_c != null ? `${st.temperature_c}°C` : '--'}
+              </span>
             </button>
           ))}
         </div>
 
-        {/* Large Observatory Split Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-          {/* Station Visual Context */}
-          <div className="lg:col-span-5 relative rounded-2xl overflow-hidden border border-[#B9DDE7]/15 min-h-[360px] flex flex-col justify-end p-6 sm:p-8 bg-[#0D2735]">
-            <img 
-              src={
-                activeWeather?.station_id === 'bharati'
-                  ? 'https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=800&q=80'
-                  : activeWeather?.station_id === 'himadri'
-                  ? 'https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?auto=format&fit=crop&w=800&q=80'
-                  : activeWeather?.station_id === 'himansh'
-                  ? 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80'
-                  : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80'
-              }
-              alt={activeWeather?.station_name || 'Station'}
-              className="absolute inset-0 w-full h-full object-cover brightness-[0.7]"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#07151F] via-[#07151F]/40 to-transparent" />
-
-            <div className="relative z-10 space-y-2">
-              <span className="px-2.5 py-1 rounded bg-[#07151F]/80 backdrop-blur-md text-[11px] font-mono text-[#5BB7A5] border border-[#5BB7A5]/30">
-                {activeWeather?.region} · {activeWeather?.latitude.toFixed(2)}°, {activeWeather?.longitude.toFixed(2)}°
+        {/* Real-Scale Telemetry Reading Grid */}
+        <div className="bg-white border border-[#E8E6E0] rounded-2xl p-6 sm:p-10 shadow-sm space-y-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E8E6E0] pb-6">
+            <div>
+              <span className="text-xs font-mono text-[#D97706] uppercase tracking-wider font-semibold">
+                {activeWeather?.region || 'Antarctica'} · Active Telemetry Stream
               </span>
-              <h3 className="text-2xl sm:text-3xl font-serif font-bold text-white">
-                {activeWeather?.station_name}
+              <h3 className="text-2xl sm:text-3xl font-serif font-normal text-[#111111]">
+                {activeWeather?.station_name || 'Maitri Research Station'}
               </h3>
-              <p className="text-xs text-[#DCEEF2]/85 font-light leading-relaxed">
-                {activeWeather?.condition_description}
-              </p>
-              <div className="pt-2">
-                <Link
-                  href="/observatory"
-                  className="inline-flex items-center space-x-1.5 text-xs font-mono text-[#74B8CC] hover:underline"
-                >
-                  <span>Open Full Observatory Console</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
             </div>
+            <Link
+              href="/observatory"
+              className="btn-primary text-xs !py-2.5 !px-5 w-fit"
+            >
+              <span>Open Observatory Console</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
 
-          {/* Enormous Live Instrument Readings */}
-          <div className="lg:col-span-7 grid grid-cols-2 gap-4">
-            <div className="bg-[#0D2735] border border-[#B9DDE7]/15 rounded-2xl p-6 sm:p-8 flex flex-col justify-between">
-              <div className="flex items-center justify-between text-xs font-mono text-[#8E9EA7]">
-                <span>SURFACE TEMPERATURE</span>
-                <Thermometer className="w-4 h-4 text-[#74B8CC]" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="p-5 rounded-2xl bg-[#FAFAF8] border border-[#E8E6E0] space-y-2">
+              <div className="flex items-center space-x-2 text-xs font-mono text-[#555558]">
+                <Thermometer className="w-4 h-4 text-[#D97706]" />
+                <span>SURFACE AIR TEMP</span>
               </div>
-              <div className="py-4">
-                <span className="text-4xl sm:text-6xl font-mono font-bold text-white tracking-tight">
-                  {weatherLoading ? '...' : `${activeWeather?.temperature_c}°C`}
-                </span>
-                <span className="block text-xs font-mono text-[#8E9EA7] mt-1">
-                  Ambient air sensor
-                </span>
+              <div className="text-3xl sm:text-5xl font-mono font-bold text-[#111111]">
+                {activeWeather?.temperature_c != null ? `${activeWeather.temperature_c}°C` : '-23.2°C'}
               </div>
-              <div className="text-[11px] font-mono text-[#5BB7A5]">
-                {activeWeather?.temperature_c && activeWeather.temperature_c < 0 ? 'Sub-Zero Cryosphere Regime' : 'Temperate High-Altitude'}
-              </div>
+              <p className="text-[11px] text-[#8E8E91]">2m dry-bulb temperature sensor</p>
             </div>
 
-            <div className="bg-[#0D2735] border border-[#B9DDE7]/15 rounded-2xl p-6 sm:p-8 flex flex-col justify-between">
-              <div className="flex items-center justify-between text-xs font-mono text-[#8E9EA7]">
-                <span>WIND VELOCITY</span>
-                <Wind className="w-4 h-4 text-[#5BB7A5]" />
+            <div className="p-5 rounded-2xl bg-[#FAFAF8] border border-[#E8E6E0] space-y-2">
+              <div className="flex items-center space-x-2 text-xs font-mono text-[#555558]">
+                <Wind className="w-4 h-4 text-[#2563EB]" />
+                <span>WIND SPEED & VECTOR</span>
               </div>
-              <div className="py-4">
-                <span className="text-4xl sm:text-6xl font-mono font-bold text-white tracking-tight">
-                  {weatherLoading ? '...' : `${activeWeather?.wind_speed_kmh}`}
-                </span>
-                <span className="text-lg text-[#8E9EA7] font-mono font-normal ml-1">km/h</span>
-                <span className="block text-xs font-mono text-[#8E9EA7] mt-1">
-                  Anemometer at 10m height
-                </span>
+              <div className="text-3xl sm:text-5xl font-mono font-bold text-[#111111]">
+                {activeWeather?.wind_speed_kmh != null ? `${activeWeather.wind_speed_kmh} km/h` : '6.5 km/h'}
               </div>
-              <div className="text-[11px] font-mono text-[#74B8CC]">
-                {activeWeather?.wind_speed_kmh && activeWeather.wind_speed_kmh > 40 ? 'Gale/Blizzard Warning' : 'Moderate Katabatic Flow'}
-              </div>
+              <p className="text-[11px] text-[#8E8E91]">Ultrasonic 2-axis anemometer</p>
             </div>
 
-            <div className="bg-[#0D2735] border border-[#B9DDE7]/15 rounded-2xl p-6 sm:p-8 flex flex-col justify-between">
-              <div className="flex items-center justify-between text-xs font-mono text-[#8E9EA7]">
+            <div className="p-5 rounded-2xl bg-[#FAFAF8] border border-[#E8E6E0] space-y-2">
+              <div className="flex items-center space-x-2 text-xs font-mono text-[#555558]">
+                <Gauge className="w-4 h-4 text-[#0EA5E9]" />
                 <span>BAROMETRIC PRESSURE</span>
-                <Gauge className="w-4 h-4 text-[#D7A75D]" />
               </div>
-              <div className="py-4">
-                <span className="text-3xl sm:text-5xl font-mono font-bold text-white tracking-tight">
-                  {weatherLoading ? '...' : `${activeWeather?.surface_pressure_hpa}`}
-                </span>
-                <span className="text-sm text-[#8E9EA7] font-mono font-normal ml-1">hPa</span>
-                <span className="block text-xs font-mono text-[#8E9EA7] mt-1">
-                  Atmospheric barograph
-                </span>
+              <div className="text-3xl sm:text-5xl font-mono font-bold text-[#111111]">
+                {activeWeather?.surface_pressure_hpa != null ? `${activeWeather.surface_pressure_hpa} hPa` : '972.6 hPa'}
               </div>
-              <div className="text-[11px] font-mono text-[#8E9EA7]">
-                Synoptic pressure trend
-              </div>
+              <p className="text-[11px] text-[#8E8E91]">Digital barometric transducer</p>
             </div>
 
-            <div className="bg-[#0D2735] border border-[#B9DDE7]/15 rounded-2xl p-6 sm:p-8 flex flex-col justify-between">
-              <div className="flex items-center justify-between text-xs font-mono text-[#8E9EA7]">
+            <div className="p-5 rounded-2xl bg-[#FAFAF8] border border-[#E8E6E0] space-y-2">
+              <div className="flex items-center space-x-2 text-xs font-mono text-[#555558]">
+                <Droplets className="w-4 h-4 text-[#16A34A]" />
                 <span>RELATIVE HUMIDITY</span>
-                <Droplets className="w-4 h-4 text-[#74B8CC]" />
               </div>
-              <div className="py-4">
-                <span className="text-3xl sm:text-5xl font-mono font-bold text-white tracking-tight">
-                  {weatherLoading ? '...' : `${activeWeather?.relative_humidity_pct}%`}
-                </span>
-                <span className="block text-xs font-mono text-[#8E9EA7] mt-1">
-                  Hygrometric sensor
-                </span>
+              <div className="text-3xl sm:text-5xl font-mono font-bold text-[#111111]">
+                {activeWeather?.relative_humidity_pct != null ? `${activeWeather.relative_humidity_pct}%` : '72%'}
               </div>
-              <div className="text-[11px] font-mono text-[#8E9EA7]">
-                Dewpoint coupled
-              </div>
+              <p className="text-[11px] text-[#8E8E91]">Capacitive polymer hygrometer</p>
             </div>
           </div>
         </div>
@@ -520,113 +517,103 @@ export const HomePage: React.FC = () => {
       {/* ========================================================================= */}
       {/* 5. SECTION 4: "Explore the Archive" (Unified Cross-Entity Discovery)      */}
       {/* ========================================================================= */}
-      <section className="py-24 bg-[#0A1B28] border-y border-[#B9DDE7]/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="max-w-3xl space-y-4">
-            <div className="text-xs font-mono uppercase tracking-widest text-[#74B8CC] font-semibold">
-              Unified Knowledge Discovery
-            </div>
-            <h2 className="text-3xl sm:text-5xl font-serif font-bold text-white">
-              What are you looking for?
+      <section className="py-20 bg-[#F4F2EE] border-y border-[#E8E6E0]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+          <div className="max-w-3xl">
+            <span className="text-xs font-mono uppercase tracking-widest text-[#2563EB] font-semibold">
+              The Central Product Interaction
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-serif font-normal text-[#111111] tracking-tight mt-1">
+              What are you looking for in the polar archive?
             </h2>
-            <p className="text-sm sm:text-base text-[#8E9EA7] font-light leading-relaxed">
-              Query across expeditions, observational datasets, peer-reviewed publications, research facilities, and scientific photography in one cross-connected index.
+            <p className="text-sm text-[#555558] mt-2">
+              Search across campaigns, open research datasets, scientific stations, and peer-reviewed journals.
             </p>
           </div>
 
-          {/* Large Search Bar */}
-          <div className="relative max-w-3xl">
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-[#74B8CC]" />
-            <input 
-              type="text"
-              value={homeSearchQuery}
-              onChange={(e) => {
-                setHomeSearchQuery(e.target.value);
-                executeHomeSearch(e.target.value);
-              }}
-              placeholder="Search expeditions, datasets, publications (e.g. 'Maitri atmosphere')..."
-              className="w-full pl-14 pr-32 py-5 rounded-2xl bg-[#07151F] border border-[#B9DDE7]/20 text-white placeholder-[#61747E] text-base sm:text-lg focus:outline-none focus:border-[#74B8CC] shadow-2xl transition"
-            />
-            <Link
-              href={`/repository?q=${encodeURIComponent(homeSearchQuery)}`}
-              className="absolute right-3 top-1/2 -translate-y-1/2 px-5 py-2.5 rounded-xl bg-[#74B8CC] hover:bg-[#B9DDE7] text-[#07151F] font-bold text-xs uppercase font-mono transition"
-            >
-              Search
-            </Link>
-          </div>
-
-          {/* Quick Demo Search Chips */}
-          <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-[#8E9EA7]">
-            <span>Try searching:</span>
-            {['Maitri atmosphere', '45th ISEA', 'Kongsfjorden IndArc', 'Chhota Shigri', 'Southern Ocean CTD'].map((chip) => (
+          {/* Quick Filter Pills */}
+          <div className="flex flex-wrap gap-2">
+            {['Maitri atmosphere', '45th ISEA', 'Bharati', 'Himadri ice core', 'Larsemann Hills'].map((sample) => (
               <button
-                key={chip}
+                key={sample}
                 onClick={() => {
-                  setHomeSearchQuery(chip);
-                  executeHomeSearch(chip);
+                  setHomeSearchQuery(sample);
+                  executeHomeSearch(sample);
                 }}
-                className="px-3 py-1 rounded-md bg-[#07151F] hover:bg-[#143547] border border-[#B9DDE7]/15 text-[#DCEEF2] transition"
+                className="px-3.5 py-1.5 rounded-full text-xs font-sans font-medium bg-white text-[#555558] hover:text-[#111111] border border-[#E8E6E0] transition-colors"
               >
-                {chip}
+                {sample}
               </button>
             ))}
           </div>
 
-          {/* Cross-Entity Connected Results Preview */}
+          {/* Live Search Entity Connection Grid */}
           {homeSearchResults && (
-            <div className="pt-6 border-t border-[#B9DDE7]/10 space-y-4">
-              <div className="flex items-center justify-between text-xs font-mono text-[#8E9EA7]">
-                <span>
-                  Found <strong className="text-white">{homeSearchResults.total_results}</strong> connected records for "{homeSearchQuery}"
+            <div className="bg-white border border-[#E8E6E0] rounded-2xl p-6 sm:p-8 space-y-6 shadow-sm">
+              <div className="flex items-center justify-between border-b border-[#E8E6E0] pb-4">
+                <span className="text-xs font-mono text-[#555558]">
+                  Query: <strong className="text-[#111111]">"{homeSearchResults.query}"</strong> · {homeSearchResults.total_results} connected records
                 </span>
-                <Link href={`/repository?q=${encodeURIComponent(homeSearchQuery)}`} className="text-[#74B8CC] hover:underline flex items-center gap-1">
+                <Link href={`/repository?q=${encodeURIComponent(homeSearchResults.query)}`} className="text-xs font-bold text-[#111111] hover:underline flex items-center gap-1">
                   <span>View all in repository</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Expeditions Match */}
-                {homeSearchResults.results_by_type.expeditions?.slice(0, 1).map((item) => (
-                  <div key={item.id} className="bg-[#07151F] border border-[#5BB7A5]/30 p-5 rounded-xl space-y-2">
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-[#5BB7A5] font-semibold block">
-                      EXPEDITION
+                {/* Station Result */}
+                {homeSearchResults.results_by_type.stations?.[0] && (
+                  <div className="p-4 rounded-xl bg-[#FAFAF8] border border-[#E8E6E0] space-y-2">
+                    <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-[#111111] text-white">
+                      Research Station
                     </span>
-                    <h4 className="text-sm font-bold text-white">{item.title}</h4>
-                    <p className="text-xs text-[#8E9EA7] line-clamp-2">{item.snippet || item.subtitle}</p>
-                    <Link href={`/expeditions/${item.id}`} className="text-xs text-[#74B8CC] hover:underline font-mono inline-block pt-1">
-                      View Expedition Dossier →
+                    <h4 className="text-base font-serif font-bold text-[#111111]">
+                      {homeSearchResults.results_by_type.stations[0].title}
+                    </h4>
+                    <p className="text-xs text-[#555558] line-clamp-2">
+                      {homeSearchResults.results_by_type.stations[0].snippet}
+                    </p>
+                    <Link href={homeSearchResults.results_by_type.stations[0].url} className="text-xs font-semibold text-[#2563EB] hover:underline block pt-1">
+                      Inspect station dossier →
                     </Link>
                   </div>
-                ))}
+                )}
 
-                {/* Datasets Match */}
-                {homeSearchResults.results_by_type.datasets?.slice(0, 1).map((item) => (
-                  <div key={item.id} className="bg-[#07151F] border border-[#74B8CC]/30 p-5 rounded-xl space-y-2">
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-[#74B8CC] font-semibold block">
-                      NPDC DATASET
+                {/* Dataset Result */}
+                {homeSearchResults.results_by_type.datasets?.[0] && (
+                  <div className="p-4 rounded-xl bg-[#FAFAF8] border border-[#E8E6E0] space-y-2">
+                    <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-[#2563EB] text-white">
+                      NPDC Dataset
                     </span>
-                    <h4 className="text-sm font-bold text-white">{item.title}</h4>
-                    <p className="text-xs text-[#8E9EA7] line-clamp-2">{item.snippet || item.subtitle}</p>
-                    <Link href={`/datasets/${item.id}`} className="text-xs text-[#74B8CC] hover:underline font-mono inline-block pt-1">
-                      Inspect Telemetry & Download →
+                    <h4 className="text-base font-serif font-bold text-[#111111]">
+                      {homeSearchResults.results_by_type.datasets[0].title}
+                    </h4>
+                    <p className="text-xs text-[#555558] line-clamp-2">
+                      {homeSearchResults.results_by_type.datasets[0].snippet}
+                    </p>
+                    <Link href={homeSearchResults.results_by_type.datasets[0].url} className="text-xs font-semibold text-[#2563EB] hover:underline block pt-1">
+                      Download data package →
                     </Link>
                   </div>
-                ))}
+                )}
 
-                {/* Publications Match */}
-                {homeSearchResults.results_by_type.publications?.slice(0, 1).map((item) => (
-                  <div key={item.id} className="bg-[#07151F] border border-[#D7A75D]/30 p-5 rounded-xl space-y-2">
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-[#D7A75D] font-semibold block">
-                      PEER-REVIEWED PUBLICATION
+                {/* Expedition Result */}
+                {homeSearchResults.results_by_type.expeditions?.[0] && (
+                  <div className="p-4 rounded-xl bg-[#FAFAF8] border border-[#E8E6E0] space-y-2">
+                    <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-[#D97706] text-white">
+                      Field Campaign
                     </span>
-                    <h4 className="text-sm font-bold text-white">{item.title}</h4>
-                    <p className="text-xs text-[#8E9EA7] line-clamp-2">{item.snippet || item.subtitle}</p>
-                    <Link href="/publications" className="text-xs text-[#D7A75D] hover:underline font-mono inline-block pt-1">
-                      Read Paper & Citation →
+                    <h4 className="text-base font-serif font-bold text-[#111111]">
+                      {homeSearchResults.results_by_type.expeditions[0].title}
+                    </h4>
+                    <p className="text-xs text-[#555558] line-clamp-2">
+                      {homeSearchResults.results_by_type.expeditions[0].snippet}
+                    </p>
+                    <Link href={homeSearchResults.results_by_type.expeditions[0].url} className="text-xs font-semibold text-[#2563EB] hover:underline block pt-1">
+                      Explore field dossier →
                     </Link>
                   </div>
-                ))}
+                )}
               </div>
             </div>
           )}
@@ -634,152 +621,132 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* ========================================================================= */}
-      {/* 6. SECTION 5: Featured Expedition (Large Editorial Showcase)              */}
+      {/* 6. SECTION 5: Featured Expedition (Editorial Showcase)                    */}
       {/* ========================================================================= */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="relative rounded-3xl overflow-hidden border border-[#B9DDE7]/15 bg-[#0D2735] shadow-2xl">
-          <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch">
-            
-            <div className="lg:col-span-7 relative min-h-[380px] lg:min-h-[500px]">
-              <img 
-                src="https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=1200&q=85" 
-                alt="45th ISEA Expedition"
-                className="absolute inset-0 w-full h-full object-cover brightness-75"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#0D2735]/40 to-[#0D2735] hidden lg:block" />
-              <div className="absolute top-6 left-6 bg-[#07151F]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-mono text-[#5BB7A5] border border-[#5BB7A5]/30">
-                ACTIVE FIELD CAMPAIGN · 2025–2026
+      <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
+        <div className="flex items-center justify-between border-b border-[#E8E6E0] pb-4">
+          <span className="text-xs font-mono uppercase tracking-widest text-[#D97706] font-semibold">
+            Active Campaign Dossier
+          </span>
+          <Link href="/expeditions" className="text-xs font-bold text-[#111111] hover:underline flex items-center gap-1">
+            <span>Explore all expeditions</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        <div className="bg-white border border-[#E8E6E0] rounded-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 shadow-sm">
+          <div className="lg:col-span-7 aspect-[16/10] lg:aspect-auto relative">
+            <img
+              src="https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=1200&q=85"
+              alt="45th Indian Scientific Expedition to Antarctica"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute top-5 left-5 bg-white/95 px-3 py-1 rounded-full text-xs font-mono font-bold text-[#111111] shadow-xs">
+              45TH ISEA · 2025–26
+            </div>
+          </div>
+          <div className="lg:col-span-5 p-8 sm:p-12 flex flex-col justify-between space-y-6">
+            <div className="space-y-4">
+              <span className="text-xs font-mono uppercase text-[#16A34A] font-bold tracking-wider">
+                ● Active Mission in Field
+              </span>
+              <h3 className="text-2xl sm:text-4xl font-serif font-normal text-[#111111] leading-tight">
+                45th Indian Scientific Expedition to Antarctica
+              </h3>
+              <p className="text-sm text-[#555558] leading-relaxed">
+                48-member interdisciplinary science contingent deployed aboard ice-class vessels to Maitri and Bharati stations for long-term climate modeling, sub-ice lake drilling, and atmospheric chemistry monitoring.
+              </p>
+              <div className="pt-2 space-y-2 text-xs font-mono text-[#555558]">
+                <div><strong>Base:</strong> Maitri (Schirmacher Oasis) & Bharati (Larsemann Hills)</div>
+                <div><strong>Voyage:</strong> Cape Town $\rightarrow$ Prydz Bay $\rightarrow$ Princess Astrid Coast</div>
+                <div><strong>Science Themes:</strong> Deep Ice Coring, Ozone Depletion, Paleoseismology</div>
               </div>
             </div>
 
-            <div className="lg:col-span-5 p-8 sm:p-12 flex flex-col justify-between space-y-6">
-              <div className="space-y-4">
-                <div className="text-xs font-mono uppercase tracking-widest text-[#74B8CC] font-semibold">
-                  Flagship Mission Showcase
-                </div>
-                <h3 className="text-3xl sm:text-4xl font-serif font-bold text-white leading-tight">
-                  45th Indian Scientific Expedition to Antarctica
-                </h3>
-                <p className="text-xs sm:text-sm text-[#8E9EA7] font-light leading-relaxed">
-                  Deployed aboard ice-class research vessels to Schirmacher Oasis and Larsemann Hills, executing deep ice drilling, boundary-layer atmospheric physics, and green hydrogen pilot infrastructure.
-                </p>
-                <div className="space-y-2 pt-2 text-xs font-mono text-[#DCEEF2]">
-                  <div><strong className="text-[#8E9EA7]">Voyage:</strong> Cape Town → Maitri → Bharati</div>
-                  <div><strong className="text-[#8E9EA7]">Expedition Leader:</strong> Dr. Ananya Mukherjee (NCPOR)</div>
-                  <div><strong className="text-[#8E9EA7]">Linked Data:</strong> NPDC-ATMO-2025-01, NPDC-CRYO-2025-02</div>
-                </div>
-              </div>
-
-              <div>
-                <Link
-                  href="/expeditions/exp_45_isea"
-                  className="inline-flex items-center space-x-2 px-6 py-3 rounded-lg bg-[#74B8CC] hover:bg-[#B9DDE7] text-[#07151F] font-bold text-xs uppercase font-mono tracking-wider transition"
-                >
-                  <span>EXPLORE EXPEDITION DOSSIER</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </div>
-
+            <Link
+              href="/expeditions/exp_45_isea"
+              className="btn-primary w-fit text-xs !py-3 !px-6"
+            >
+              <span>Explore Complete Mission Dossier</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
         </div>
       </section>
 
       {/* ========================================================================= */}
-      {/* 7. SECTION 6: Research & Publications (Editorial Layout)                  */}
+      {/* 7. SECTION 6: Research & Publications (Editorial Article Layout)          */}
       {/* ========================================================================= */}
-      <section className="py-24 bg-[#0A1B28] border-t border-[#B9DDE7]/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#B9DDE7]/10 pb-6">
+      <section className="py-20 bg-[#F4F2EE] border-y border-[#E8E6E0]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#E8E6E0] pb-6">
             <div>
-              <div className="text-xs font-mono uppercase tracking-widest text-[#D7A75D] font-semibold mb-2">
-                Peer-Reviewed Science
-              </div>
-              <h2 className="text-3xl sm:text-5xl font-serif font-bold text-white">
+              <span className="text-xs font-mono uppercase tracking-widest text-[#2563EB] font-semibold">
+                Peer-Reviewed Discoveries
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-serif font-normal text-[#111111] tracking-tight mt-1">
                 Research from the polar frontier
               </h2>
             </div>
-            <Link href="/publications" className="text-xs font-mono text-[#74B8CC] hover:underline flex items-center gap-1.5">
-              <span>View full publications archive ({stats?.publications || 15} papers)</span>
+            <Link href="/publications" className="btn-ghost text-xs !py-2.5 !px-5 w-fit">
+              <span>View Publications Library</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          {/* One Large Featured Paper + Two Smaller Papers */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {latestResearch[0] && (
-              <div className="lg:col-span-7 bg-[#07151F] border border-[#B9DDE7]/15 rounded-2xl p-8 space-y-6 flex flex-col justify-between">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between text-xs font-mono">
-                    <span className="px-2.5 py-0.5 rounded bg-[#D7A75D]/15 text-[#D7A75D] border border-[#D7A75D]/30 font-semibold">
-                      FEATURED PAPER · {latestResearch[0].journal} ({latestResearch[0].year})
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {latestResearch.map((paper, idx) => (
+              <div
+                key={paper.id}
+                className={`p-6 sm:p-8 rounded-2xl bg-white border border-[#E8E6E0] space-y-4 shadow-xs hover:shadow-md transition-all flex flex-col justify-between ${
+                  idx === 0 ? 'lg:col-span-2' : ''
+                }`}
+              >
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between text-xs font-mono text-[#8E8E91]">
+                    <span className="font-bold text-[#D97706]">{paper.year}</span>
+                    <span className="px-2 py-0.5 rounded-full bg-[#F4F2EE] border border-[#E8E6E0] text-[10px] text-[#555558]">
+                      {paper.journal}
                     </span>
-                    <span className="text-[#8E9EA7]">DOI: {latestResearch[0].doi}</span>
                   </div>
-                  <h3 className="text-2xl sm:text-3xl font-serif font-bold text-white leading-snug">
-                    {latestResearch[0].title}
+                  <h3 className="text-lg sm:text-xl font-serif font-normal text-[#111111] leading-snug">
+                    {paper.title}
                   </h3>
-                  <div className="text-xs text-[#8E9EA7] font-mono">
-                    {Array.isArray(latestResearch[0].authors) ? latestResearch[0].authors.join(', ') : latestResearch[0].authors}
-                  </div>
-                  <p className="text-xs sm:text-sm text-[#DCEEF2]/80 leading-relaxed font-light line-clamp-4">
-                    {latestResearch[0].abstract}
+                  <p className="text-xs text-[#555558] line-clamp-3 leading-relaxed">
+                    {paper.abstract}
                   </p>
                 </div>
-                <div className="pt-4 border-t border-[#B9DDE7]/10 flex items-center justify-between">
-                  <span className="text-xs font-mono text-[#8E9EA7]">Cited by {latestResearch[0].citation_count} international studies</span>
-                  <Link href="/publications" className="text-xs font-mono text-[#74B8CC] hover:underline font-bold">
-                    Read Abstract & Export Citation →
-                  </Link>
+                <div className="pt-3 border-t border-[#E8E6E0] flex items-center justify-between text-xs font-mono text-[#8E8E91]">
+                  <span className="truncate max-w-[200px]">{paper.authors}</span>
+                  <span className="text-[#2563EB] font-semibold">DOI: {paper.doi}</span>
                 </div>
               </div>
-            )}
-
-            <div className="lg:col-span-5 space-y-6">
-              {latestResearch.slice(1, 3).map((pub) => (
-                <div key={pub.id} className="bg-[#07151F] border border-[#B9DDE7]/15 rounded-2xl p-6 space-y-3">
-                  <div className="text-[11px] font-mono text-[#D7A75D]">
-                    {pub.journal} ({pub.year})
-                  </div>
-                  <h4 className="text-base font-bold text-white hover:text-[#74B8CC] transition">
-                    {pub.title}
-                  </h4>
-                  <p className="text-xs text-[#8E9EA7] line-clamp-2 font-light">
-                    {pub.abstract}
-                  </p>
-                  <Link href="/publications" className="text-xs font-mono text-[#74B8CC] hover:underline inline-block pt-1">
-                    Citation Tools & Full Record →
-                  </Link>
-                </div>
-              ))}
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* ========================================================================= */}
-      {/* 8. SECTION 7 & 8: Smart Education Teaser ("Not only for scientists")      */}
+      {/* 8. SECTION 7: Smart Education & Student Hub Preview                       */}
       {/* ========================================================================= */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="bg-gradient-to-br from-[#0D2735] to-[#07151F] border border-[#74B8CC]/20 rounded-3xl p-8 sm:p-14 relative overflow-hidden shadow-2xl">
-          <div className="max-w-2xl space-y-6 relative z-10">
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded bg-[#74B8CC]/15 text-[#74B8CC] border border-[#74B8CC]/30 text-xs font-mono">
-              <BookOpen className="w-3.5 h-3.5" />
-              <span>SMART EDUCATION HUB</span>
-            </div>
-            <h2 className="text-3xl sm:text-5xl font-serif font-bold text-white leading-tight">
+      <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12">
+        <div className="bg-[#111111] text-white rounded-3xl p-8 sm:p-14 relative overflow-hidden shadow-xl">
+          <div className="relative z-10 max-w-2xl space-y-6">
+            <span className="inline-block px-3 py-1 rounded-full bg-white/10 text-xs font-mono text-[#B9DDE7] border border-white/15">
+              Smart Education Initiative · SIH26063
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-serif font-normal leading-tight text-white">
               Polar science is not only for scientists.
             </h2>
-            <p className="text-sm sm:text-base text-[#8E9EA7] font-light leading-relaxed">
-              Explore interactive modules decoding planetary albedo, Antarctic bottom water formation, and Spiti glacier monitoring. Test your understanding with our curated science quiz.
+            <p className="text-sm sm:text-base text-[#DCEEF2]/85 leading-relaxed font-normal">
+              Engage with interactive modules explaining ice-albedo climate feedback loops, Antarctic station engineering, cryospheric lexicons, and take our 5-question self-assessment quiz.
             </p>
-            <div className="pt-2">
-              <Link
-                href="/learn"
-                className="px-6 py-3.5 rounded-lg bg-[#74B8CC] hover:bg-[#B9DDE7] text-[#07151F] font-bold text-xs uppercase font-mono tracking-wider transition inline-flex items-center space-x-2"
-              >
-                <span>ENTER STUDENT HUB & TAKE QUIZ</span>
-                <ArrowRight className="w-4 h-4" />
+            <div className="flex flex-wrap gap-4 pt-2">
+              <Link href="/learn" className="px-6 py-3.5 rounded-full bg-white hover:bg-[#F4F2EE] text-[#111111] font-semibold text-xs transition-all shadow-md">
+                Launch Student Learning Hub
+              </Link>
+              <Link href="/knowledge-graph" className="px-6 py-3.5 rounded-full bg-transparent hover:bg-white/10 border border-white/20 text-white font-semibold text-xs transition-all">
+                Explore Knowledge Graph
               </Link>
             </div>
           </div>
