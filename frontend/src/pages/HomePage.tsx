@@ -206,7 +206,7 @@ export const HomePage: React.FC = () => {
           </p>
 
           {/* Action Button Pair (Pill Buttons) */}
-          <div className="flex items-center gap-3 flex-wrap justify-center mb-6">
+          <div className="flex items-center gap-3.5 flex-wrap justify-center mb-4">
             <Link href="/expeditions" className="btn-primary">
               <span>Explore polar research</span>
               <span>→</span>
@@ -215,43 +215,6 @@ export const HomePage: React.FC = () => {
               <span>Live observatory</span>
             </Link>
           </div>
-
-          {/* Docked Search Bar (from AgentShield) */}
-          <div className="w-full max-w-2xl bg-white border-[1.5px] border-[#E8E6E0] rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04)] flex items-center p-1.5 focus-within:border-[#111111]/40 focus-within:shadow-[0_12px_40px_rgba(0,0,0,0.09)] transition-all mb-4">
-            <input 
-              type="text" 
-              value={homeSearchQuery}
-              onChange={(e) => setHomeSearchQuery(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && executeHomeSearch(homeSearchQuery)}
-              placeholder="Ask anything about expeditions, stations, datasets, publications..."
-              className="flex-1 h-12 px-4 bg-transparent outline-none text-[14.5px] text-[#111111] placeholder:text-[#8E8E91] font-sans"
-            />
-            <div className="hidden sm:flex items-center gap-1.5 pr-2">
-              <button 
-                type="button"
-                onClick={() => { setHomeSearchQuery('Maitri atmosphere'); executeHomeSearch('Maitri atmosphere'); }}
-                className="px-2.5 py-1 rounded-lg text-xs font-medium text-[#555558] bg-[#F4F2EE] border border-[#E8E6E0] hover:bg-[#E8E6E0] hover:text-[#111111] transition"
-              >
-                Maitri atmosphere
-              </button>
-              <button 
-                type="button"
-                onClick={() => { setHomeSearchQuery('45th ISEA'); executeHomeSearch('45th ISEA'); }}
-                className="px-2.5 py-1 rounded-lg text-xs font-medium text-[#555558] bg-[#F4F2EE] border border-[#E8E6E0] hover:bg-[#E8E6E0] hover:text-[#111111] transition"
-              >
-                45th ISEA
-              </button>
-            </div>
-            <button 
-              type="button"
-              onClick={() => executeHomeSearch(homeSearchQuery)}
-              className="w-10 h-10 rounded-xl bg-[#111111] text-white flex items-center justify-center hover:opacity-85 transition shrink-0"
-              aria-label="Search archive"
-            >
-              <Search className="w-4 h-4" />
-            </button>
-          </div>
-
         </div>
 
         {/* Bottom Marquee Telemetry Band (AgentShield Ticker Style) */}

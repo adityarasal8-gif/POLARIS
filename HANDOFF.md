@@ -109,7 +109,8 @@ Every agent must read it before making changes and update it after meaningful wo
    - Unified color palette across all section kickers, badges, and icons to `#2563EB` (Polar Blue) and `#111111` / neutral obsidian.
    - Cleaned up `Footer.tsx` by removing the `MoES · NCPOR` logo badge, removing the postal address block completely, and refining the copyright disclaimer.
    - Added `snap-start` to all sections and the footer for smooth, snappy page-by-page scrolling.
-9. **Verification**:
-   - `npm run build` ran cleanly with 0 TypeScript/Vite errors in 1.71s.
-   - Evaluated sections via Chrome DevTools DOM evaluation: 100% of sections (index 0 to 7) verified with `fitsOnePage: true` and `offsetHeight: 748px` (exact 812px viewport match).
-   - Visual inspection via full-page screenshots confirming flawless typography, alignment, and wave dynamics.
+10. **Hero Search Cleanup & Navbar Search Restoration**:
+    - Removed the docked search bar (`Maitri atmosphere`, `45th ISEA`, input box) from the Hero section on `HomePage.tsx`, leaving the editorial typography and organic wave canvas unobstructed.
+    - Restored the Search trigger pill button (`⌘K`) in the top navigation bar (`Header.tsx`) with full keyboard shortcut and drawer support.
+    - Verified all wave canvas colors in `AgentShieldCanvas.tsx` remain 100% original and untouched.
+

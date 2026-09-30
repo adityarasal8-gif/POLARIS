@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { 
-  Compass, ChevronDown, Menu, X, 
+  Compass, Search, ChevronDown, Menu, X, 
   BookOpen, Database, Image, FileText, 
   Activity as ActivityIcon, Globe, Lock
 } from 'lucide-react';
@@ -12,7 +12,7 @@ interface HeaderProps {
   onSelectRole?: (role: string) => void;
 }
 
-export const Header: React.FC<HeaderProps> = () => {
+export const Header: React.FC<HeaderProps> = ({ onOpenSearch }) => {
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [exploreOpen, setExploreOpen] = useState(false);
@@ -176,6 +176,20 @@ export const Header: React.FC<HeaderProps> = () => {
 
         {/* Right Action Buttons */}
         <div className="flex items-center space-x-3">
+          {/* Quick Search Trigger Pill */}
+          <button
+            type="button"
+            onClick={onOpenSearch}
+            className="flex items-center space-x-2 bg-[#FFFFFF] hover:bg-[#F4F2EE] text-[#555558] hover:text-[#111111] px-3.5 py-1.5 rounded-full border border-[#E8E6E0] transition-all text-xs font-mono shadow-xs"
+            title="Search the polar repository (⌘K or /)"
+          >
+            <Search className="w-3.5 h-3.5 text-[#555558]" />
+            <span className="hidden sm:inline">Search archive...</span>
+            <kbd className="hidden sm:inline bg-[#F4F2EE] px-1.5 py-0.5 rounded text-[10px] text-[#8E8E91] border border-[#E8E6E0]">
+              ⌘K
+            </kbd>
+          </button>
+
           {/* Live Observatory Direct CTA (Solid Black AgentShield Pill) */}
           <Link
             href="/observatory"
@@ -199,6 +213,17 @@ export const Header: React.FC<HeaderProps> = () => {
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-[#FAFAF8] border-b border-[#E8E6E0] px-6 py-5 space-y-3 text-sm animate-in slide-in-from-top duration-200">
+          <button 
+            type="button"
+            onClick={() => { setMobileMenuOpen(false); onOpenSearch?.(); }} 
+            className="w-full text-left py-2 text-[#555558] hover:text-[#111111] flex items-center justify-between"
+          >
+            <span className="flex items-center gap-2">
+              <Search className="w-4 h-4 text-[#2563EB]" />
+              <span>Search Repository</span>
+            </span>
+            <kbd className="bg-[#E8E6E0] px-2 py-0.5 rounded text-[10px] font-mono">⌘K</kbd>
+          </button>
           <Link href="/" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-[#111111] font-semibold">Home</Link>
           <Link href="/expeditions" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-[#555558]">Polar Expeditions Archive</Link>
           <Link href="/stations" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-[#555558]">Research Stations</Link>
