@@ -82,3 +82,7 @@ Every agent must read it before making changes and update it after meaningful wo
 - Built frontend cleanly via `npm run build` (0 TypeScript errors, bundle size optimized).
 - Tested all 16 routes and API endpoints via curl.
 - Confirmed live environmental telemetry feed from Open-Meteo.
+- Verified interactive quiz on `/learn`: simulated complete submission, achieving verified 5/5 (100%) score with green checkmarks and educational feedback.
+- Verified Global Search Modal (`Cmd+K` / button): debounced multi-keyword query `"Maitri atmosphere"` returning 20 cross-connected records across Expeditions, Datasets, Stations, and Publications.
+- Verified mobile responsiveness at 390px width (iPhone 14/15/16): accessible touch targets (>44px), legible typography, and functional mobile drawer menu.
+- Initialized local git repository, added comprehensive `.gitignore` for Python/Node, and created pristine commit `0c6ac21`.
