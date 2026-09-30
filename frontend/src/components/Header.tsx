@@ -21,7 +21,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch }) => {
   return (
     <header className="sticky top-0 z-40 w-full bg-[#FAFAF8]/95 backdrop-blur-md border-b border-[#E8E6E0] transition-colors">
       {/* Main Navigation Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div className="w-full px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand Logo */}
         <Link href="/" className="flex items-center space-x-3 group cursor-pointer py-1.5">
           <div className="w-9 h-9 rounded-xl bg-[#111111] text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-all">
