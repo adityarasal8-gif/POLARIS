@@ -40,7 +40,7 @@ def seed_all():
             "Operational / Year-Round",
             "State-of-the-art energy-efficient modular facility focusing on oceanography, satellite telemetry, polar biology, and continental breakup studies.",
             json.dumps(["Oceanography", "Satellite Telemetry", "Coastal Ecology", "Cryosphere & Continental Drift"]),
-            "https://images.unsplash.com/photo-1508873535684-277a3cbcc4e8?auto=format&fit=crop&w=1200&q=80",
+            "https://images.unsplash.com/photo-1548263594-a71ea65a8598?auto=format&fit=crop&w=1200&q=80",
             "NCPOR Public Polar Archive / MoES"
         ),
         (
@@ -194,7 +194,7 @@ def seed_all():
             json.dumps(["Fjord Oceanography", "Atmospheric Chemistry", "Polar Night Ecology"]),
             json.dumps(["Himadri Station", "Kongsfjorden", "Corbel Glacier"]),
             json.dumps(["Dr. Swati Nagar", "Dr. Bipin Kumar"]),
-            "https://images.unsplash.com/photo-1508873535684-277a3cbcc4e8?auto=format&fit=crop&w=1200&q=80",
+            "https://images.unsplash.com/photo-1579033461380-adb47c3eb938?auto=format&fit=crop&w=1200&q=80",
             "NCPOR Arctic Wing",
             json.dumps(["ds_kongsfjorden_ctd_2025", "ds_himadri_aerosol_2025"]),
             json.dumps(["pub_nagar_2025"]),
@@ -332,7 +332,7 @@ def seed_all():
             json.dumps(["Pioneering Exploration", "Foundational Meteorology"]),
             json.dumps(["Queen Maud Land", "Princess Astrid Coast", "Dakshin Gangotri Site"]),
             json.dumps(["Dr. S. Z. Qasim"]),
-            "https://images.unsplash.com/photo-1516431883659-655d41c09bf9?auto=format&fit=crop&w=1200&q=80",
+            "https://images.unsplash.com/photo-1508873696983-2df5293cb395?auto=format&fit=crop&w=1200&q=80",
             "Historic National Archives of India & NCPOR Special Collection",
             json.dumps(["ds_historic_1982_met"]),
             json.dumps(["pub_qasim_historic"]),
@@ -1071,7 +1071,7 @@ def seed_all():
         ("med_45_icecore", "Deep Ice Core Processing in Sub-Zero Field Laboratory", "photo", "Antarctica", "maitri", "exp_45_isea", "2025-02-02", "Glaciologist inspecting 1-meter firn core section for density and bubble-free stratigraphic analysis.", "https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?auto=format&fit=crop&w=1600&q=80", "NCPOR Ice Core Facility", "NCPOR Archive", "Open Access CC-BY 4.0", json.dumps(["Ice Core", "Paleoclimate", "Glaciology", "Maitri"])),
         ("med_45_maitri_winter", "Maitri Research Station Under Midnight Polar Twilight", "photo", "Antarctica", "maitri", "exp_45_isea", "2025-03-10", "Winter-over habitat and balloon meteorological launch pad illuminated against rocky Schirmacher Oasis terrain.", "https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=1600&q=80", "Dr. Anurag Linda / NCPOR", "MoES Polar Photography", "Official Public Record", json.dumps(["Maitri", "Station", "Winter", "Antarctica"])),
         ("med_44_gpr", "Snowmobile Ground-Penetrating Radar Survey on Polar Plateau", "photo", "Antarctica", "bharati", "exp_44_isea", "2024-12-20", "Scientists towing 50MHz GPR antenna system across blue-ice zones near Larsemann Hills.", "https://images.unsplash.com/photo-1548263594-a71ea65a8598?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1548263594-a71ea65a8598?auto=format&fit=crop&w=1600&q=80", "Radio-Glaciology Field Team", "NCPOR", "Open Access", json.dumps(["GPR", "Radar", "Ice Sheet", "Bharati"])),
-        ("med_44_bharati_drone", "Panoramic Aerial View of Bharati Station over Prydz Bay", "photo", "Antarctica", "bharati", "exp_44_isea", "2024-01-25", "Modular elevated architecture of Bharati Station designed to prevent snow drift accumulation.", "https://images.unsplash.com/photo-1508873535684-277a3cbcc4e8?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1508873535684-277a3cbcc4e8?auto=format&fit=crop&w=1600&q=80", "NCPOR Architectural Survey", "NCPOR / MoES", "Educational", json.dumps(["Bharati", "Architecture", "Aerial", "Prydz Bay"])),
+        ("med_44_bharati_drone", "Panoramic Aerial View of Bharati Station over Prydz Bay", "photo", "Antarctica", "bharati", "exp_44_isea", "2024-01-25", "Modular elevated architecture of Bharati Station designed to prevent snow drift accumulation.", "https://images.unsplash.com/photo-1548263594-a71ea65a8598?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1548263594-a71ea65a8598?auto=format&fit=crop&w=1600&q=80", "NCPOR Architectural Survey", "NCPOR / MoES", "Educational", json.dumps(["Bharati", "Architecture", "Aerial", "Prydz Bay"])),
         ("med_43_maitri_lake", "Scientific Sampling on Frozen Surface of Lake Priyadarshini", "photo", "Antarctica", "maitri", "exp_43_isea", "2024-01-18", "Limnology researchers coring 2-meter surface lake ice for microbial and water chemistry assay.", "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80", "Limnology Group", "NCPOR Archive", "Public Domain", json.dumps(["Lake Priyadarshini", "Limnology", "Maitri"])),
         ("med_arctic_fjord", "Glacial Calving Front in Kongsfjorden, Ny-Ålesund", "photo", "Arctic", "himadri", "exp_arctic_2025", "2025-06-15", "Kronebreen glacier tidewater terminus discharging brash ice into the Arctic fjord.", "https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?auto=format&fit=crop&w=1600&q=80", "Dr. Swati Nagar / NCPOR", "Kings Bay Fjord Science", "CC-BY-SA 4.0", json.dumps(["Arctic", "Kongsfjorden", "Himadri", "Glacier"])),
         ("med_himadri_aurora", "Aurora Borealis over Himadri Arctic Station", "photo", "Arctic", "himadri", "exp_arctic_2025", "2025-02-14", "Green oxygen emission aurora curtains lighting up the dark sky above India's station in Svalbard.", "https://images.unsplash.com/photo-1579033461380-adb47c3eb938?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1579033461380-adb47c3eb938?auto=format&fit=crop&w=1600&q=80", "Kings Bay Optical Camera / NCPOR", "NASA Aurora Citizen Science", "Public Domain", json.dumps(["Aurora", "Arctic", "Himadri", "Space Weather"])),
@@ -1114,7 +1114,7 @@ def seed_all():
             "Antarctica",
             "exp_45_isea",
             "Press Information Bureau (PIB) / MoES",
-            "https://images.unsplash.com/photo-1516431883659-655d41c09bf9?auto=format&fit=crop&w=1200&q=80"
+            "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80"
         ),
         (
             "act_winter_himadri_launch",
@@ -1198,7 +1198,7 @@ def seed_all():
             "Antarctica",
             None,
             "NCPOR Education & Outreach Cell",
-            "https://images.unsplash.com/photo-1508873535684-277a3cbcc4e8?auto=format&fit=crop&w=1200&q=80"
+            "https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=1200&q=80"
         ),
         (
             "act_green_maitri_upgrade",

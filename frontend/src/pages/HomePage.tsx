@@ -6,7 +6,7 @@ import {
   BookOpen, Search, Layers, Award, Sparkles, MapPin, 
   Calendar, FileText, CheckCircle2, Globe, Shield, Activity,
   Satellite, Cpu, Clock, TrendingUp, Sun, Zap, ExternalLink,
-  User, Lightbulb, Check, HelpCircle
+  User, Lightbulb, Check, HelpCircle, RotateCcw
 } from 'lucide-react';
 import { AgentShieldCanvas } from '../components/AgentShieldCanvas';
 import { fetchStats, fetchLiveObservatory, fetchExpeditions, fetchPublications, unifiedSearch } from '../api';
@@ -27,20 +27,51 @@ export const HomePage: React.FC = () => {
   const [homeSearchLoading, setHomeSearchLoading] = useState(false);
 
   // Interactive Quiz state in Section 7
+  const [currentQuizIdx, setCurrentQuizIdx] = useState<number>(0);
   const [selectedQuizOption, setSelectedQuizOption] = useState<number | null>(null);
   const [showQuizResult, setShowQuizResult] = useState<boolean>(false);
 
-  const QUIZ_QUESTION = {
-    question: "Which geographical feature in East Antarctica is home to India's high-tech aerodynamic research station, Bharati?",
-    options: [
-      "Schirmacher Oasis (Queen Maud Land)",
-      "Larsemann Hills (Prydz Bay Coast)",
-      "Ny-Ålesund Kings Bay Fjord",
-      "Chandra Basin (Western Himalaya)"
-    ],
-    correctIndex: 1,
-    explanation: "Bharati Station was established in 2012 in the Larsemann Hills along the Prydz Bay coast of East Antarctica, specializing in oceanography, continental breakup geophysics, and atmospheric monitoring."
-  };
+  const QUIZ_QUESTIONS = [
+    {
+      id: 'bharati_geo',
+      topic: 'Antarctic Base Architecture',
+      question: "Which geographical feature in East Antarctica is home to India's high-tech aerodynamic research station, Bharati?",
+      options: [
+        "Schirmacher Oasis (Queen Maud Land)",
+        "Larsemann Hills (Prydz Bay Coast)",
+        "Ny-Ålesund Kings Bay Fjord",
+        "Chandra Basin (Western Himalaya)"
+      ],
+      correctIndex: 1,
+      explanation: "Bharati Station was established in 2012 in the Larsemann Hills along the Prydz Bay coast of East Antarctica, specializing in oceanography, continental breakup geophysics, and atmospheric monitoring."
+    },
+    {
+      id: 'himadri_arctic',
+      topic: 'Arctic Teleconnections',
+      question: "Located at 78.9°N in Ny-Ålesund, Svalbard, what is the primary scientific focus of India's Himadri Arctic station?",
+      options: [
+        "Fjord oceanography, aerosol radiative forcing, and polar-monsoon teleconnections",
+        "Deep subglacial hydrocarbon and mineral exploration drilling",
+        "Exclusive military reconnaissance of the Barents Sea",
+        "Commercial polar tourism route development"
+      ],
+      correctIndex: 0,
+      explanation: "Himadri focuses on Arctic fjord dynamics (Kongsfjorden), aerosol transport, microbial diversity in extreme cold, and teleconnections connecting polar atmospheric oscillations to the Indian summer monsoon."
+    },
+    {
+      id: 'maitri_freshwater',
+      topic: 'Polar Limnology & Logistics',
+      question: "What is the crucial year-round freshwater source sustaining India's Maitri station in the ice-free Schirmacher Oasis?",
+      options: [
+        "Lake Vostok deep subglacial bore",
+        "Lake Priyadarshini fresh meltwater reservoir",
+        "Weddell Sea coastal ice melter",
+        "Kongsfjorden desalination canal"
+      ],
+      correctIndex: 1,
+      explanation: "Lake Priyadarshini, an ice-covered oligotrophic freshwater lake located adjacent to Maitri Station in Schirmacher Oasis, provides the critical potable water supply via an insulated, heated intake system."
+    }
+  ];
 
   useEffect(() => {
     // 1. Database stats
@@ -1094,70 +1125,111 @@ export const HomePage: React.FC = () => {
             </p>
 
             {/* Interactive Mini Rapid Assessment Quiz Widget */}
-            <div className="bg-white/5 border border-white/15 rounded-2xl p-5 sm:p-6 space-y-4">
-              <div className="flex items-center gap-2 text-xs font-mono text-[#93C5FD] uppercase tracking-wider font-semibold">
-                <HelpCircle className="w-4 h-4 text-[#93C5FD]" />
-                <span>Quick Polar Assessment</span>
-              </div>
-              
-              <div className="text-sm sm:text-base font-serif text-white font-normal">
-                {QUIZ_QUESTION.question}
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                {QUIZ_QUESTION.options.map((opt, idx) => {
-                  const isSelected = selectedQuizOption === idx;
-                  const isCorrect = idx === QUIZ_QUESTION.correctIndex;
-                  return (
-                    <button
-                      key={opt}
-                      onClick={() => {
-                        setSelectedQuizOption(idx);
-                        setShowQuizResult(true);
-                      }}
-                      className={`text-left p-3 rounded-xl border text-xs font-sans transition-all flex items-center justify-between ${
-                        showQuizResult && isSelected
-                          ? isCorrect
-                            ? 'bg-[#16A34A]/20 border-[#16A34A] text-white font-semibold'
-                            : 'bg-[#EF4444]/20 border-[#EF4444] text-white font-semibold'
-                          : showQuizResult && isCorrect
-                            ? 'bg-[#16A34A]/10 border-[#16A34A]/60 text-white font-semibold'
-                            : 'bg-white/5 border-white/10 hover:border-white/30 text-white/90'
-                      }`}
-                    >
-                      <span>{opt}</span>
-                      {showQuizResult && isSelected && (
-                        <span>
-                          {isCorrect ? (
-                            <Check className="w-4 h-4 text-[#16A34A]" />
-                          ) : (
-                            <span className="text-[#EF4444] font-bold text-xs">✕</span>
-                          )}
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {showQuizResult && (
-                <div className="pt-2 animate-fade-in-up">
-                  <div className={`p-3.5 rounded-xl border text-xs leading-relaxed flex items-start gap-2 ${
-                    selectedQuizOption === QUIZ_QUESTION.correctIndex
-                      ? 'bg-[#16A34A]/15 border-[#16A34A]/40 text-[#DCFCE7]'
-                      : 'bg-[#F59E0B]/15 border-[#F59E0B]/40 text-[#FEF3C7]'
-                  }`}>
-                    <Lightbulb className="w-4 h-4 shrink-0 mt-0.5 text-amber-300" />
-                    <div>
-                      <strong>
-                        {selectedQuizOption === QUIZ_QUESTION.correctIndex ? '✓ Correct! ' : 'Explanation: '}
-                      </strong>
-                      {QUIZ_QUESTION.explanation}
+            {(() => {
+              const activeQuiz = QUIZ_QUESTIONS[currentQuizIdx];
+              return (
+                <div className="bg-white/5 border border-white/15 rounded-2xl p-5 sm:p-6 space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
+                    <div className="flex items-center gap-2 text-xs font-mono text-[#93C5FD] uppercase tracking-wider font-semibold">
+                      <HelpCircle className="w-4 h-4 text-[#93C5FD]" />
+                      <span>Quick Polar Assessment</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs font-mono">
+                      <span className="px-2.5 py-0.5 rounded-full bg-white/10 text-white/90 font-medium">
+                        {activeQuiz.topic}
+                      </span>
+                      <span className="text-[#93C5FD] font-semibold">
+                        {currentQuizIdx + 1} / {QUIZ_QUESTIONS.length}
+                      </span>
                     </div>
                   </div>
+                  
+                  <div className="text-sm sm:text-base font-serif text-white font-normal">
+                    {activeQuiz.question}
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {activeQuiz.options.map((opt, idx) => {
+                      const isSelected = selectedQuizOption === idx;
+                      const isCorrect = idx === activeQuiz.correctIndex;
+                      return (
+                        <button
+                          key={opt}
+                          onClick={() => {
+                            setSelectedQuizOption(idx);
+                            setShowQuizResult(true);
+                          }}
+                          className={`text-left p-3 rounded-xl border text-xs font-sans transition-all flex items-center justify-between ${
+                            showQuizResult && isSelected
+                              ? isCorrect
+                                ? 'bg-[#16A34A]/25 border-[#16A34A] text-white font-semibold'
+                                : 'bg-[#EF4444]/25 border-[#EF4444] text-white font-semibold'
+                              : showQuizResult && isCorrect
+                                ? 'bg-[#16A34A]/15 border-[#16A34A]/60 text-white font-semibold'
+                                : 'bg-white/5 border-white/10 hover:border-white/30 text-white/90'
+                          }`}
+                        >
+                          <span>{opt}</span>
+                          {showQuizResult && isSelected && (
+                            <span>
+                              {isCorrect ? (
+                                <Check className="w-4 h-4 text-[#16A34A]" />
+                              ) : (
+                                <span className="text-[#EF4444] font-bold text-xs">✕</span>
+                              )}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {showQuizResult && (
+                    <div className="pt-2 space-y-3 animate-fade-in-up">
+                      <div className={`p-3.5 rounded-xl border text-xs leading-relaxed flex items-start gap-2 ${
+                        selectedQuizOption === activeQuiz.correctIndex
+                          ? 'bg-[#16A34A]/15 border-[#16A34A]/40 text-[#DCFCE7]'
+                          : 'bg-[#F59E0B]/15 border-[#F59E0B]/40 text-[#FEF3C7]'
+                      }`}>
+                        <Lightbulb className="w-4 h-4 shrink-0 mt-0.5 text-amber-300" />
+                        <div>
+                          <strong>
+                            {selectedQuizOption === activeQuiz.correctIndex ? '✓ Correct! ' : 'Explanation: '}
+                          </strong>
+                          {activeQuiz.explanation}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-1">
+                        <span className="text-[11px] font-mono text-white/70">
+                          {selectedQuizOption === activeQuiz.correctIndex ? 'Excellent recall!' : 'Review the concept above.'}
+                        </span>
+                        <button
+                          onClick={() => {
+                            setSelectedQuizOption(null);
+                            setShowQuizResult(false);
+                            setCurrentQuizIdx((prev) => (prev + 1) % QUIZ_QUESTIONS.length);
+                          }}
+                          className="px-4 py-2 rounded-xl bg-white text-[#111111] hover:bg-white/90 text-xs font-mono font-semibold transition-all flex items-center gap-1.5 shadow-sm"
+                        >
+                          {currentQuizIdx < QUIZ_QUESTIONS.length - 1 ? (
+                            <>
+                              <span>Next Polar Question</span>
+                              <ArrowRight className="w-3.5 h-3.5" />
+                            </>
+                          ) : (
+                            <>
+                              <RotateCcw className="w-3.5 h-3.5" />
+                              <span>Restart Question Bank</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              );
+            })()}
 
             {/* Interactive Feature Teasers */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1 text-xs font-mono text-white/80">
