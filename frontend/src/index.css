@@ -172,3 +172,120 @@
 .animate-instrument-pulse {
   animation: instrument-pulse 2.8s ease-in-out infinite;
 }
+
+/* Continuous Kinetic Telemetry Marquee */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 36s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Floating Physics for Orbital Badges & Micro-Instruments */
+@keyframes float-1 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(2deg); }
+}
+
+@keyframes float-2 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-14px) rotate(-3deg); }
+}
+
+@keyframes float-3 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(1.5deg); }
+}
+
+.animate-float-1 { animation: float-1 6s ease-in-out infinite; }
+.animate-float-2 { animation: float-2 8s ease-in-out infinite; }
+.animate-float-3 { animation: float-3 7s ease-in-out infinite; }
+
+/* Staggered Cinematic Entrances */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* High-Precision Spring Hover & Micro-Interactions */
+.card-hover-spring {
+  transition: transform 0.36s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.36s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.25s ease;
+  will-change: transform;
+}
+
+.card-hover-spring:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.09);
+}
+
+.card-hover-spring:active {
+  transform: translateY(-1px) scale(0.99);
+}
+
+/* Live Sensor Ripple & Radar Pulse */
+@keyframes ping-subtle {
+  0% { transform: scale(0.95); opacity: 0.9; }
+  75%, 100% { transform: scale(2.4); opacity: 0; }
+}
+
+.animate-ping-subtle {
+  animation: ping-subtle 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes radar-sweep {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-radar-sweep {
+  animation: radar-sweep 5s linear infinite;
+  transform-origin: center center;
+}
+
+/* Pipeline Flow Dash Animation */
+@keyframes flow-line {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+.animate-flow-line {
+  stroke-dasharray: 6 4;
+  animation: flow-line 1.2s linear infinite;
+}
+
+/* Reduced Motion Override for Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-float-1,
+  .animate-float-2,
+  .animate-float-3,
+  .animate-radar-sweep,
+  .animate-ping-subtle,
+  .animate-fade-in-up,
+  .animate-flow-line {
+    animation: none !important;
+    transform: none !important;
+  }
+}
