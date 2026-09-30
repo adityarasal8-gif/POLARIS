@@ -101,6 +101,15 @@ Every agent must read it before making changes and update it after meaningful wo
    - Sped up wave progression frame step from `0.008` to `0.014` for more energetic, fluid organic movement.
    - Slightly increased wave amplitude and harmonic frequency across all ribbon layers.
    - Added a 5th subtle polar teal ribbon layer (`rgba(52, 211, 153, ...)`) reflecting marine and cryosphere telemetry.
-8. **Verification**:
-   - `npm run build` ran cleanly with 0 TypeScript/Vite errors.
-   - Runtime verified in Chrome DevTools on `http://127.0.0.1:5173/` at 1440x900 viewport with visual screenshot confirmation.
+8. **Single-Page Section Discipline & Unified Color Palette**:
+   - Sized every section on `HomePage.tsx` (Sections 0 through 7) to strictly fit within exactly 1 page viewport (`min-h-[calc(100vh-4rem)] flex flex-col justify-center snap-start`).
+   - Re-architected Section 5 (Featured Expedition: 45th ISEA) with flex container (`flex flex-col lg:flex-row lg:h-[390px]`) ensuring the image does not overflow the card and the mission dossier CTA button stays within the card bounds.
+   - Refactored Section 6 (Peer-Reviewed Discoveries) into a single 3-column row (`grid-cols-1 lg:grid-cols-3 gap-5 h-[270px] sm:h-[290px]`), fitting all three paper cards neatly on one screen.
+   - Preserved 100% of the original wave animation ribbon colors in `AgentShieldCanvas.tsx` (amber, sky blue, lavender, emerald) per explicit user instructions ("dont change color of waves").
+   - Unified color palette across all section kickers, badges, and icons to `#2563EB` (Polar Blue) and `#111111` / neutral obsidian.
+   - Cleaned up `Footer.tsx` by removing the `MoES · NCPOR` logo badge, removing the postal address block completely, and refining the copyright disclaimer.
+   - Added `snap-start` to all sections and the footer for smooth, snappy page-by-page scrolling.
+9. **Verification**:
+   - `npm run build` ran cleanly with 0 TypeScript/Vite errors in 1.71s.
+   - Evaluated sections via Chrome DevTools DOM evaluation: 100% of sections (index 0 to 7) verified with `fitsOnePage: true` and `offsetHeight: 748px` (exact 812px viewport match).
+   - Visual inspection via full-page screenshots confirming flawless typography, alignment, and wave dynamics.

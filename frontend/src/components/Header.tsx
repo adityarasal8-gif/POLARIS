@@ -69,7 +69,7 @@ export const Header: React.FC<HeaderProps> = () => {
               >
                 <div className="bg-[#FFFFFF] p-2.5 rounded-2xl shadow-xl border border-[#E8E6E0] space-y-1">
                   <Link href="/expeditions" className="flex items-center space-x-3 px-3 py-2.5 rounded-xl hover:bg-[#F4F2EE] text-xs text-[#111111] group">
-                    <Compass className="w-4 h-4 text-[#D97706] group-hover:scale-110 transition-transform" />
+                    <Compass className="w-4 h-4 text-[#2563EB] group-hover:scale-110 transition-transform" />
                     <div>
                       <div className="font-semibold text-[#111111]">Expeditions Archive</div>
                       <div className="text-[10px] text-[#555558]">Antarctica, Arctic, Himalayas</div>
@@ -83,14 +83,14 @@ export const Header: React.FC<HeaderProps> = () => {
                     </div>
                   </Link>
                   <Link href="/media" className="flex items-center space-x-3 px-3 py-2.5 rounded-xl hover:bg-[#F4F2EE] text-xs text-[#111111] group">
-                    <Image className="w-4 h-4 text-[#16A34A] group-hover:scale-110 transition-transform" />
+                    <Image className="w-4 h-4 text-[#2563EB] group-hover:scale-110 transition-transform" />
                     <div>
                       <div className="font-semibold text-[#111111]">Photo & Media Archive</div>
                       <div className="text-[10px] text-[#555558]">Authentic scientific photography</div>
                     </div>
                   </Link>
                   <Link href="/activities" className="flex items-center space-x-3 px-3 py-2.5 rounded-xl hover:bg-[#F4F2EE] text-xs text-[#111111] group">
-                    <ActivityIcon className="w-4 h-4 text-[#D97706] group-hover:scale-110 transition-transform" />
+                    <ActivityIcon className="w-4 h-4 text-[#2563EB] group-hover:scale-110 transition-transform" />
                     <div>
                       <div className="font-semibold text-[#111111]">Activities & Dispatches</div>
                       <div className="text-[10px] text-[#555558]">Field bulletins & institutional news</div>
@@ -126,21 +126,21 @@ export const Header: React.FC<HeaderProps> = () => {
                     </div>
                   </Link>
                   <Link href="/publications" className="flex items-center space-x-3 px-3 py-2.5 rounded-xl hover:bg-[#F4F2EE] text-xs text-[#111111] group">
-                    <FileText className="w-4 h-4 text-[#D97706] group-hover:scale-110 transition-transform" />
+                    <FileText className="w-4 h-4 text-[#2563EB] group-hover:scale-110 transition-transform" />
                     <div>
                       <div className="font-semibold text-[#111111]">Publications Library</div>
                       <div className="text-[10px] text-[#555558]">Peer-reviewed papers & DOIs</div>
                     </div>
                   </Link>
                   <Link href="/knowledge-graph" className="flex items-center space-x-3 px-3 py-2.5 rounded-xl hover:bg-[#F4F2EE] text-xs text-[#111111] group">
-                    <Compass className="w-4 h-4 text-[#16A34A] group-hover:scale-110 transition-transform" />
+                    <Compass className="w-4 h-4 text-[#2563EB] group-hover:scale-110 transition-transform" />
                     <div>
                       <div className="font-semibold text-[#111111]">Relational Knowledge Graph</div>
                       <div className="text-[10px] text-[#555558]">Interactive science network</div>
                     </div>
                   </Link>
                   <Link href="/studio" className="flex items-center space-x-3 px-3 py-2.5 rounded-xl hover:bg-[#F4F2EE] text-xs text-[#111111] group">
-                    <ActivityIcon className="w-4 h-4 text-[#0EA5E9] group-hover:scale-110 transition-transform" />
+                    <ActivityIcon className="w-4 h-4 text-[#2563EB] group-hover:scale-110 transition-transform" />
                     <div>
                       <div className="font-semibold text-[#111111]">AI Outreach Studio</div>
                       <div className="text-[10px] text-[#555558]">Editorial dissemination desk</div>
@@ -207,7 +207,7 @@ export const Header: React.FC<HeaderProps> = () => {
             <span>Live Polar Observatory</span>
           </Link>
           <Link href="/datasets" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-[#2563EB]">NPDC Datasets Catalog</Link>
-          <Link href="/publications" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-[#D97706]">Publications & Research</Link>
+          <Link href="/publications" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-[#555558]">Publications & Research</Link>
           <Link href="/repository" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-[#555558]">Knowledge Repository Search</Link>
           <Link href="/learn" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-[#2563EB]">Student Hub & Quiz</Link>
           <Link href="/media" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-[#555558]">Media Gallery</Link>

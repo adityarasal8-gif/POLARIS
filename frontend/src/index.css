@@ -44,6 +44,10 @@
     --color-warm-accent: #D97706;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     margin: 0;
     padding: 0;

@@ -114,53 +114,47 @@ export const HomePage: React.FC = () => {
       num: '01',
       title: 'FIELD EXPEDITION',
       subtitle: 'Field Operations',
-      desc: 'Long-term scientific deployments across East Antarctica, Svalbard fjords, and Himalayan glaciers.',
-      accent: '#D97706'
+      desc: 'Long-term scientific deployments across East Antarctica, Svalbard fjords, and Himalayan glaciers.'
     },
     {
       num: '02',
       title: 'OBSERVATION',
       subtitle: 'Sensor Telemetry',
-      desc: 'Autonomous weather stations, CTD profilers, fluxgate magnetometers, and shallow ice-core drilling.',
-      accent: '#16A34A'
+      desc: 'Autonomous weather stations, CTD profilers, fluxgate magnetometers, and shallow ice-core drilling.'
     },
     {
       num: '03',
       title: 'NPDC DATASET',
       subtitle: 'Data Standards',
-      desc: 'Quality-calibrated, metadata-indexed open datasets archived under CC-BY-NC 4.0 policy.',
-      accent: '#2563EB'
+      desc: 'Quality-calibrated, metadata-indexed open datasets archived under CC-BY-NC 4.0 policy.'
     },
     {
       num: '04',
       title: 'ANALYTICAL RESEARCH',
       subtitle: 'Cryosphere Modeling',
-      desc: 'Planetary heat budgets, teleconnection modeling, and paleoclimate isotopic reconstructions.',
-      accent: '#0EA5E9'
+      desc: 'Planetary heat budgets, teleconnection modeling, and paleoclimate isotopic reconstructions.'
     },
     {
       num: '05',
       title: 'PEER-REVIEWED PUBLICATION',
       subtitle: 'Literature & DOIs',
-      desc: 'High-impact research papers indexed across international cryosphere and atmospheric journals.',
-      accent: '#7C3AED'
+      desc: 'High-impact research papers indexed across international cryosphere and atmospheric journals.'
     },
     {
       num: '06',
       title: 'PUBLIC OUTREACH',
       subtitle: 'Source-Grounded Media',
-      desc: 'Traceable scientific dissemination through the POLARIS editorial studio and student hub.',
-      accent: '#111111'
+      desc: 'Traceable scientific dissemination through the POLARIS editorial studio and student hub.'
     }
   ];
 
   return (
-    <div className="w-full bg-[#FAFAF8] text-[#111111] selection:bg-[#111111] selection:text-[#FFFFFF]">
+    <div className="w-full bg-[#FAFAF8] text-[#111111] selection:bg-[#111111] selection:text-[#FFFFFF] snap-y snap-proximity">
       
       {/* ========================================================================= */}
       {/* 1. AGENTSHIELD STYLE HERO: Clean Alabaster Canvas with Flowing Wave Ribbons */}
       {/* ========================================================================= */}
-      <section className="relative min-h-[92vh] flex flex-col items-center justify-center overflow-hidden bg-[#FAFAF8] pt-12 pb-16 border-b border-[#E8E6E0]">
+      <section className="relative min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center overflow-hidden bg-[#FAFAF8] pt-6 pb-20 border-b border-[#E8E6E0] snap-start">
         
         {/* Dynamic Sinusoidal Wave Canvas from AgentShield */}
         <AgentShieldCanvas />
@@ -177,42 +171,42 @@ export const HomePage: React.FC = () => {
           }} 
         />
 
-        {/* Floating Perimeter Scientific Icons (Ambient Background Accents) */}
-        <div className="absolute left-[8%] top-[20%] text-[#D97706]/25 z-1 pointer-events-none hidden md:block">
+        {/* Floating Perimeter Scientific Icons (Ambient Background Accents in Single Palette) */}
+        <div className="absolute left-[8%] top-[20%] text-[#2563EB]/20 z-1 pointer-events-none hidden md:block">
           <Compass className="w-5 h-5 stroke-[1.5]" />
         </div>
-        <div className="absolute left-[86%] top-[18%] text-[#2563EB]/25 z-1 pointer-events-none hidden md:block">
+        <div className="absolute left-[86%] top-[18%] text-[#2563EB]/20 z-1 pointer-events-none hidden md:block">
           <Globe className="w-5 h-5 stroke-[1.5]" />
         </div>
-        <div className="absolute left-[6%] top-[62%] text-[#16A34A]/25 z-1 pointer-events-none hidden md:block">
+        <div className="absolute left-[6%] top-[62%] text-[#111111]/15 z-1 pointer-events-none hidden md:block">
           <Activity className="w-5 h-5 stroke-[1.5]" />
         </div>
-        <div className="absolute left-[88%] top-[56%] text-[#7C3AED]/25 z-1 pointer-events-none hidden md:block">
+        <div className="absolute left-[88%] top-[56%] text-[#2563EB]/20 z-1 pointer-events-none hidden md:block">
           <Radio className="w-5 h-5 stroke-[1.5]" />
         </div>
-        <div className="absolute left-[15%] top-[78%] text-[#0EA5E9]/25 z-1 pointer-events-none hidden md:block">
+        <div className="absolute left-[15%] top-[78%] text-[#2563EB]/20 z-1 pointer-events-none hidden md:block">
           <Search className="w-5 h-5 stroke-[1.5]" />
         </div>
-        <div className="absolute left-[82%] top-[74%] text-[#16A34A]/25 z-1 pointer-events-none hidden md:block">
+        <div className="absolute left-[82%] top-[74%] text-[#111111]/15 z-1 pointer-events-none hidden md:block">
           <Shield className="w-5 h-5 stroke-[1.5]" />
         </div>
 
         {/* Center Hero Body */}
-        <div className="relative z-10 flex flex-col items-center text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full pt-4">
+        <div className="relative z-10 flex flex-col items-center text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full pt-2">
 
           {/* Headline in Playfair Display Serif */}
-          <h1 className="font-serif text-[clamp(44px,7.5vw,86px)] font-light tracking-[-0.045em] leading-[1.02] text-[#111111] mb-6 max-w-3xl text-center">
+          <h1 className="font-serif text-[clamp(40px,6.8vw,78px)] font-light tracking-[-0.045em] leading-[1.02] text-[#111111] mb-4 max-w-3xl text-center">
             At the edge of the Earth,<br />
             India is <em className="italic font-normal">reading the planet.</em>
           </h1>
 
           {/* Subtitle in Inter */}
-          <p className="font-sans text-[clamp(15px,1.3vw,18px)] leading-[1.76] text-[#555558] max-w-xl text-center mb-8">
+          <p className="font-sans text-[clamp(14px,1.2vw,17px)] leading-[1.65] text-[#555558] max-w-xl text-center mb-6">
             Explore India's research expeditions, polar stations, NPDC scientific datasets, and climate discoveries across Antarctica, the Arctic, the Himalayas, and the Southern Ocean.
           </p>
 
           {/* Action Button Pair (Pill Buttons) */}
-          <div className="flex items-center gap-3 flex-wrap justify-center mb-10">
+          <div className="flex items-center gap-3 flex-wrap justify-center mb-6">
             <Link href="/expeditions" className="btn-primary">
               <span>Explore polar research</span>
               <span>→</span>
@@ -289,30 +283,30 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* ========================================================================= */}
-      {/* 2. SECTION 1: "Four Regions. One Scientific Mission." (Clean Warm Grid)  */}
+      {/* 2. SECTION 1: "Four Regions. One Scientific Mission." (Single Page 4-Column Layout) */}
       {/* ========================================================================= */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#E8E6E0] pb-8">
+      <section className="min-h-[calc(100vh-4rem)] flex flex-col justify-center py-6 sm:py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-5 snap-start">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#E8E6E0] pb-4">
           <div>
-            <div className="text-xs font-mono uppercase tracking-widest text-[#D97706] mb-2 font-semibold">
+            <div className="text-xs font-mono uppercase tracking-widest text-[#2563EB] mb-1 font-semibold">
               Geographic Scope
             </div>
-            <h2 className="text-3xl sm:text-5xl font-serif font-normal text-[#111111] tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-serif font-normal text-[#111111] tracking-tight">
               Four regions. One scientific mission.
             </h2>
           </div>
-          <p className="text-sm sm:text-base text-[#555558] max-w-xl font-normal leading-relaxed">
+          <p className="text-xs sm:text-sm text-[#555558] max-w-lg font-normal leading-relaxed">
             India conducts uninterrupted year-round field research across the planetary cold spots that regulate climate, oceanic circulation, and global sea-level rise.
           </p>
         </div>
 
-        {/* 4 Large Photographic Visual Chapters */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* 4 Photographic Visual Chapters Side-by-Side (Single Screen Page) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {REGIONS.map((region) => (
             <Link 
               key={region.id} 
               href={region.link}
-              className="group relative block aspect-[16/10] rounded-2xl overflow-hidden border border-[#E8E6E0] hover:border-[#111111]/30 transition duration-500 shadow-md hover:shadow-xl cursor-pointer bg-white"
+              className="group relative block h-[330px] sm:h-[370px] rounded-2xl overflow-hidden border border-[#E8E6E0] hover:border-[#111111]/30 transition duration-500 shadow-md hover:shadow-xl cursor-pointer bg-white"
             >
               {/* Background Photograph */}
               <img 
@@ -320,36 +314,30 @@ export const HomePage: React.FC = () => {
                 alt={region.title}
                 className="w-full h-full object-cover polar-image-zoom brightness-[0.85] group-hover:brightness-95 transition-all duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/95 via-[#111111]/45 to-transparent" />
 
               {/* Coordinates Pill */}
-              <div className="absolute top-5 left-5 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-mono text-[#111111] border border-[#E8E6E0] shadow-xs">
+              <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-2.5 py-0.5 rounded-full text-[10px] font-mono text-[#111111] border border-[#E8E6E0] shadow-xs">
                 {region.coordinates}
               </div>
 
               {/* Bottom Editorial Content */}
-              <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 space-y-3">
-                <div className="text-xs font-mono tracking-widest uppercase text-[#5BB7A5] font-semibold">
-                  {region.name} · {region.stations}
+              <div className="absolute bottom-0 left-0 right-0 p-5 space-y-2">
+                <div className="text-[10px] font-mono tracking-widest uppercase text-[#93C5FD] font-semibold">
+                  {region.name}
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-serif font-normal text-white group-hover:text-[#FAFAF8] transition-colors">
+                <h3 className="text-lg sm:text-xl font-serif font-normal text-white group-hover:text-[#FAFAF8] transition-colors leading-tight">
                   {region.title}
                 </h3>
-                <p className="text-xs sm:text-sm text-[#F7F8F5]/90 line-clamp-2 font-normal leading-relaxed">
+                <p className="text-xs text-[#F7F8F5]/90 line-clamp-2 font-normal leading-relaxed">
                   {region.desc}
                 </p>
 
-                <div className="pt-2 flex items-center justify-between text-xs font-mono text-[#B9DDE7]">
-                  <div className="flex flex-wrap gap-2">
-                    {region.themes.map((t) => (
-                      <span key={t} className="px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-xs border border-white/20 text-[10px] text-white">
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                  <span className="flex items-center gap-1 group-hover:translate-x-1.5 transition-transform font-bold text-white">
+                <div className="pt-1.5 flex items-center justify-between text-xs font-mono text-[#93C5FD] border-t border-white/10">
+                  <span className="text-[10px] text-white/70 truncate max-w-[140px]">{region.stations}</span>
+                  <span className="flex items-center gap-1 group-hover:translate-x-1 transition-transform font-bold text-white text-[11px]">
                     <span>Explore</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <ArrowRight className="w-3 h-3" />
                   </span>
                 </div>
               </div>
@@ -359,38 +347,38 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* ========================================================================= */}
-      {/* 3. SECTION 2: "From Fieldwork to Knowledge" (Warm Stone Horizontal Band)  */}
+      {/* 3. SECTION 2: "From Fieldwork to Knowledge" (Single Page 6-Step Pipeline)  */}
       {/* ========================================================================= */}
-      <section className="py-20 bg-[#F4F2EE] border-y border-[#E8E6E0]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="text-center max-w-3xl mx-auto space-y-3">
-            <div className="text-xs font-mono uppercase tracking-widest text-[#16A34A] font-semibold">
+      <section className="min-h-[calc(100vh-4rem)] flex flex-col justify-center py-6 sm:py-8 bg-[#F4F2EE] border-y border-[#E8E6E0] snap-start">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8 w-full">
+          <div className="text-center max-w-3xl mx-auto space-y-2">
+            <div className="text-xs font-mono uppercase tracking-widest text-[#2563EB] font-semibold">
               The Scientific Method at 70° South
             </div>
-            <h2 className="text-3xl sm:text-4xl font-serif font-normal text-[#111111] tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-serif font-normal text-[#111111] tracking-tight">
               From fieldwork to planetary knowledge
             </h2>
-            <p className="text-sm text-[#555558] font-normal leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#555558] font-normal leading-relaxed">
               How raw environmental observations in extreme polar environments transform into calibrated data, peer-reviewed discoveries, and verified public understanding.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5">
             {PIPELINE_STEPS.map((step) => (
               <div 
                 key={step.num}
-                className="bg-[#FFFFFF] border border-[#E8E6E0] p-5 rounded-2xl space-y-3 shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
+                className="bg-[#FFFFFF] border border-[#E8E6E0] p-4 sm:p-5 rounded-2xl space-y-2.5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between min-h-[220px]"
               >
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <div className="flex items-center justify-between font-mono text-xs text-[#8E8E91]">
                     <span className="text-[#111111] font-bold">{step.num}</span>
-                    <span className="uppercase text-[10px]">{step.subtitle}</span>
+                    <span className="uppercase text-[9px]">{step.subtitle}</span>
                   </div>
-                  <h4 className="text-xs font-bold font-sans tracking-wide text-[#111111] uppercase">
+                  <h4 className="text-[11px] font-bold font-sans tracking-wide text-[#111111] uppercase">
                     {step.title}
                   </h4>
                 </div>
-                <p className="text-xs text-[#555558] leading-relaxed font-normal">
+                <p className="text-[11.5px] text-[#555558] leading-relaxed font-normal">
                   {step.desc}
                 </p>
               </div>
@@ -400,38 +388,38 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* ========================================================================= */}
-      {/* 4. SECTION 3: "Inside India's Polar Observatories" (Real-Scale Telemetry) */}
+      {/* 4. SECTION 3: "Inside India's Polar Observatories" (Single Page Telemetry) */}
       {/* ========================================================================= */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-10">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#E8E6E0] pb-6">
+      <section className="min-h-[calc(100vh-4rem)] flex flex-col justify-center py-6 sm:py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-5 snap-start">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#E8E6E0] pb-3">
           <div>
-            <div className="flex items-center space-x-2 text-xs font-mono uppercase tracking-widest text-[#16A34A] mb-2 font-semibold">
+            <div className="flex items-center space-x-2 text-xs font-mono uppercase tracking-widest text-[#2563EB] mb-1 font-semibold">
               <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse" />
               <span>LIVE ENVIRONMENTAL CONTEXT · Source: Open-Meteo</span>
             </div>
-            <h2 className="text-3xl sm:text-5xl font-serif font-normal text-[#111111] tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-serif font-normal text-[#111111] tracking-tight">
               Inside India's polar observatories
             </h2>
           </div>
-          <p className="text-sm text-[#555558] max-w-md">
+          <p className="text-xs sm:text-sm text-[#555558] max-w-md">
             Continuous meteorological sensor telemetry streaming from Antarctica, the Arctic, and the high Himalayas.
           </p>
         </div>
 
         {/* Station Selector Pill Tabs */}
-        <div className="flex flex-wrap gap-2.5">
+        <div className="flex flex-wrap gap-2">
           {weatherList.map((st) => (
             <button
               key={st.station_id}
               onClick={() => setSelectedStationWeatherId(st.station_id)}
-              className={`px-4 py-2 rounded-full text-xs font-semibold font-sans transition-all flex items-center gap-2 ${
+              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold font-sans transition-all flex items-center gap-2 ${
                 selectedStationWeatherId === st.station_id
                   ? 'bg-[#111111] text-white shadow-md'
                   : 'bg-white border border-[#E8E6E0] text-[#555558] hover:text-[#111111] hover:border-[#111111]/30'
               }`}
             >
               <span>{st.station_name}</span>
-              <span className="font-mono text-[11px] opacity-80">
+              <span className="font-mono text-[10.5px] opacity-80">
                 {st.temperature_c != null ? `${st.temperature_c}°C` : '--'}
               </span>
             </button>
@@ -439,86 +427,86 @@ export const HomePage: React.FC = () => {
         </div>
 
         {/* Real-Scale Telemetry Reading Grid */}
-        <div className="bg-white border border-[#E8E6E0] rounded-2xl p-6 sm:p-10 shadow-sm space-y-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E8E6E0] pb-6">
+        <div className="bg-white border border-[#E8E6E0] rounded-2xl p-5 sm:p-7 shadow-sm space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E8E6E0] pb-4">
             <div>
-              <span className="text-xs font-mono text-[#D97706] uppercase tracking-wider font-semibold">
+              <span className="text-[11px] font-mono text-[#2563EB] uppercase tracking-wider font-semibold">
                 {activeWeather?.region || 'Antarctica'} · Active Telemetry Stream
               </span>
-              <h3 className="text-2xl sm:text-3xl font-serif font-normal text-[#111111]">
+              <h3 className="text-xl sm:text-2xl font-serif font-normal text-[#111111]">
                 {activeWeather?.station_name || 'Maitri Research Station'}
               </h3>
             </div>
             <Link
               href="/observatory"
-              className="btn-primary text-xs !py-2.5 !px-5 w-fit"
+              className="btn-primary text-xs !py-2 !px-4 w-fit"
             >
               <span>Open Observatory Console</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="p-5 rounded-2xl bg-[#FAFAF8] border border-[#E8E6E0] space-y-2">
-              <div className="flex items-center space-x-2 text-xs font-mono text-[#555558]">
-                <Thermometer className="w-4 h-4 text-[#D97706]" />
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="p-4 rounded-2xl bg-[#FAFAF8] border border-[#E8E6E0] space-y-1.5">
+              <div className="flex items-center space-x-2 text-[11px] font-mono text-[#555558]">
+                <Thermometer className="w-3.5 h-3.5 text-[#2563EB]" />
                 <span>SURFACE AIR TEMP</span>
               </div>
-              <div className="text-3xl sm:text-5xl font-mono font-bold text-[#111111]">
+              <div className="text-2xl sm:text-4xl font-mono font-bold text-[#111111]">
                 {activeWeather?.temperature_c != null ? `${activeWeather.temperature_c}°C` : '-23.2°C'}
               </div>
-              <p className="text-[11px] text-[#8E8E91]">2m dry-bulb temperature sensor</p>
+              <p className="text-[10px] text-[#8E8E91]">2m dry-bulb temperature sensor</p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-[#FAFAF8] border border-[#E8E6E0] space-y-2">
-              <div className="flex items-center space-x-2 text-xs font-mono text-[#555558]">
-                <Wind className="w-4 h-4 text-[#2563EB]" />
+            <div className="p-4 rounded-2xl bg-[#FAFAF8] border border-[#E8E6E0] space-y-1.5">
+              <div className="flex items-center space-x-2 text-[11px] font-mono text-[#555558]">
+                <Wind className="w-3.5 h-3.5 text-[#2563EB]" />
                 <span>WIND SPEED & VECTOR</span>
               </div>
-              <div className="text-3xl sm:text-5xl font-mono font-bold text-[#111111]">
+              <div className="text-2xl sm:text-4xl font-mono font-bold text-[#111111]">
                 {activeWeather?.wind_speed_kmh != null ? `${activeWeather.wind_speed_kmh} km/h` : '6.5 km/h'}
               </div>
-              <p className="text-[11px] text-[#8E8E91]">Ultrasonic 2-axis anemometer</p>
+              <p className="text-[10px] text-[#8E8E91]">Ultrasonic 2-axis anemometer</p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-[#FAFAF8] border border-[#E8E6E0] space-y-2">
-              <div className="flex items-center space-x-2 text-xs font-mono text-[#555558]">
-                <Gauge className="w-4 h-4 text-[#0EA5E9]" />
+            <div className="p-4 rounded-2xl bg-[#FAFAF8] border border-[#E8E6E0] space-y-1.5">
+              <div className="flex items-center space-x-2 text-[11px] font-mono text-[#555558]">
+                <Gauge className="w-3.5 h-3.5 text-[#2563EB]" />
                 <span>BAROMETRIC PRESSURE</span>
               </div>
-              <div className="text-3xl sm:text-5xl font-mono font-bold text-[#111111]">
+              <div className="text-2xl sm:text-4xl font-mono font-bold text-[#111111]">
                 {activeWeather?.surface_pressure_hpa != null ? `${activeWeather.surface_pressure_hpa} hPa` : '972.6 hPa'}
               </div>
-              <p className="text-[11px] text-[#8E8E91]">Digital barometric transducer</p>
+              <p className="text-[10px] text-[#8E8E91]">Digital barometric transducer</p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-[#FAFAF8] border border-[#E8E6E0] space-y-2">
-              <div className="flex items-center space-x-2 text-xs font-mono text-[#555558]">
-                <Droplets className="w-4 h-4 text-[#16A34A]" />
+            <div className="p-4 rounded-2xl bg-[#FAFAF8] border border-[#E8E6E0] space-y-1.5">
+              <div className="flex items-center space-x-2 text-[11px] font-mono text-[#555558]">
+                <Droplets className="w-3.5 h-3.5 text-[#2563EB]" />
                 <span>RELATIVE HUMIDITY</span>
               </div>
-              <div className="text-3xl sm:text-5xl font-mono font-bold text-[#111111]">
+              <div className="text-2xl sm:text-4xl font-mono font-bold text-[#111111]">
                 {activeWeather?.relative_humidity_pct != null ? `${activeWeather.relative_humidity_pct}%` : '72%'}
               </div>
-              <p className="text-[11px] text-[#8E8E91]">Capacitive polymer hygrometer</p>
+              <p className="text-[10px] text-[#8E8E91]">Capacitive polymer hygrometer</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* ========================================================================= */}
-      {/* 5. SECTION 4: "Explore the Archive" (Unified Cross-Entity Discovery)      */}
+      {/* 5. SECTION 4: "Explore the Archive" (Single Page Cross-Entity Discovery)  */}
       {/* ========================================================================= */}
-      <section className="py-20 bg-[#F4F2EE] border-y border-[#E8E6E0]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <section className="min-h-[calc(100vh-4rem)] flex flex-col justify-center py-6 sm:py-8 bg-[#F4F2EE] border-y border-[#E8E6E0] snap-start">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-5 w-full">
           <div className="max-w-3xl">
             <span className="text-xs font-mono uppercase tracking-widest text-[#2563EB] font-semibold">
               The Central Product Interaction
             </span>
-            <h2 className="text-3xl sm:text-4xl font-serif font-normal text-[#111111] tracking-tight mt-1">
+            <h2 className="text-2xl sm:text-4xl font-serif font-normal text-[#111111] tracking-tight mt-1">
               What are you looking for in the polar archive?
             </h2>
-            <p className="text-sm text-[#555558] mt-2">
+            <p className="text-xs sm:text-sm text-[#555558] mt-1.5">
               Search across campaigns, open research datasets, scientific stations, and peer-reviewed journals.
             </p>
           </div>
@@ -532,7 +520,7 @@ export const HomePage: React.FC = () => {
                   setHomeSearchQuery(sample);
                   executeHomeSearch(sample);
                 }}
-                className="px-3.5 py-1.5 rounded-full text-xs font-sans font-medium bg-white text-[#555558] hover:text-[#111111] border border-[#E8E6E0] transition-colors"
+                className="px-3 py-1.5 rounded-full text-xs font-sans font-medium bg-white text-[#555558] hover:text-[#111111] border border-[#E8E6E0] transition-colors"
               >
                 {sample}
               </button>
@@ -540,9 +528,9 @@ export const HomePage: React.FC = () => {
           </div>
 
           {/* Live Search Entity Connection Grid */}
-          {homeSearchResults && (
-            <div className="bg-white border border-[#E8E6E0] rounded-2xl p-6 sm:p-8 space-y-6 shadow-sm">
-              <div className="flex items-center justify-between border-b border-[#E8E6E0] pb-4">
+          {homeSearchResults ? (
+            <div className="bg-white border border-[#E8E6E0] rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm">
+              <div className="flex items-center justify-between border-b border-[#E8E6E0] pb-3">
                 <span className="text-xs font-mono text-[#555558]">
                   Query: <strong className="text-[#111111]">"{homeSearchResults.query}"</strong> · {homeSearchResults.total_results} connected records
                 </span>
@@ -592,7 +580,7 @@ export const HomePage: React.FC = () => {
                 {/* Expedition Result */}
                 {homeSearchResults.results_by_type.expeditions?.[0] && (
                   <div className="p-4 rounded-xl bg-[#FAFAF8] border border-[#E8E6E0] space-y-2">
-                    <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-[#D97706] text-white">
+                    <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-[#111111] text-white">
                       Field Campaign
                     </span>
                     <h4 className="text-base font-serif font-bold text-[#111111]">
@@ -608,16 +596,49 @@ export const HomePage: React.FC = () => {
                 )}
               </div>
             </div>
+          ) : (
+            <div className="bg-white border border-[#E8E6E0] rounded-2xl p-6 sm:p-8 space-y-4 shadow-sm">
+              <div className="flex items-center justify-between border-b border-[#E8E6E0] pb-3">
+                <span className="text-xs font-mono text-[#8E8E91]">Search repository across all indexed entities</span>
+                <Link href="/repository" className="text-xs font-bold text-[#111111] hover:underline flex items-center gap-1">
+                  <span>Browse complete database</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-[#555558]">
+                <div className="p-4 rounded-xl bg-[#FAFAF8] border border-[#E8E6E0] space-y-1.5">
+                  <div className="font-bold text-[#111111] flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#111111]" />
+                    <span>Permanent Polar Stations</span>
+                  </div>
+                  <p className="text-[11px] leading-relaxed">Maitri, Bharati, Himadri, and Himansh observational stations and sub-ice drill sites.</p>
+                </div>
+                <div className="p-4 rounded-xl bg-[#FAFAF8] border border-[#E8E6E0] space-y-1.5">
+                  <div className="font-bold text-[#111111] flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#2563EB]" />
+                    <span>NPDC Scientific Datasets</span>
+                  </div>
+                  <p className="text-[11px] leading-relaxed">Atmospheric chemistry, cryospheric mass balances, oceanographic CTD casts, and magnetometry.</p>
+                </div>
+                <div className="p-4 rounded-xl bg-[#FAFAF8] border border-[#E8E6E0] space-y-1.5">
+                  <div className="font-bold text-[#111111] flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#111111]" />
+                    <span>Scientific Field Campaigns</span>
+                  </div>
+                  <p className="text-[11px] leading-relaxed">From the historic 1st Antarctic expedition in 1981 to the 45th active mission in 2025–26.</p>
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </section>
 
       {/* ========================================================================= */}
-      {/* 6. SECTION 5: Featured Expedition (Editorial Showcase)                    */}
+      {/* 6. SECTION 5: Featured Expedition (Single Page Mission Dossier)            */}
       {/* ========================================================================= */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
-        <div className="flex items-center justify-between border-b border-[#E8E6E0] pb-4">
-          <span className="text-xs font-mono uppercase tracking-widest text-[#D97706] font-semibold">
+      <section className="min-h-[calc(100vh-4rem)] flex flex-col justify-center py-6 sm:py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-4 snap-start">
+        <div className="flex items-center justify-between border-b border-[#E8E6E0] pb-2.5">
+          <span className="text-xs font-mono uppercase tracking-widest text-[#2563EB] font-semibold">
             Active Campaign Dossier
           </span>
           <Link href="/expeditions" className="text-xs font-bold text-[#111111] hover:underline flex items-center gap-1">
@@ -626,29 +647,30 @@ export const HomePage: React.FC = () => {
           </Link>
         </div>
 
-        <div className="bg-white border border-[#E8E6E0] rounded-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 shadow-sm">
-          <div className="lg:col-span-7 aspect-[16/10] lg:aspect-auto relative">
+        <div className="bg-white border border-[#E8E6E0] rounded-2xl overflow-hidden flex flex-col lg:flex-row shadow-sm lg:h-[390px]">
+          <div className="lg:w-5/12 relative h-48 lg:h-full shrink-0 overflow-hidden">
             <img
               src="https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=1200&q=85"
               alt="45th Indian Scientific Expedition to Antarctica"
               className="w-full h-full object-cover"
             />
-            <div className="absolute top-5 left-5 bg-white/95 px-3 py-1 rounded-full text-xs font-mono font-bold text-[#111111] shadow-xs">
+            <div className="absolute top-4 left-4 bg-white/95 px-3 py-1 rounded-full text-xs font-mono font-bold text-[#111111] shadow-xs">
               45TH ISEA · 2025–26
             </div>
           </div>
-          <div className="lg:col-span-5 p-8 sm:p-12 flex flex-col justify-between space-y-6">
-            <div className="space-y-4">
-              <span className="text-xs font-mono uppercase text-[#16A34A] font-bold tracking-wider">
-                ● Active Mission in Field
+          <div className="lg:w-7/12 p-6 sm:p-7 flex flex-col justify-between h-full space-y-3">
+            <div className="space-y-2">
+              <span className="text-xs font-mono uppercase text-[#2563EB] font-bold tracking-wider flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse" />
+                <span>Active Mission in Field</span>
               </span>
-              <h3 className="text-2xl sm:text-4xl font-serif font-normal text-[#111111] leading-tight">
+              <h3 className="text-xl sm:text-2xl font-serif font-normal text-[#111111] leading-tight">
                 45th Indian Scientific Expedition to Antarctica
               </h3>
-              <p className="text-sm text-[#555558] leading-relaxed">
+              <p className="text-xs sm:text-sm text-[#555558] leading-relaxed line-clamp-3">
                 48-member interdisciplinary science contingent deployed aboard ice-class vessels to Maitri and Bharati stations for long-term climate modeling, sub-ice lake drilling, and atmospheric chemistry monitoring.
               </p>
-              <div className="pt-2 space-y-2 text-xs font-mono text-[#555558]">
+              <div className="pt-1 space-y-1 text-xs font-mono text-[#555558]">
                 <div><strong>Base:</strong> Maitri (Schirmacher Oasis) & Bharati (Larsemann Hills)</div>
                 <div><strong>Voyage:</strong> Cape Town → Prydz Bay → Princess Astrid Coast</div>
                 <div><strong>Science Themes:</strong> Deep Ice Coring, Ozone Depletion, Paleoseismology</div>
@@ -657,7 +679,7 @@ export const HomePage: React.FC = () => {
 
             <Link
               href="/expeditions/exp_45_isea"
-              className="btn-primary w-fit text-xs !py-3 !px-6"
+              className="btn-primary w-fit text-xs !py-2.5 !px-5"
             >
               <span>Explore Complete Mission Dossier</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -667,49 +689,47 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* ========================================================================= */}
-      {/* 7. SECTION 6: Research & Publications (Editorial Article Layout)          */}
+      {/* 7. SECTION 6: Research & Publications (Single Page Article Grid)           */}
       {/* ========================================================================= */}
-      <section className="py-20 bg-[#F4F2EE] border-y border-[#E8E6E0]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#E8E6E0] pb-6">
+      <section className="min-h-[calc(100vh-4rem)] flex flex-col justify-center py-6 sm:py-8 bg-[#F4F2EE] border-y border-[#E8E6E0] snap-start">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-5 w-full">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#E8E6E0] pb-3">
             <div>
               <span className="text-xs font-mono uppercase tracking-widest text-[#2563EB] font-semibold">
                 Peer-Reviewed Discoveries
               </span>
-              <h2 className="text-3xl sm:text-4xl font-serif font-normal text-[#111111] tracking-tight mt-1">
+              <h2 className="text-2xl sm:text-4xl font-serif font-normal text-[#111111] tracking-tight mt-1">
                 Research from the polar frontier
               </h2>
             </div>
-            <Link href="/publications" className="btn-ghost text-xs !py-2.5 !px-5 w-fit">
+            <Link href="/publications" className="btn-ghost text-xs !py-2 !px-4 w-fit">
               <span>View Publications Library</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {latestResearch.map((paper, idx) => (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            {latestResearch.map((paper) => (
               <div
                 key={paper.id}
-                className={`p-6 sm:p-8 rounded-2xl bg-white border border-[#E8E6E0] space-y-4 shadow-xs hover:shadow-md transition-all flex flex-col justify-between ${
-                  idx === 0 ? 'lg:col-span-2' : ''
-                }`}
+                className="p-5 sm:p-6 rounded-2xl bg-white border border-[#E8E6E0] space-y-3 shadow-xs hover:shadow-md transition-all flex flex-col justify-between h-[270px] sm:h-[290px]"
               >
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <div className="flex items-center justify-between text-xs font-mono text-[#8E8E91]">
-                    <span className="font-bold text-[#D97706]">{paper.year}</span>
+                    <span className="font-bold text-[#2563EB]">{paper.year}</span>
                     <span className="px-2 py-0.5 rounded-full bg-[#F4F2EE] border border-[#E8E6E0] text-[10px] text-[#555558]">
                       {paper.journal}
                     </span>
                   </div>
-                  <h3 className="text-lg sm:text-xl font-serif font-normal text-[#111111] leading-snug">
+                  <h3 className="text-sm sm:text-base font-serif font-normal text-[#111111] leading-snug line-clamp-2">
                     {paper.title}
                   </h3>
                   <p className="text-xs text-[#555558] line-clamp-3 leading-relaxed">
                     {paper.abstract}
                   </p>
                 </div>
-                <div className="pt-3 border-t border-[#E8E6E0] flex items-center justify-between text-xs font-mono text-[#8E8E91]">
-                  <span className="truncate max-w-[200px]">
+                <div className="pt-2 border-t border-[#E8E6E0] flex items-center justify-between text-xs font-mono text-[#8E8E91]">
+                  <span className="truncate max-w-[180px]">
                     {Array.isArray(paper.authors) ? paper.authors.join(', ') : paper.authors}
                   </span>
                   <span className="text-[#2563EB] font-semibold">DOI: {paper.doi}</span>
@@ -721,25 +741,25 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* ========================================================================= */}
-      {/* 8. SECTION 7: Smart Education & Student Hub Preview                       */}
+      {/* 8. SECTION 7: Smart Education & Student Hub (Single Page Callout)          */}
       {/* ========================================================================= */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12">
-        <div className="bg-[#111111] text-white rounded-3xl p-8 sm:p-14 relative overflow-hidden shadow-xl">
-          <div className="relative z-10 max-w-2xl space-y-6">
-            <span className="inline-block px-3 py-1 rounded-full bg-white/10 text-xs font-mono text-[#B9DDE7] border border-white/15">
+      <section className="min-h-[calc(100vh-4rem)] flex flex-col justify-center py-6 sm:py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto snap-start">
+        <div className="bg-[#111111] text-white rounded-3xl p-8 sm:p-12 relative overflow-hidden shadow-xl max-w-5xl mx-auto w-full">
+          <div className="relative z-10 max-w-2xl space-y-5">
+            <span className="inline-block px-3 py-1 rounded-full bg-white/10 text-xs font-mono text-[#93C5FD] border border-white/15">
               Smart Education Initiative · SIH26063
             </span>
-            <h2 className="text-3xl sm:text-5xl font-serif font-normal leading-tight text-white">
+            <h2 className="text-2xl sm:text-4xl font-serif font-normal leading-tight text-white">
               Polar science is not only for scientists.
             </h2>
-            <p className="text-sm sm:text-base text-[#DCEEF2]/85 leading-relaxed font-normal">
+            <p className="text-xs sm:text-sm text-white/80 leading-relaxed font-normal">
               Engage with interactive modules explaining ice-albedo climate feedback loops, Antarctic station engineering, cryospheric lexicons, and take our 5-question self-assessment quiz.
             </p>
-            <div className="flex flex-wrap gap-4 pt-2">
-              <Link href="/learn" className="px-6 py-3.5 rounded-full bg-white hover:bg-[#F4F2EE] text-[#111111] font-semibold text-xs transition-all shadow-md">
+            <div className="flex flex-wrap gap-3 pt-1">
+              <Link href="/learn" className="px-5 py-3 rounded-full bg-white hover:bg-[#F4F2EE] text-[#111111] font-semibold text-xs transition-all shadow-md">
                 Launch Student Learning Hub
               </Link>
-              <Link href="/knowledge-graph" className="px-6 py-3.5 rounded-full bg-transparent hover:bg-white/10 border border-white/20 text-white font-semibold text-xs transition-all">
+              <Link href="/knowledge-graph" className="px-5 py-3 rounded-full bg-transparent hover:bg-white/10 border border-white/20 text-white font-semibold text-xs transition-all">
                 Explore Knowledge Graph
               </Link>
             </div>
