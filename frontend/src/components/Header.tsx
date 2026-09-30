@@ -20,23 +20,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch }) => {
 
   return (
     <header className="sticky top-0 z-40 w-full bg-[#FAFAF8]/95 backdrop-blur-md border-b border-[#E8E6E0] transition-colors">
-      {/* Top Institutional Bar (Warm Stone) */}
-      <div className="w-full bg-[#F4F2EE] border-b border-[#E8E6E0] px-4 sm:px-8 py-1.5 text-[11px] text-[#555558] flex items-center justify-between font-sans">
-        <div className="flex items-center space-x-2.5">
-          <span className="inline-block w-2 h-2 rounded-full bg-[#16A34A]" />
-          <span className="font-medium text-[#111111]">Government of India • Ministry of Earth Sciences (MoES)</span>
-          <span className="hidden md:inline text-[#8E8E91]">/</span>
-          <span className="hidden md:inline">National Centre for Polar and Ocean Research (NCPOR)</span>
-        </div>
-        <div className="flex items-center space-x-4 text-[11px] font-mono text-[#555558]">
-          <span className="hidden sm:inline">Headland Sada, Vasco da Gama, Goa</span>
-          <Link href="/admin" className="text-[#111111] hover:text-[#555558] flex items-center gap-1 font-medium transition">
-            <Lock className="w-3 h-3 text-[#111111]" />
-            <span>Admin Console</span>
-          </Link>
-        </div>
-      </div>
-
       {/* Main Navigation Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand Logo */}
@@ -50,11 +33,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch }) => {
             </svg>
           </div>
           <div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center">
               <span className="text-lg font-bold tracking-tight text-[#111111] font-sans">POLARIS</span>
-              <span className="text-[10px] font-semibold tracking-wider px-2 py-0.5 rounded-full bg-[#F4F2EE] text-[#555558] border border-[#E8E6E0]">
-                MoES · NCPOR
-              </span>
             </div>
             <p className="text-[10.5px] text-[#8E8E91] font-medium hidden sm:block">
               India's Polar Science Knowledge Platform

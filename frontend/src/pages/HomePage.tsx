@@ -198,15 +198,7 @@ export const HomePage: React.FC = () => {
         </div>
 
         {/* Center Hero Body */}
-        <div className="relative z-10 flex flex-col items-center text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full">
-          
-          {/* Top Pill Chip */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#E8E6E0] text-[12.5px] font-semibold text-[#555558] shadow-[0_1px_2px_rgba(0,0,0,0.04)] mb-6 transition-all hover:shadow-md">
-            <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse" />
-            <span className="text-[#111111]">National Polar Science Platform</span>
-            <span className="text-[#8E8E91]">·</span>
-            <span>MoES & NCPOR</span>
-          </div>
+        <div className="relative z-10 flex flex-col items-center text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full pt-4">
 
           {/* Headline in Playfair Display Serif */}
           <h1 className="font-serif text-[clamp(44px,7.5vw,86px)] font-light tracking-[-0.045em] leading-[1.02] text-[#111111] mb-6 max-w-3xl text-center">
