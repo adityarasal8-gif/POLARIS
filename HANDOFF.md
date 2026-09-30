@@ -89,10 +89,10 @@ Every agent must read it before making changes and update it after meaningful wo
    - Completely removed the top institutional bar (`Government of India • Ministry of Earth Sciences (MoES) / NCPOR / Headland Sada, Goa / Admin Console`).
    - Removed the `MoES · NCPOR` badge next to the POLARIS logo, leaving a clean minimalist brand mark.
    - Removed the top pill chip (`National Polar Science Platform · MoES & NCPOR`) from the hero section to give the Playfair Display headline full prominence over the wave canvas.
-5. **Full-Width Navigation Bar Alignment**:
+5. **Full-Width Navigation Bar Alignment & Search Option Removal**:
    - Expanded the header navigation container from `max-w-7xl` to full viewport width (`w-full px-4 sm:px-6 lg:px-8`).
    - Positioned the brand mark and POLARIS logo completely on the far left edge of the viewport.
-   - Positioned the Quick Search pill and "Live Observatory" live pulse CTA completely on the far right edge of the viewport.
+   - Removed the search pill trigger from the navbar, leaving the "Live Observatory" pulse CTA positioned exclusively on the far right edge of the viewport.
    - Kept center navigation links (`Home`, `Explore`, `Research`, `Expeditions`, `Data`, `Learn`) evenly spaced in between.
 6. **Verification**:
    - `npm run build` ran cleanly with 0 TypeScript/Vite errors.
