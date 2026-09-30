@@ -1,8 +1,9 @@
 import time
 import httpx
 import math
+import asyncio
 from datetime import datetime, timezone, timedelta
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 from models import (
     StationWeather, StationHistoryResponse, TelemetryHourlyReading,
     StationTelemetrySummary, StationSensorHealth, StationOperationalStatus
@@ -308,7 +309,53 @@ FALLBACK_WEATHER: Dict[str, Dict[str, Any]] = {
 }
 
 
-async def fetch_station_weather(station_id: str, client: httpx.AsyncClient) -> StationWeather:
+_SHARED_CLIENT: Optional[httpx.AsyncClient] = None
+
+def get_shared_client() -> httpx.AsyncClient:
+    """
+    Returns a persistent, connection-pooled AsyncClient configured for scientific APIs.
+    Automatically re-initializes if the associated event loop was closed or changed.
+    """
+    global _SHARED_CLIENT
+    need_new = False
+    if _SHARED_CLIENT is None or _SHARED_CLIENT.is_closed:
+        need_new = True
+    else:
+        try:
+            current_loop = asyncio.get_running_loop()
+            if getattr(_SHARED_CLIENT, "_loop", None) is not None and _SHARED_CLIENT._loop != current_loop:
+                need_new = True
+        except RuntimeError:
+            pass
+
+    if need_new:
+        limits = httpx.Limits(max_keepalive_connections=10, max_connections=20, keepalive_expiry=30.0)
+        timeout = httpx.Timeout(connect=5.0, read=8.0, write=5.0, pool=5.0)
+        _SHARED_CLIENT = httpx.AsyncClient(limits=limits, timeout=timeout)
+        try:
+            _SHARED_CLIENT._loop = asyncio.get_running_loop()
+        except RuntimeError:
+            pass
+    return _SHARED_CLIENT
+
+async def close_shared_client():
+    """Closes the shared HTTP client gracefully on application shutdown."""
+    global _SHARED_CLIENT
+    if _SHARED_CLIENT is not None and not _SHARED_CLIENT.is_closed:
+        await _SHARED_CLIENT.aclose()
+        _SHARED_CLIENT = None
+
+def get_cache_stats() -> Dict[str, Any]:
+    """Returns real-time diagnostics on weather and telemetry time-series caches."""
+    return {
+        "weather_cache_entries": len(_WEATHER_CACHE),
+        "history_cache_entries": len(_HISTORY_CACHE),
+        "ttl_seconds": CACHE_TTL_SECONDS,
+        "cached_stations": list(_HISTORY_CACHE.keys())
+    }
+
+
+async def fetch_station_weather(station_id: str, client: Optional[httpx.AsyncClient] = None) -> StationWeather:
     station_id = station_id.lower()
     if station_id not in STATION_COORDS:
         raise ValueError(f"Unknown station: {station_id}")
@@ -322,6 +369,8 @@ async def fetch_station_weather(station_id: str, client: httpx.AsyncClient) -> S
         if now_epoch - cached_time < CACHE_TTL_SECONDS:
             return cached_weather
 
+    c = client or get_shared_client()
+
     # Call Open-Meteo live endpoint
     url = "https://api.open-meteo.com/v1/forecast"
     params = {
@@ -332,7 +381,7 @@ async def fetch_station_weather(station_id: str, client: httpx.AsyncClient) -> S
     }
 
     try:
-        response = await client.get(url, params=params, timeout=5.0)
+        response = await c.get(url, params=params, timeout=5.0)
         if response.status_code == 200:
             data = response.json()
             curr = data.get("current", {})
@@ -402,13 +451,18 @@ async def fetch_station_weather(station_id: str, client: httpx.AsyncClient) -> S
     return weather
 
 
-async def get_all_stations_weather() -> List[StationWeather]:
-    results = []
-    async with httpx.AsyncClient() as client:
-        for sid in STATION_COORDS.keys():
-            w = await fetch_station_weather(sid, client)
-            results.append(w)
-    return results
+async def get_all_stations_weather(client: Optional[httpx.AsyncClient] = None) -> List[StationWeather]:
+    """Concurrently fetches live telemetry for all 4 Indian polar stations in parallel."""
+    c = client or get_shared_client()
+    tasks = [fetch_station_weather(sid, c) for sid in STATION_COORDS.keys()]
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+    valid_results = []
+    for r in results:
+        if isinstance(r, StationWeather):
+            valid_results.append(r)
+        elif isinstance(r, Exception):
+            print(f"Warning: error in station weather gather: {r}")
+    return valid_results
 
 
 def _compute_wind_chill(temp_c: float, wind_kmh: float) -> float:
@@ -429,7 +483,7 @@ def _compute_dew_point(temp_c: float, rh_pct: float) -> float:
     return round(dp, 1)
 
 
-async def fetch_station_history(station_id: str, client: httpx.AsyncClient) -> StationHistoryResponse:
+async def fetch_station_history(station_id: str, client: Optional[httpx.AsyncClient] = None) -> StationHistoryResponse:
     """
     Fetches genuine 24-hour diurnal telemetry history from Open-Meteo, calculates
     min/max/average statistics, and marries with authentic sensor health & operations.
@@ -447,6 +501,8 @@ async def fetch_station_history(station_id: str, client: httpx.AsyncClient) -> S
         if now_epoch - cached_time < CACHE_TTL_SECONDS:
             return cached_history
 
+    c = client or get_shared_client()
+
     url = "https://api.open-meteo.com/v1/forecast"
     params = {
         "latitude": coord["lat"],
@@ -461,7 +517,7 @@ async def fetch_station_history(station_id: str, client: httpx.AsyncClient) -> S
     status_flag = "live"
 
     try:
-        response = await client.get(url, params=params, timeout=6.0)
+        response = await c.get(url, params=params, timeout=6.0)
         if response.status_code == 200:
             data = response.json()
             hourly = data.get("hourly", {})
@@ -594,13 +650,18 @@ async def fetch_station_history(station_id: str, client: httpx.AsyncClient) -> S
     return history_resp
 
 
-async def get_all_stations_history() -> List[StationHistoryResponse]:
-    results = []
-    async with httpx.AsyncClient() as client:
-        for sid in STATION_COORDS.keys():
-            h = await fetch_station_history(sid, client)
-            results.append(h)
-    return results
+async def get_all_stations_history(client: Optional[httpx.AsyncClient] = None) -> List[StationHistoryResponse]:
+    """Concurrently fetches 24-hour diurnal telemetry across all stations in parallel."""
+    c = client or get_shared_client()
+    tasks = [fetch_station_history(sid, c) for sid in STATION_COORDS.keys()]
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+    valid_results = []
+    for r in results:
+        if isinstance(r, StationHistoryResponse):
+            valid_results.append(r)
+        elif isinstance(r, Exception):
+            print(f"Warning: error in station history gather: {r}")
+    return valid_results
 
 
 def export_station_telemetry_csv(station_id: str, history: StationHistoryResponse) -> str:

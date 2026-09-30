@@ -265,3 +265,34 @@ class StationHistoryResponse(BaseModel):
     operational: StationOperationalStatus
     source: str
     source_url: str
+
+class ContentDraftUpdateRequest(BaseModel):
+    title: Optional[str] = None
+    status: Optional[str] = None  # "Draft" | "Review" | "Approved" | "Scheduled" | "Published" | "Rejected"
+    reviewer: Optional[str] = None
+    scheduled_for: Optional[str] = None
+    website_article: Optional[str] = None
+    instagram_post: Optional[str] = None
+    x_post: Optional[str] = None
+    linkedin_post: Optional[str] = None
+    youtube_description: Optional[str] = None
+    newsletter_summary: Optional[str] = None
+
+class HealthResponse(BaseModel):
+    status: str
+    service: str
+    initiative: str
+    problem_statement: str
+    version: str
+    database: str
+    entities: Dict[str, int]
+    cache: Dict[str, Any]
+    uptime_seconds: float
+
+class ExpeditionStatsResponse(BaseModel):
+    total_expeditions: int
+    by_region: Dict[str, int]
+    by_status: Dict[str, int]
+    year_range: Dict[str, int]
+    total_field_days_approx: int
+
