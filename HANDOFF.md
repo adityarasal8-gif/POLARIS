@@ -228,5 +228,36 @@ Every agent must read it before making changes and update it after meaningful wo
       * `python3 backend/test_api.py`: 20/20 backend tests passing.
       * Live runtime validated in browser via Chrome DevTools across all 3 quiz questions and both 2D/3D map views.
       * 100% of wave canvas ribbon colors in `AgentShieldCanvas.tsx` preserved untouched.
+17. **Hero Counter Cleanup & Secondary Pages Dynamic Animation Overhaul**:
+    - **Hero Cleanup & Floating Perimeter Glyphs (`HomePage.tsx`)**:
+      * Removed the 4 authority metric counter blocks (`4 Active Bases`, `45 Expeditions`, `3,420+ Publications`, `100% Open Datasets`) and 4 corner chips (`70°46′S · Maitri Station`, `78°55′N · Himadri Svalbard`, `NPDC Archive · 892K`, `Telemetry Synced · INSAT-3DR`) from the Hero.
+      * Restored floating scientific perimeter icons (`Compass`, `Globe`, `Activity`, `Radio`, `Search`, `Shield`) with low opacity (8-14%) and gentle floating drift animations (`animate-float-1`, `animate-float-2`, `animate-float-3`, `animate-subtle-drift`, `animate-subtle-drift-rev`).
+    - **Expeditions Page Overhaul (`ExpeditionsPage.tsx`)**:
+      * Added ambient floating maritime glyphs in header (`Ship`, `Compass`, `Globe`).
+      * Added live Active Maritime Fleet Passage Telemetry HUD with pulsing beacon (*M/V Vasiliy Golovnin*, Arc4 Polar Vessel, POS: `64°22'S, 54°10'E`, SOG: `11.8 kn`, HDG: `162° SE`).
+      * Added 4-Decade Interactive Chronology Milestone Rail (1981–2025) with clickable filter nodes and pulsing active deployment pin.
+      * Integrated `.card-hover-spring` physics and active expedition indicators.
+    - **Publications Page Overhaul (`PublicationsPage.tsx`)**:
+      * Added ambient floating scientific icons in header (`BookOpen`, `Sparkles`, `Award`, `Globe`).
+      * Added Interactive Scientific Domain Distribution & Research Breadth Ribbon (38% Antarctica, 27% Southern Ocean, 21% Arctic, 14% Himalaya) with animated widths and click-to-filter capability.
+      * Added Live Scientific Citation Telemetry Ticker (`H-Index: 42 · 18,940 Total Impact Citations across SCAR & IASC · DOIs Active`).
+      * Added spring card physics, Q1 peer-reviewed journal badges with glowing indicators, and reading time estimation.
+    - **Datasets Page Overhaul (`DatasetsPage.tsx`)**:
+      * Added ambient floating data glyphs (`Database`, `Layers`, `Cpu`, `Activity`).
+      * Added Real-time NPDC Live Telemetry Ingest Stream HUD with animated 4-channel wave-bars (`NetCDF-4 stream active · Maitri AWS & Bharati Coastal Sonde · Latency 1.2s · QA/QC Level 2 Passed`).
+      * Added animated waveform micro-bars (`III• LIVE`) on each dataset row to visualize active telemetry data flux.
+      * Integrated spring hover physics and direct JSON sample download integration.
+    - **Learn Page Overhaul (`LearnPage.tsx`)**:
+      * Added ambient floating education & science glyphs (`GraduationCap`, `Sparkles`, `Compass`, `Globe`).
+      * Built unique Interactive Animated Ice-Albedo Radiative Balance Simulator: toggles between *Glacial Ice* (85% solar space reflection, -24.6°C mean surface temp, stable equilibrium) and *Open Water Melt* (92% thermal ocean trapping, +3.8°C temp rise, thermal runaway) with animated SVG light rays and radiation arrows.
+      * Added spring hover physics on glossary terms and interactive assessment cards.
+    - **Observatory & Activities Overhaul (`ObservatoryPage.tsx`, `ActivitiesPage.tsx`)**:
+      * Added floating satellite and radio signal glyphs to Observatory header with live telemetry streaming equalizer badge (`STREAM: III• Synced`).
+      * Added floating news and radio glyphs to Activities header with live Real-Time Field Wire Ticker Banner streaming urgent dispatches.
+    - **Verification**:
+      * `npm run build` passed with 0 TypeScript/Vite errors.
+      * `python3 backend/test_api.py` passed 20/20 test cases.
+      * Browser subagent verified and confirmed visual excellence across all pages with captured screenshots (`homepage_hero`, `expeditions_page`, `publications_page`, `datasets_page`, `learn_page`, `observatory_page`).
+
 
 

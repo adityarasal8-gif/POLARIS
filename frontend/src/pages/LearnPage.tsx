@@ -92,6 +92,9 @@ export default function LearnPage() {
   const [activeLesson, setActiveLesson] = useState<number>(1);
   const [glossarySearch, setGlossarySearch] = useState('');
   
+  // Interactive Ice-Albedo Feedback Loop Simulator State
+  const [albedoSimMode, setAlbedoSimMode] = useState<'ice' | 'melt'>('ice');
+
   // Quiz State
   const [selectedAnswers, setSelectedAnswers] = useState<{ [id: number]: number }>({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
@@ -121,12 +124,26 @@ export default function LearnPage() {
 
   return (
     <div className="min-h-screen bg-[#FAFAF8] text-[#111111] font-sans selection:bg-[#111111] selection:text-white pb-20">
-      {/* Light Editorial Education Hero */}
-      <section className="pt-16 pb-12 px-4 sm:px-6 lg:px-8 bg-[#F4F2EE] border-b border-[#E8E6E0]">
-        <div className="max-w-6xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-[#E8E6E0] text-xs font-mono uppercase tracking-wide text-[#555558] font-medium shadow-sm">
+      {/* Light Editorial Education Hero with Floating Science Perimeter Glyphs */}
+      <section className="relative overflow-hidden pt-16 pb-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#F4F2EE] to-white border-b border-[#E8E6E0]">
+        {/* Subtle Ambient Floating Background Glyphs */}
+        <div className="absolute -top-4 -right-4 text-[#111111] opacity-15 pointer-events-none animate-subtle-drift">
+          <GraduationCap className="w-28 h-28 stroke-[1.2]" />
+        </div>
+        <div className="absolute top-1/2 -left-6 -translate-y-1/2 text-[#111111] opacity-12 pointer-events-none animate-subtle-drift-rev">
+          <Sparkles className="w-20 h-20 stroke-[1.2]" />
+        </div>
+        <div className="absolute -bottom-6 right-1/3 text-[#111111] opacity-15 pointer-events-none animate-float-2">
+          <Compass className="w-20 h-20 stroke-[1.2]" />
+        </div>
+        <div className="absolute top-6 left-1/4 text-[#111111] opacity-10 pointer-events-none animate-slow-spin">
+          <Globe className="w-24 h-24 stroke-[1]" />
+        </div>
+
+        <div className="relative z-10 max-w-6xl mx-auto space-y-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-[#E8E6E0] text-xs font-mono uppercase tracking-wide text-[#555558] font-medium shadow-2xs">
             <GraduationCap className="w-3.5 h-3.5 text-[#111111]" />
-            <span>Open Science Education & Public Discovery</span>
+            <span>Open Science Education & Public Discovery · NCPOR Curriculum</span>
           </div>
 
           <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl text-[#111111] font-medium leading-tight">
@@ -195,7 +212,7 @@ export default function LearnPage() {
                 <div 
                   key={m.id}
                   onClick={() => setActiveLesson(m.id)}
-                  className={`p-5 rounded-2xl border transition-all cursor-pointer space-y-2 ${
+                  className={`p-5 rounded-2xl border transition-all cursor-pointer space-y-2 card-hover-spring ${
                     activeLesson === m.id
                       ? 'bg-white border-[#111111] shadow-sm ring-1 ring-[#111111]'
                       : 'bg-white border-[#E8E6E0] hover:border-[#111111]/30'
@@ -214,10 +231,10 @@ export default function LearnPage() {
                 </div>
               ))}
 
-              {/* Quiz Callout Card */}
-              <div className="p-5 rounded-2xl bg-white border border-[#E8E6E0] shadow-sm space-y-2.5 mt-6">
+              {/* Quiz Callout Card with Spring Physics */}
+              <div className="p-5 rounded-2xl bg-white border border-[#E8E6E0] shadow-sm space-y-2.5 mt-6 card-hover-spring">
                 <div className="flex items-center gap-2 text-xs font-mono text-[#111111] font-semibold">
-                  <Sparkles className="w-4 h-4" />
+                  <Sparkles className="w-4 h-4 text-[#2563EB]" />
                   <span>Test Your Comprehension</span>
                 </div>
                 <p className="text-xs text-[#555558] leading-relaxed font-light">
@@ -225,7 +242,7 @@ export default function LearnPage() {
                 </p>
                 <button
                   onClick={() => setActiveTab('quiz')}
-                  className="w-full py-2.5 bg-[#111111] hover:bg-black text-white font-mono text-xs font-medium rounded-full transition-colors cursor-pointer shadow-sm"
+                  className="w-full py-2.5 bg-[#111111] hover:bg-[#2563EB] text-white font-mono text-xs font-medium rounded-full transition-colors cursor-pointer shadow-sm"
                 >
                   Take Science Quiz →
                 </button>
@@ -245,28 +262,148 @@ export default function LearnPage() {
                     </h2>
                   </div>
 
-                  {/* Educational Feedback Diagram */}
-                  <div className="p-5 bg-[#FAFAF8] rounded-2xl border border-[#E8E6E0] space-y-3">
-                    <div className="flex items-center justify-between text-xs font-mono border-b border-[#E8E6E0] pb-2 text-[#111111]">
-                      <span className="font-semibold">THE ICE-ALBEDO POSITIVE FEEDBACK LOOP</span>
-                      <span className="text-[#8E8E91] font-semibold">AMPLIFICATION CYCLE</span>
-                    </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-center font-mono text-xs">
-                      <div className="p-3 rounded-xl bg-white border border-[#E8E6E0]">
-                        <span className="text-[10px] text-[#8E8E91] block">STEP 1</span>
-                        <span className="font-semibold text-[#111111]">Rising Global Temperature</span>
+                  {/* UNIQUE INTERACTIVE ANIMATED SIMULATOR: THE ICE-ALBEDO FEEDBACK LOOP */}
+                  <div className="p-6 bg-[#FAFAF8] rounded-3xl border border-[#E8E6E0] space-y-5 shadow-xs">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E8E6E0] pb-3">
+                      <div>
+                        <span className="text-[11px] font-mono uppercase font-bold text-[#111111] flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-[#2563EB] animate-pulse" />
+                          INTERACTIVE SIMULATOR: ICE-ALBEDO RADIATIVE BALANCE
+                        </span>
+                        <p className="text-xs text-[#555558] font-light mt-0.5">
+                          Toggle surface state to observe solar radiation absorption vs reflection.
+                        </p>
                       </div>
-                      <div className="p-3 rounded-xl bg-white border border-[#E8E6E0]">
+
+                      {/* Simulator Mode Switcher */}
+                      <div className="flex items-center gap-1.5 p-1 bg-white rounded-full border border-[#E8E6E0] font-mono text-xs">
+                        <button
+                          onClick={() => setAlbedoSimMode('ice')}
+                          className={`px-3 py-1.5 rounded-full transition-all cursor-pointer font-medium ${
+                            albedoSimMode === 'ice'
+                              ? 'bg-[#111111] text-white shadow-xs'
+                              : 'text-[#555558] hover:text-[#111111]'
+                          }`}
+                        >
+                          ❄️ Glacial Ice
+                        </button>
+                        <button
+                          onClick={() => setAlbedoSimMode('melt')}
+                          className={`px-3 py-1.5 rounded-full transition-all cursor-pointer font-medium ${
+                            albedoSimMode === 'melt'
+                              ? 'bg-[#2563EB] text-white shadow-xs'
+                              : 'text-[#555558] hover:text-[#111111]'
+                          }`}
+                        >
+                          🌊 Open Water Melt
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Interactive Animated Simulation Canvas */}
+                    <div className="relative h-56 sm:h-64 rounded-2xl overflow-hidden border border-[#E8E6E0] flex flex-col justify-between p-4 transition-all duration-700 select-none bg-gradient-to-b from-sky-100 to-white">
+                      {/* Atmospheric Sky Layer */}
+                      <div className="flex items-center justify-between z-10">
+                        <div className="flex items-center gap-2 bg-white/90 backdrop-blur-xs px-3 py-1.5 rounded-full border border-[#E8E6E0] text-xs font-mono">
+                          <span className="text-[#D97706] font-bold">☀️ Solar Flux:</span>
+                          <span className="text-[#111111]">1,361 W/m² (Top of Atmosphere)</span>
+                        </div>
+
+                        <div className="bg-white/90 backdrop-blur-xs px-3 py-1.5 rounded-full border border-[#E8E6E0] text-xs font-mono font-semibold">
+                          {albedoSimMode === 'ice' ? (
+                            <span className="text-[#16A34A]">Albedo: 0.85 (85% Reflected)</span>
+                          ) : (
+                            <span className="text-[#DC2626]">Albedo: 0.08 (92% Absorbed!)</span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Animated Solar Radiation Rays & Reflection Vectors */}
+                      <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
+                        {/* Incoming Solar Beam */}
+                        <line 
+                          x1="25%" y1="15%" x2="50%" y2="75%" 
+                          stroke="#F59E0B" strokeWidth="3" 
+                          strokeDasharray="6 4"
+                          className="animate-flow-line"
+                        />
+                        <text x="32%" y="40%" fill="#B45309" fontSize="11" fontFamily="monospace" fontWeight="600">
+                          Incoming Sunlight
+                        </text>
+
+                        {/* Reflected Beam (Active in 'ice' mode) */}
+                        {albedoSimMode === 'ice' && (
+                          <g className="transition-opacity duration-500 opacity-100">
+                            <line 
+                              x1="50%" y1="75%" x2="75%" y2="15%" 
+                              stroke="#0284C7" strokeWidth="3.5" 
+                              strokeDasharray="6 4"
+                              className="animate-flow-line"
+                            />
+                            <text x="60%" y="38%" fill="#0369A1" fontSize="11" fontFamily="monospace" fontWeight="bold">
+                              85% Space Reflection ↗
+                            </text>
+                          </g>
+                        )}
+
+                        {/* Absorbed Heat Plunge (Active in 'melt' mode) */}
+                        {albedoSimMode === 'melt' && (
+                          <g className="transition-opacity duration-500 opacity-100">
+                            <line 
+                              x1="50%" y1="75%" x2="50%" y2="95%" 
+                              stroke="#EF4444" strokeWidth="5" 
+                              strokeDasharray="4 2"
+                              className="animate-flow-line"
+                            />
+                            <circle cx="50%" cy="85%" r="18" fill="rgba(239, 68, 68, 0.25)" className="animate-ping" />
+                            <text x="56%" y="88%" fill="#991B1B" fontSize="11" fontFamily="monospace" fontWeight="bold">
+                              92% Thermal Ocean Trapping ↓
+                            </text>
+                          </g>
+                        )}
+                      </svg>
+
+                      {/* Ground / Ocean Surface Bed */}
+                      <div className={`z-10 rounded-xl p-3 border transition-all duration-500 flex items-center justify-between text-xs font-mono ${
+                        albedoSimMode === 'ice' 
+                          ? 'bg-white/95 border-sky-200 text-[#111111]' 
+                          : 'bg-[#0f172a] border-blue-900 text-white'
+                      }`}>
+                        <div className="flex items-center gap-2">
+                          <span className={`w-3 h-3 rounded-full ${albedoSimMode === 'ice' ? 'bg-sky-400' : 'bg-blue-600'}`} />
+                          <span className="font-semibold">
+                            {albedoSimMode === 'ice' ? 'Pristine Snow & Glacier Sheet' : 'Dark Open Seawater (Melt Water Pool)'}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <span>Mean Surface Temp: <strong className={albedoSimMode === 'ice' ? 'text-[#0284C7]' : 'text-red-400'}>
+                            {albedoSimMode === 'ice' ? '-24.6°C' : '+3.8°C'}
+                          </strong></span>
+                          <span>Feedback: <strong className={albedoSimMode === 'ice' ? 'text-[#16A34A]' : 'text-amber-400'}>
+                            {albedoSimMode === 'ice' ? 'Stable Equilibrium' : 'Thermal Runaway'}
+                          </strong></span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Step-by-step Physics Breakdown Pills */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-center font-mono text-xs">
+                      <div className="p-3 rounded-2xl bg-white border border-[#E8E6E0] shadow-2xs">
+                        <span className="text-[10px] text-[#8E8E91] block">STEP 1</span>
+                        <span className="font-semibold text-[#111111]">Rising Temperature</span>
+                      </div>
+                      <div className="p-3 rounded-2xl bg-white border border-[#E8E6E0] shadow-2xs">
                         <span className="text-[10px] text-[#8E8E91] block">STEP 2</span>
                         <span className="font-semibold text-[#111111]">Sea Ice Surface Melts</span>
                       </div>
-                      <div className="p-3 rounded-xl bg-white border border-[#E8E6E0]">
+                      <div className="p-3 rounded-2xl bg-white border border-[#E8E6E0] shadow-2xs">
                         <span className="text-[10px] text-[#8E8E91] block">STEP 3</span>
                         <span className="font-semibold text-[#111111]">Dark Ocean Absorbs Heat</span>
                       </div>
-                      <div className="p-3 rounded-xl bg-[#111111] text-white">
+                      <div className="p-3 rounded-2xl bg-[#111111] text-white shadow-2xs">
                         <span className="text-[10px] text-white/70 block">STEP 4</span>
-                        <span className="font-semibold">Accelerated Cryosphere Loss</span>
+                        <span className="font-semibold">Accelerated Cryo Loss</span>
                       </div>
                     </div>
                   </div>
@@ -412,13 +549,13 @@ export default function LearnPage() {
               {filteredGlossary.map((item, idx) => (
                 <div 
                   key={idx}
-                  className="bg-white border border-[#E8E6E0] hover:border-[#111111]/30 rounded-2xl p-6 space-y-2 transition-all shadow-sm group"
+                  className="bg-white border border-[#E8E6E0] hover:border-[#111111]/40 rounded-3xl p-6 sm:p-7 space-y-2 transition-all shadow-sm group card-hover-spring relative overflow-hidden"
                 >
                   <div className="flex items-center justify-between">
-                    <h3 className="font-serif text-xl text-[#111111] group-hover:text-black transition-colors font-medium">
+                    <h3 className="font-serif text-xl text-[#111111] group-hover:text-[#2563EB] transition-colors font-medium">
                       {item.term}
                     </h3>
-                    <span className="text-[10px] font-mono text-[#8E8E91]">
+                    <span className="text-[10px] font-mono text-[#8E8E91] bg-[#F4F2EE] px-2 py-0.5 rounded-full border border-[#E8E6E0]">
                       LEX #{String(idx + 1).padStart(2, '0')}
                     </span>
                   </div>

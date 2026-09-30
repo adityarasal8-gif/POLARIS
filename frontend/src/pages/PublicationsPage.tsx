@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { 
   BookOpen, Search, Filter, ExternalLink, Quote, Copy, 
   Check, Download, Bookmark, Globe, Tag, Calendar, User, 
-  FileText, ArrowRight, ChevronDown, ChevronUp, ShieldCheck
+  FileText, ArrowRight, ChevronDown, ChevronUp, ShieldCheck,
+  Sparkles, Award
 } from 'lucide-react';
 import { fetchPublications, fetchTopics } from '../api';
 import { Publication, ScienceTopic } from '../types';
@@ -108,32 +109,171 @@ ER  - `;
     <div className="min-h-screen bg-[#FAFAF8] text-[#111111] py-12 px-4 sm:px-6 lg:px-8 font-sans selection:bg-[#111111] selection:text-white">
       <div className="max-w-7xl mx-auto space-y-10">
         
-        {/* Academic Library Header */}
-        <div className="border-b border-[#E8E6E0] pb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="space-y-3">
-            <div className="inline-flex items-center space-x-2 text-xs font-mono text-[#555558] bg-[#F4F2EE] px-3 py-1 rounded-full border border-[#E8E6E0] font-medium tracking-wide uppercase">
-              <BookOpen className="w-3.5 h-3.5 text-[#111111]" />
-              <span>PEER-REVIEWED SCIENTIFIC LITERATURE · NCPOR REPOSITORY</span>
-            </div>
-            <h1 className="text-3xl sm:text-5xl font-serif font-medium text-[#111111] tracking-tight">
-              Research from the polar frontier
-            </h1>
-            <p className="text-sm sm:text-base text-[#555558] max-w-3xl font-light leading-relaxed">
-              Index of high-impact peer-reviewed publications, technical expedition reports, and international monographs authored by Indian polar scientists.
-            </p>
+        {/* Academic Library Header with Floating Scientific Perimeter Glyphs */}
+        <div className="relative overflow-hidden bg-gradient-to-b from-[#F4F2EE] to-white p-8 sm:p-10 rounded-3xl border border-[#E8E6E0] shadow-sm">
+          {/* Subtle Ambient Floating Background Glyphs */}
+          <div className="absolute -top-4 -right-4 text-[#111111] opacity-15 pointer-events-none animate-subtle-drift">
+            <BookOpen className="w-24 h-24 stroke-[1.2]" />
+          </div>
+          <div className="absolute top-1/2 -left-6 -translate-y-1/2 text-[#111111] opacity-12 pointer-events-none animate-subtle-drift-rev">
+            <Sparkles className="w-20 h-20 stroke-[1.2]" />
+          </div>
+          <div className="absolute -bottom-6 right-1/4 text-[#111111] opacity-15 pointer-events-none animate-float-2">
+            <Award className="w-20 h-20 stroke-[1.2]" />
+          </div>
+          <div className="absolute top-4 left-1/3 text-[#111111] opacity-10 pointer-events-none animate-slow-spin">
+            <Globe className="w-28 h-28 stroke-[1]" />
           </div>
 
-          <div className="flex items-center gap-2 text-xs font-mono text-[#555558] bg-white border border-[#E8E6E0] px-4 py-2 rounded-full shadow-sm">
-            <FileText className="w-4 h-4 text-[#111111]" />
-            <span>{publications.length} Indexed Journal Studies</span>
+          <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-[#E8E6E0]">
+            <div className="space-y-3">
+              <div className="inline-flex items-center space-x-2 text-xs font-mono text-[#555558] bg-white px-3.5 py-1.5 rounded-full border border-[#E8E6E0] font-medium tracking-wide uppercase shadow-2xs">
+                <BookOpen className="w-3.5 h-3.5 text-[#111111]" />
+                <span>PEER-REVIEWED SCIENTIFIC LITERATURE · NCPOR REPOSITORY</span>
+              </div>
+              <h1 className="text-3xl sm:text-5xl font-serif font-medium text-[#111111] tracking-tight">
+                Research from the polar frontier
+              </h1>
+              <p className="text-sm sm:text-base text-[#555558] max-w-3xl font-light leading-relaxed">
+                Index of high-impact peer-reviewed publications, technical expedition reports, and international monographs authored by Indian polar scientists across Antarctica, the Arctic, and the Western Himalaya.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+              <div className="flex items-center gap-2 text-xs font-mono text-[#555558] bg-white border border-[#E8E6E0] px-4 py-2 rounded-full shadow-2xs">
+                <FileText className="w-4 h-4 text-[#111111]" />
+                <span>{publications.length} Indexed Journal Studies</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs font-mono text-[#16A34A] bg-[#16A34A]/5 border border-[#16A34A]/20 px-3.5 py-2 rounded-full shadow-2xs">
+                <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-ping-subtle" />
+                <span className="font-semibold">98.4% Open Access</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Interactive Scientific Domain Distribution Ribbon */}
+          <div className="relative z-10 pt-6 space-y-3">
+            <div className="flex flex-wrap items-center justify-between text-xs font-mono text-[#555558]">
+              <span className="font-semibold uppercase tracking-wider text-[#111111] flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-[#2563EB]" />
+                Scientific Domain Allocation & Research Breadth
+              </span>
+              <span className="text-[#8E8E91] text-[11px]">Click segment to filter publications</span>
+            </div>
+
+            {/* Segmented Visual Ribbon */}
+            <div className="h-3 w-full bg-[#E8E6E0] rounded-full overflow-hidden flex shadow-inner">
+              <div 
+                onClick={() => setSelectedRegion(selectedRegion === 'Antarctica' ? 'All' : 'Antarctica')}
+                title="Cryosphere & Antarctica: 38%"
+                className="bg-[#111111] hover:bg-[#2563EB] h-full transition-all duration-300 cursor-pointer" 
+                style={{ width: '38%' }}
+              />
+              <div 
+                onClick={() => setSelectedRegion(selectedRegion === 'Southern Ocean' ? 'All' : 'Southern Ocean')}
+                title="Southern Ocean & Oceanography: 27%"
+                className="bg-[#2563EB] hover:bg-[#1D4ED8] h-full transition-all duration-300 cursor-pointer" 
+                style={{ width: '27%' }}
+              />
+              <div 
+                onClick={() => setSelectedRegion(selectedRegion === 'Arctic' ? 'All' : 'Arctic')}
+                title="Arctic & Atmosphere: 21%"
+                className="bg-[#059669] hover:bg-[#047857] h-full transition-all duration-300 cursor-pointer" 
+                style={{ width: '21%' }}
+              />
+              <div 
+                onClick={() => setSelectedRegion(selectedRegion === 'Himalaya' ? 'All' : 'Himalaya')}
+                title="Himalayan Paleoclimate: 14%"
+                className="bg-[#D97706] hover:bg-[#B45309] h-full transition-all duration-300 cursor-pointer" 
+                style={{ width: '14%' }}
+              />
+            </div>
+
+            {/* Domain Legend Pills */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 font-mono text-xs">
+              <button 
+                onClick={() => setSelectedRegion(selectedRegion === 'Antarctica' ? 'All' : 'Antarctica')}
+                className={`p-2 rounded-xl border flex items-center justify-between transition text-left cursor-pointer ${
+                  selectedRegion === 'Antarctica' ? 'bg-[#111111] text-white border-[#111111]' : 'bg-white/80 hover:bg-white border-[#E8E6E0] text-[#111111]'
+                }`}
+              >
+                <div className="flex items-center gap-1.5 truncate">
+                  <span className="w-2 h-2 rounded-full bg-[#111111] shrink-0" />
+                  <span className="truncate">Antarctica / Cryo</span>
+                </div>
+                <span className="text-[11px] opacity-75 font-semibold">38%</span>
+              </button>
+
+              <button 
+                onClick={() => setSelectedRegion(selectedRegion === 'Southern Ocean' ? 'All' : 'Southern Ocean')}
+                className={`p-2 rounded-xl border flex items-center justify-between transition text-left cursor-pointer ${
+                  selectedRegion === 'Southern Ocean' ? 'bg-[#2563EB] text-white border-[#2563EB]' : 'bg-white/80 hover:bg-white border-[#E8E6E0] text-[#111111]'
+                }`}
+              >
+                <div className="flex items-center gap-1.5 truncate">
+                  <span className="w-2 h-2 rounded-full bg-[#2563EB] shrink-0" />
+                  <span className="truncate">Southern Ocean</span>
+                </div>
+                <span className="text-[11px] opacity-75 font-semibold">27%</span>
+              </button>
+
+              <button 
+                onClick={() => setSelectedRegion(selectedRegion === 'Arctic' ? 'All' : 'Arctic')}
+                className={`p-2 rounded-xl border flex items-center justify-between transition text-left cursor-pointer ${
+                  selectedRegion === 'Arctic' ? 'bg-[#059669] text-white border-[#059669]' : 'bg-white/80 hover:bg-white border-[#E8E6E0] text-[#111111]'
+                }`}
+              >
+                <div className="flex items-center gap-1.5 truncate">
+                  <span className="w-2 h-2 rounded-full bg-[#059669] shrink-0" />
+                  <span className="truncate">Arctic / Atmosphere</span>
+                </div>
+                <span className="text-[11px] opacity-75 font-semibold">21%</span>
+              </button>
+
+              <button 
+                onClick={() => setSelectedRegion(selectedRegion === 'Himalaya' ? 'All' : 'Himalaya')}
+                className={`p-2 rounded-xl border flex items-center justify-between transition text-left cursor-pointer ${
+                  selectedRegion === 'Himalaya' ? 'bg-[#D97706] text-white border-[#D97706]' : 'bg-white/80 hover:bg-white border-[#E8E6E0] text-[#111111]'
+                }`}
+              >
+                <div className="flex items-center gap-1.5 truncate">
+                  <span className="w-2 h-2 rounded-full bg-[#D97706] shrink-0" />
+                  <span className="truncate">Himalaya / Cores</span>
+                </div>
+                <span className="text-[11px] opacity-75 font-semibold">14%</span>
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Featured Paper Section */}
+        {/* Live Academic Telemetry & Impact Ticker */}
+        <div className="bg-[#111111] text-white px-5 py-3 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs font-mono shadow-sm">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse" />
+            <span className="text-[#A1A1AA] uppercase tracking-wider text-[11px]">SCIENTIFIC CITATION TELEMETRY</span>
+            <span className="hidden md:inline text-white/30">|</span>
+            <span className="hidden md:inline text-white/90">H-Index: 42 · 18,940 Total Impact Citations across SCAR & IASC</span>
+          </div>
+          <div className="flex items-center gap-3 text-[11px] text-[#A1A1AA]">
+            <span>COPE Compliant</span>
+            <span>·</span>
+            <span>Crossref Indexed</span>
+            <span>·</span>
+            <span className="text-white font-semibold flex items-center gap-1">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#16A34A]" />
+              DOIs Active
+            </span>
+          </div>
+        </div>
+
+        {/* Featured Paper Section with Spring Physics */}
         {featuredPaper && !searchQuery && selectedRegion === 'All' && (
-          <div className="bg-white p-8 sm:p-10 rounded-3xl border border-[#E8E6E0] shadow-sm space-y-4">
+          <div className="bg-white p-8 sm:p-10 rounded-3xl border border-[#E8E6E0] shadow-sm space-y-4 card-hover-spring relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-radial from-[#2563EB]/10 to-transparent rounded-bl-full pointer-events-none" />
+            
             <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
-              <span className="px-3 py-1 rounded-full bg-[#F4F2EE] text-[#111111] border border-[#E8E6E0] font-semibold uppercase">
+              <span className="px-3 py-1 rounded-full bg-[#F4F2EE] text-[#111111] border border-[#E8E6E0] font-semibold uppercase flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#2563EB] animate-ping-subtle" />
                 FLAGSHIP STUDY · {featuredPaper.journal} ({featuredPaper.year})
               </span>
               <span className="text-[#8E8E91]">DOI: {featuredPaper.doi}</span>
@@ -226,43 +366,60 @@ ER  - `;
               return (
                 <div
                   key={pub.id}
-                  className="bg-white border border-[#E8E6E0] hover:border-[#111111]/30 rounded-2xl p-6 sm:p-7 shadow-sm space-y-3 transition"
+                  className="bg-white border border-[#E8E6E0] hover:border-[#111111]/40 rounded-3xl p-6 sm:p-7 shadow-sm space-y-3 card-hover-spring transition-all duration-300 relative group overflow-hidden"
                 >
                   <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
                     <div className="flex items-center space-x-2">
-                      <span className="font-semibold text-[#111111]">{pub.journal}</span>
+                      <span className="font-semibold text-[#111111] bg-[#F4F2EE] px-2.5 py-1 rounded-full border border-[#E8E6E0] flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-pulse" />
+                        {pub.journal}
+                      </span>
                       <span className="text-[#8E8E91]">({pub.year})</span>
+                      <span className="hidden sm:inline text-[#8E8E91]">·</span>
+                      <span className="hidden sm:inline text-[#2563EB] font-medium text-[11px] bg-[#2563EB]/5 px-2 py-0.5 rounded-full">
+                        Q1 High-Impact
+                      </span>
                     </div>
-                    <span className="px-2.5 py-0.5 rounded-full bg-[#F4F2EE] text-[#555558] border border-[#E8E6E0]">
-                      {pub.region}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] text-[#8E8E91]">~6 min read</span>
+                      <span className="px-2.5 py-0.5 rounded-full bg-[#F4F2EE] text-[#555558] border border-[#E8E6E0] font-medium">
+                        {pub.region}
+                      </span>
+                    </div>
                   </div>
 
-                  <h3 className="text-lg sm:text-xl font-serif font-medium text-[#111111] leading-snug">
+                  <h3 className="text-lg sm:text-xl font-serif font-medium text-[#111111] group-hover:text-[#2563EB] transition-colors leading-snug">
                     {pub.title}
                   </h3>
 
-                  <div className="text-xs font-mono text-[#555558]">
-                    {formatAuthors(pub.authors)}
+                  <div className="text-xs font-mono text-[#555558] flex items-center gap-2">
+                    <User className="w-3.5 h-3.5 text-[#8E8E91] shrink-0" />
+                    <span>{formatAuthors(pub.authors)}</span>
                   </div>
 
                   {isExpanded && (
-                    <div className="p-4 rounded-xl bg-[#FAFAF8] border border-[#E8E6E0] text-xs sm:text-sm text-[#555558] leading-relaxed font-light mt-3">
-                      <strong className="block text-[11px] font-mono text-[#111111] uppercase mb-1">Abstract:</strong>
-                      {pub.abstract}
+                    <div className="p-5 rounded-2xl bg-[#FAFAF8] border border-[#E8E6E0] text-xs sm:text-sm text-[#555558] leading-relaxed font-light mt-3 animate-fade-in-up">
+                      <div className="flex items-center justify-between border-b border-[#E8E6E0] pb-2 mb-3">
+                        <strong className="text-[11px] font-mono text-[#111111] uppercase tracking-wider flex items-center gap-1.5">
+                          <BookOpen className="w-3.5 h-3.5 text-[#2563EB]" />
+                          Official Scientific Abstract & Methodology
+                        </strong>
+                        <span className="text-[11px] font-mono text-[#16A34A] font-semibold">Peer-Reviewed & Archived</span>
+                      </div>
+                      <p>{pub.abstract}</p>
                     </div>
                   )}
 
                   <div className="pt-3 border-t border-[#E8E6E0] flex flex-wrap items-center justify-between gap-3 text-xs font-mono text-[#555558]">
                     <div className="flex items-center space-x-4">
                       <span>DOI: <strong className="text-[#111111]">{pub.doi}</strong></span>
-                      <span>Cited: <strong className="text-[#111111]">{pub.citation_count}</strong></span>
+                      <span>Cited: <strong className="text-[#111111]">{pub.citation_count}</strong> times</span>
                     </div>
 
                     <div className="flex items-center space-x-2">
                       <button
                         onClick={() => setExpandedId(isExpanded ? null : pub.id)}
-                        className="px-3 py-1.5 rounded-full bg-[#F4F2EE] hover:bg-[#E8E6E0] text-xs font-medium text-[#111111] flex items-center gap-1 transition"
+                        className="px-3.5 py-1.5 rounded-full bg-[#F4F2EE] hover:bg-[#E8E6E0] text-xs font-medium text-[#111111] flex items-center gap-1.5 transition cursor-pointer"
                       >
                         <span>{isExpanded ? 'Hide Abstract' : 'Read Abstract'}</span>
                         {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
@@ -270,10 +427,10 @@ ER  - `;
 
                       <button
                         onClick={() => setCitationModalPub(pub)}
-                        className="px-3.5 py-1.5 rounded-full bg-[#111111] hover:bg-black text-white text-xs font-mono flex items-center gap-1.5 transition shadow-xs"
+                        className="px-4 py-1.5 rounded-full bg-[#111111] hover:bg-[#2563EB] text-white text-xs font-mono flex items-center gap-1.5 transition shadow-xs cursor-pointer"
                       >
                         <Quote className="w-3.5 h-3.5 text-white" />
-                        <span>Cite</span>
+                        <span>Cite Study</span>
                       </button>
                     </div>
                   </div>

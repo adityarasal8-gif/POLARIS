@@ -319,28 +319,24 @@ export const HomePage: React.FC = () => {
           }} 
         />
 
-        {/* Floating Kinetic Micro-Instruments (Real Polar Telemetry Badges with Smooth Physics) */}
-        <div className="absolute left-6 xl:left-12 top-10 animate-float-1 z-1 hidden lg:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 border border-[#E8E6E0] shadow-xs text-[11px] font-mono text-[#555558] backdrop-blur-md">
-          <Compass className="w-3.5 h-3.5 text-[#2563EB]" />
-          <span>70°46′S · Maitri Station (37y)</span>
+        {/* Floating Perimeter Scientific Icons (Ambient Background Accents with Low Opacity) */}
+        <div className="absolute left-[8%] top-[20%] text-[#D97706]/20 z-1 pointer-events-none hidden md:block animate-float-1">
+          <Compass className="w-5 h-5 stroke-[1.5]" />
         </div>
-
-        <div className="absolute right-6 xl:right-12 top-10 animate-float-2 z-1 hidden lg:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 border border-[#E8E6E0] shadow-xs text-[11px] font-mono text-[#555558] backdrop-blur-md">
-          <Globe className="w-3.5 h-3.5 text-[#2563EB]" />
-          <span>78°55′N · Himadri Svalbard (16s)</span>
+        <div className="absolute left-[88%] top-[18%] text-[#2563EB]/20 z-1 pointer-events-none hidden md:block animate-float-2">
+          <Globe className="w-5 h-5 stroke-[1.5]" />
         </div>
-
-        <div className="absolute left-6 xl:left-12 bottom-24 animate-float-3 z-1 hidden lg:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 border border-[#E8E6E0] shadow-xs text-[11px] font-mono text-[#555558] backdrop-blur-md">
-          <Radio className="w-3.5 h-3.5 text-[#2563EB]" />
-          <span className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-ping-subtle" />
-            <span>Telemetry Synced · INSAT-3DR</span>
-          </span>
+        <div className="absolute left-[6%] top-[60%] text-[#16A34A]/20 z-1 pointer-events-none hidden md:block animate-float-3">
+          <Activity className="w-5 h-5 stroke-[1.5]" />
         </div>
-
-        <div className="absolute right-6 xl:right-12 bottom-24 animate-float-1 z-1 hidden lg:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 border border-[#E8E6E0] shadow-xs text-[11px] font-mono text-[#555558] backdrop-blur-md">
-          <Database className="w-3.5 h-3.5 text-[#2563EB]" />
-          <span>NPDC Archive · 892K Records</span>
+        <div className="absolute left-[89%] top-[56%] text-[#7C3AED]/20 z-1 pointer-events-none hidden md:block animate-float-1">
+          <Radio className="w-5 h-5 stroke-[1.5]" />
+        </div>
+        <div className="absolute left-[14%] top-[78%] text-[#0EA5E9]/20 z-1 pointer-events-none hidden md:block animate-float-2">
+          <Search className="w-5 h-5 stroke-[1.5]" />
+        </div>
+        <div className="absolute left-[84%] top-[74%] text-[#16A34A]/20 z-1 pointer-events-none hidden md:block animate-float-3">
+          <Shield className="w-5 h-5 stroke-[1.5]" />
         </div>
 
         {/* Center Hero Body */}
@@ -358,7 +354,7 @@ export const HomePage: React.FC = () => {
           </p>
 
           {/* Action Button Pair with Spring Micro-Interactions */}
-          <div className="flex items-center gap-3.5 flex-wrap justify-center mb-8 animate-fade-in-up [animation-delay:200ms]">
+          <div className="flex items-center gap-3.5 flex-wrap justify-center mb-4 animate-fade-in-up [animation-delay:200ms]">
             <Link href="/expeditions" className="btn-primary group">
               <span>Explore polar research</span>
               <span className="group-hover:translate-x-1 transition-transform">→</span>
@@ -367,29 +363,6 @@ export const HomePage: React.FC = () => {
               <Activity className="w-4 h-4 text-[#2563EB]" />
               <span>Live observatory</span>
             </Link>
-          </div>
-
-          {/* Live Platform Authority Counters */}
-          <div className="flex items-center justify-center gap-6 sm:gap-12 border-t border-[#E8E6E0] pt-6 max-w-2xl w-full animate-fade-in-up [animation-delay:280ms]">
-            <div className="text-center group cursor-default">
-              <div className="text-xl sm:text-2xl font-mono font-bold text-[#111111] group-hover:text-[#2563EB] transition-colors">4</div>
-              <div className="text-[10px] uppercase font-mono tracking-wider text-[#8E8E91] mt-0.5">Active Bases</div>
-            </div>
-            <div className="h-7 w-px bg-[#E8E6E0]" />
-            <div className="text-center group cursor-default">
-              <div className="text-xl sm:text-2xl font-mono font-bold text-[#111111] group-hover:text-[#2563EB] transition-colors">45</div>
-              <div className="text-[10px] uppercase font-mono tracking-wider text-[#8E8E91] mt-0.5">Expeditions</div>
-            </div>
-            <div className="h-7 w-px bg-[#E8E6E0]" />
-            <div className="text-center group cursor-default">
-              <div className="text-xl sm:text-2xl font-mono font-bold text-[#111111] group-hover:text-[#2563EB] transition-colors">3,420+</div>
-              <div className="text-[10px] uppercase font-mono tracking-wider text-[#8E8E91] mt-0.5">Publications</div>
-            </div>
-            <div className="h-7 w-px bg-[#E8E6E0]" />
-            <div className="text-center group cursor-default">
-              <div className="text-xl sm:text-2xl font-mono font-bold text-[#111111] group-hover:text-[#2563EB] transition-colors">100%</div>
-              <div className="text-[10px] uppercase font-mono tracking-wider text-[#8E8E91] mt-0.5">Open Datasets</div>
-            </div>
           </div>
         </div>
 
