@@ -205,5 +205,28 @@ Every agent must read it before making changes and update it after meaningful wo
       * Added an interactive polar science quiz widget with immediate animated feedback, answer verification, and educational explanation for students and visitors.
     - **Preservation of Visual Brand Assets**:
       * 100% of wave canvas ribbon colors in `AgentShieldCanvas.tsx` (amber, sky blue, lavender, emerald, marine teal) remain untouched.
+16. **Tactical Polar Map / 3D Orbit Globe Switcher, Station Duplicate Image Fix & Quiz Question Bank**:
+    - **Station Dossier Duplicate Image Fix (`StationsPage.tsx`)**:
+      * Removed redundant photo banner from right column (`lg:col-span-7`), eliminating the side-by-side duplicate photo glitch.
+      * Left column now cleanly houses the authentic station photograph, coordinate HUD, and a new **Operational Life Support** card (crew compliments, supply lifeline vessel, satellite telemetry carrier, and microgrid power).
+      * Right column now prominently displays the comprehensive scientific factsheet, 6-metric technical specifications grid (Coordinates, Elevation ASL, Commissioned, Architecture, Microgrid, Water Source), multidisciplinary research mandate, live Open-Meteo telemetry banner, and cross-referenced archive exploration links.
+    - **2D Tactical Map / 3D Planetary Orbit Globe Switcher (`StationsPage.tsx`, `PolarGlobe3D.tsx`)**:
+      * Engineered an interactive view switcher subheader: `[ 🗺️ 2D Tactical Map ]` vs `[ 🌐 3D Planetary Orbit ]`.
+      * Integrated the WebGL Three.js `PolarGlobe3D` orbital model with pulsing station markers, orbital arcs, radar rings, interactive mouse rotation, hover inspection cards, and station selection callback synchronized with the dossier below.
+    - **Authentic Polar Imagery Across Backend & Database (`backend/polaris.db`, `backend/seed_data.py`)**:
+      * Replaced all generic workbench/tools (`photo-1508873535684-277a3cbcc4e8`) and pine forest photos (`photo-1516431883659-655d41c09bf9`) with authentic polar science photos:
+        - Bharati Station: Authentic coastal East Antarctica research facility (`photo-1548263594-a71ea65a8598`)
+        - Arctic Expedition 2025: Svalbard fjord and snow-capped peaks (`photo-1579033461380-adb47c3eb938`)
+        - First Indian Scientific Expedition 1982: Historic pack ice vessel traverse (`photo-1508873696983-2df5293cb395`)
+        - Drone Aerial Media Asset: Authentic elevated modular station architecture (`photo-1548263594-a71ea65a8598`)
+        - 45th ISEA Flag-Off & Antarctic Day Activities: Polar icebreaker and symposium imagery (`photo-1518709268805-4e9042af9f23`, `photo-1517411032315-54ef2cb783bb`).
+    - **Section 7 Quiz Question Bank & Cycling (`HomePage.tsx`)**:
+      * Upgraded the single-question assessment into an interactive 3-question bank covering Bharati geography, Himadri Arctic teleconnections, and Maitri Lake Priyadarshini limnology.
+      * Added question counters (`1 / 3`), scientific topic badges, dynamic feedback explanations, "Next Polar Question →" progression, and a seamless "Restart Question Bank ↺" loop.
+    - **Verification & Zero Regressions**:
+      * `npm run build`: 0 TypeScript / compilation errors (built in 557ms).
+      * `python3 backend/test_api.py`: 20/20 backend tests passing.
+      * Live runtime validated in browser via Chrome DevTools across all 3 quiz questions and both 2D/3D map views.
+      * 100% of wave canvas ribbon colors in `AgentShieldCanvas.tsx` preserved untouched.
 
 
