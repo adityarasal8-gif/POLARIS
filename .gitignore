@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+backend/.venv/
+.venv/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Node / Frontend
+frontend/node_modules/
+node_modules/
+frontend/dist/
+dist/
+.npm/
+.eslintcache
+
+# SQLite temporary and journals (keep polaris.db if desired, or ignore lock files)
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Environment & local secrets
+.env
+.env.local
+*.local
+
+# System & IDE
+.DS_Store
+Thumbs.db
+.vscode/
+*.swp
+*.swo
