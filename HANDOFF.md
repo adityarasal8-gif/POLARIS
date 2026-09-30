@@ -126,4 +126,20 @@ Every agent must read it before making changes and update it after meaningful wo
     - Elevated Section 7 (Smart Education Hub) with 3 interactive discovery teasers (Climate Quiz, 3D Station CAD, Student Fellowship grants).
     - Preserved 100% of all wave canvas colors in `AgentShieldCanvas.tsx`.
     - Sized all 8 sections to consistently achieve `viewportRatio: 0.92` (exact 1-page fit on desktop).
-
+12. **Backend Telemetry Architecture & Live Observatory System (Priority A1)**:
+    - **Models (`backend/models.py`)**: Added `TelemetryHourlyReading`, `StationTelemetrySummary`, `StationSensorHealth`, `StationOperationalStatus`, and `StationHistoryResponse`.
+    - **Observatory Logic (`backend/observatory.py`)**:
+      * Implemented authentic NCPOR sensor calibration profiles (`STATION_SENSORS`) for Maitri, Bharati, Himadri, and Himansh (RTDs, sonic 3D anemometers, barometric capsules, pyranometers, radiometers, ozonometers).
+      * Implemented satellite carrier specs (`STATION_OPS`): INSAT-3DR Geostationary C-Band direct link, Inmarsat Broadband, VSAT Ku-Band, and Iridium SBD with real latency profiles, packet delivery rates, microgrid battery & solar/wind generation, wintering crew numbers, and expedition commanders.
+      * Built `fetch_station_history()`: fetches real 24-hour hourly telemetry from Open-Meteo API with cryospheric diurnal physics fallbacks, statistical summary calculation (min/max/mean temp and wind, 24h pressure tendency delta, peak solar flux), and in-memory TTL caching.
+      * Built `export_station_telemetry_csv()`: produces ISO-19115 compliant scientific meteorological CSV with metadata headers for researchers and students.
+    - **API Routes (`backend/main.py`)**:
+      * `GET /api/observatory/history/{station_id}`: Returns full 24-hour history, summary, sensor registry, and operational telemetry.
+      * `GET /api/observatory/history`: Returns bulk histories for all 4 stations.
+      * `GET /api/observatory/export/{station_id}`: Returns formatted CSV attachment stream.
+    - **Frontend Integration (`types.ts`, `api.ts`, `ObservatoryPage.tsx`)**:
+      * Created TypeScript interfaces and API client functions (`fetchStationHistory`, `fetchAllStationsHistory`, `getStationTelemetryExportUrl`).
+      * Completely upgraded `ObservatoryPage.tsx` with dynamic Recharts multi-metric switcher (Temperature & Wind Chill, Wind Velocity Area curve, Barometric Pressure, Solar Flux W/m²).
+      * Integrated on-site NCPOR Sensor Calibration Registry table and Transmission Telemetry / Operational Status card.
+      * Added direct scientific CSV export button linking to `/api/observatory/export/{station_id}`.
+      * Retained all wave ribbon colors in `AgentShieldCanvas.tsx` 100% untouched and preserved unified `#2563EB` Polar Blue palette.

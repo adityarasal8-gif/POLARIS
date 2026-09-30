@@ -198,3 +198,70 @@ class KnowledgeGraphLink(BaseModel):
 class KnowledgeGraphResponse(BaseModel):
     nodes: List[KnowledgeGraphNode]
     links: List[KnowledgeGraphLink]
+
+# =========================================================================
+# Live Telemetry, 24-Hour Time-Series History & Sensor Health Models
+# =========================================================================
+
+class TelemetryHourlyReading(BaseModel):
+    time: str
+    hour_label: str
+    temperature_c: float
+    apparent_temperature_c: float
+    surface_pressure_hpa: float
+    wind_speed_kmh: float
+    wind_direction_deg: float
+    relative_humidity_pct: float
+    dew_point_c: float
+    solar_radiation_wm2: float
+
+class StationTelemetrySummary(BaseModel):
+    min_temperature_c: float
+    max_temperature_c: float
+    avg_temperature_c: float
+    min_wind_speed_kmh: float
+    max_wind_speed_kmh: float
+    avg_wind_speed_kmh: float
+    min_pressure_hpa: float
+    max_pressure_hpa: float
+    pressure_trend_hpa: float
+    avg_relative_humidity_pct: float
+    peak_solar_radiation_wm2: float
+
+class StationSensorHealth(BaseModel):
+    sensor_id: str
+    name: str
+    parameter: str
+    model: str
+    status: str  # "Nominal" | "Calibrated" | "Degraded" | "Offline"
+    accuracy: str
+    last_calibration: str
+
+class StationOperationalStatus(BaseModel):
+    uplink_carrier: str
+    uplink_status: str  # "Active Synced" | "Secondary Buffer" | "Intermittent"
+    ping_latency_ms: int
+    packet_success_rate: float
+    power_system: str
+    solar_generation_kw: float
+    wind_generation_kw: float
+    battery_bank_pct: int
+    wintering_crew_size: int
+    station_commander: str
+
+class StationHistoryResponse(BaseModel):
+    station_id: str
+    station_name: str
+    region: str
+    latitude: float
+    longitude: float
+    elevation_m: float
+    timestamp: str
+    status: str  # "live" | "cached" | "fallback"
+    readings_count: int
+    readings: List[TelemetryHourlyReading]
+    summary: StationTelemetrySummary
+    sensors: List[StationSensorHealth]
+    operational: StationOperationalStatus
+    source: str
+    source_url: str

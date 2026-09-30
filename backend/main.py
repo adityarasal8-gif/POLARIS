@@ -1,14 +1,18 @@
 import sqlite3
 import json
 from typing import List, Optional, Dict, Any
-from fastapi import FastAPI, HTTPException, Query
+import httpx
+from fastapi import FastAPI, HTTPException, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 
 from database import get_connection, row_to_dict
-from observatory import get_all_stations_weather, fetch_station_weather
+from observatory import (
+    get_all_stations_weather, fetch_station_weather,
+    fetch_station_history, get_all_stations_history, export_station_telemetry_csv
+)
 from generator import generate_grounded_outreach
 from models import (
-    Station, StationWeather, Expedition, Dataset, Publication,
+    Station, StationWeather, StationHistoryResponse, Expedition, Dataset, Publication,
     MediaAsset, Activity, Researcher, ScienceTopic, ContentDraft,
     ContentReviewRequest, GenerateContentRequest, SearchResponse,
     SearchResultItem, KnowledgeGraphResponse, KnowledgeGraphNode, KnowledgeGraphLink
@@ -84,6 +88,58 @@ async def get_live_observatory():
     using the Open-Meteo external scientific feed.
     """
     return await get_all_stations_weather()
+
+
+@app.get("/api/observatory/history/{station_id}", response_model=StationHistoryResponse)
+async def get_station_telemetry_history(station_id: str):
+    """
+    Returns 24-hour diurnal meteorological time-series history, statistical summaries,
+    sensor health matrix, and satellite operational status for a polar station.
+    """
+    try:
+        async with httpx.AsyncClient() as client:
+            return await fetch_station_history(station_id, client)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch telemetry history: {exc}")
+
+
+@app.get("/api/observatory/history", response_model=List[StationHistoryResponse])
+async def get_all_stations_telemetry_history():
+    """
+    Returns 24-hour diurnal telemetry history and sensor summaries across all
+    four Indian polar stations (Maitri, Bharati, Himadri, Himansh).
+    """
+    try:
+        return await get_all_stations_history()
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch collective telemetry history: {exc}")
+
+
+@app.get("/api/observatory/export/{station_id}")
+async def export_station_telemetry(station_id: str):
+    """
+    Exports genuine 24-hour scientific meteorological telemetry as an ISO-standard CSV file,
+    complete with station metadata headers for scientific modeling and GIS analysis.
+    """
+    try:
+        async with httpx.AsyncClient() as client:
+            history = await fetch_station_history(station_id, client)
+        csv_content = export_station_telemetry_csv(station_id, history)
+        filename = f"NPDC_Telemetry_{station_id.upper()}_{history.timestamp[:10]}.csv"
+        return Response(
+            content=csv_content,
+            media_type="text/csv",
+            headers={
+                "Content-Disposition": f"attachment; filename={filename}",
+                "X-Data-Source": "National Polar Data Center (NPDC) / NCPOR"
+            }
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Export failed: {exc}")
 
 
 @app.get("/api/expeditions", response_model=List[Expedition])

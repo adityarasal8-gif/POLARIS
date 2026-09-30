@@ -34,6 +34,74 @@ export interface StationWeather {
   condition_description: string;
 }
 
+export interface TelemetryHourlyReading {
+  time: string;
+  hour_label: string;
+  temperature_c: number;
+  apparent_temperature_c: number;
+  surface_pressure_hpa: number;
+  wind_speed_kmh: number;
+  wind_direction_deg: number;
+  relative_humidity_pct: number;
+  dew_point_c: number;
+  solar_radiation_wm2: number;
+}
+
+export interface StationTelemetrySummary {
+  min_temperature_c: number;
+  max_temperature_c: number;
+  avg_temperature_c: number;
+  min_wind_speed_kmh: number;
+  max_wind_speed_kmh: number;
+  avg_wind_speed_kmh: number;
+  min_pressure_hpa: number;
+  max_pressure_hpa: number;
+  pressure_trend_hpa: number;
+  avg_relative_humidity_pct: number;
+  peak_solar_radiation_wm2: number;
+}
+
+export interface StationSensorHealth {
+  sensor_id: string;
+  name: string;
+  parameter: string;
+  model: string;
+  status: 'Nominal' | 'Calibrated' | 'Degraded' | 'Offline';
+  accuracy: string;
+  last_calibration: string;
+}
+
+export interface StationOperationalStatus {
+  uplink_carrier: string;
+  uplink_status: string;
+  ping_latency_ms: number;
+  packet_success_rate: number;
+  power_system: string;
+  solar_generation_kw: number;
+  wind_generation_kw: number;
+  battery_bank_pct: number;
+  wintering_crew_size: number;
+  station_commander: string;
+}
+
+export interface StationHistoryResponse {
+  station_id: string;
+  station_name: string;
+  region: string;
+  latitude: number;
+  longitude: number;
+  elevation_m: number;
+  timestamp: string;
+  status: 'live' | 'cached' | 'fallback';
+  readings_count: number;
+  readings: TelemetryHourlyReading[];
+  summary: StationTelemetrySummary;
+  sensors: StationSensorHealth[];
+  operational: StationOperationalStatus;
+  source: string;
+  source_url: string;
+}
+
 export interface Dataset {
   id: string;
   identifier: string;

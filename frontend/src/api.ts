@@ -1,7 +1,7 @@
 import {
   Station, StationWeather, Expedition, Dataset, Publication,
   MediaAsset, Activity, Researcher, ScienceTopic, ContentDraft,
-  SearchResponse, Stats, KnowledgeGraphResponse
+  SearchResponse, Stats, KnowledgeGraphResponse, StationHistoryResponse
 } from './types';
 
 const API_BASE = '/api';
@@ -28,6 +28,22 @@ export async function fetchLiveObservatory(): Promise<StationWeather[]> {
   const res = await fetch(`${API_BASE}/observatory/live`);
   if (!res.ok) throw new Error('Failed to fetch live observatory');
   return res.json();
+}
+
+export async function fetchStationHistory(stationId: string): Promise<StationHistoryResponse> {
+  const res = await fetch(`${API_BASE}/observatory/history/${stationId}`);
+  if (!res.ok) throw new Error(`Failed to fetch history for ${stationId}`);
+  return res.json();
+}
+
+export async function fetchAllStationsHistory(): Promise<StationHistoryResponse[]> {
+  const res = await fetch(`${API_BASE}/observatory/history`);
+  if (!res.ok) throw new Error('Failed to fetch all stations history');
+  return res.json();
+}
+
+export function getStationTelemetryExportUrl(stationId: string): string {
+  return `${API_BASE}/observatory/export/${stationId}`;
 }
 
 export async function fetchExpeditions(params?: { region?: string; year?: number; status?: string; q?: string }): Promise<Expedition[]> {
