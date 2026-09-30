@@ -3,13 +3,12 @@ import { useLocation } from 'wouter';
 import { 
   Search, Database, Filter, Compass, FileText, 
   Globe, Image, Activity, ArrowRight, Loader2,
-  RefreshCw, CheckCircle2
+  CheckCircle2, Network, ExternalLink, BookOpen, Layers
 } from 'lucide-react';
 import { unifiedSearch } from '../api';
 import { SearchResponse, SearchResultItem } from '../types';
 
 export const RepositoryPage: React.FC = () => {
-  const [location] = useLocation();
   const searchParams = new URLSearchParams(window.location.search);
   const initialQ = searchParams.get('q') || 'Maitri atmosphere';
   const initialRegion = searchParams.get('region') || 'All';
@@ -19,16 +18,17 @@ export const RepositoryPage: React.FC = () => {
   const [selectedRegion, setSelectedRegion] = useState(initialRegion);
   const [results, setResults] = useState<SearchResponse | null>(null);
   const [loading, setLoading] = useState(false);
+  const [viewMode, setViewMode] = useState<'grouped' | 'stream'>('grouped');
   const [, setLocation] = useLocation();
 
   const CONTENT_TYPES = [
-    { id: 'All', label: 'All Content' },
+    { id: 'All', label: 'All Knowledge' },
     { id: 'expeditions', label: 'Expeditions', icon: Compass },
     { id: 'datasets', label: 'Datasets', icon: Database },
     { id: 'publications', label: 'Publications', icon: FileText },
     { id: 'stations', label: 'Stations', icon: Globe },
-    { id: 'media', label: 'Media Assets', icon: Image },
-    { id: 'activities', label: 'Activities', icon: Activity },
+    { id: 'media', label: 'Field Media', icon: Image },
+    { id: 'activities', label: 'Dispatches', icon: Activity },
   ];
 
   const REGIONS = ['All', 'Antarctica', 'Arctic', 'Himalaya', 'Southern Ocean'];
@@ -69,65 +69,95 @@ export const RepositoryPage: React.FC = () => {
     executeSearch(query, selectedType, selectedRegion);
   };
 
-  // Flatten results for easy multi-type rendering
+  // Flatten results for stream view
   const allResultItems: SearchResultItem[] = results
     ? Object.values(results.results_by_type).flat()
     : [];
 
-  const getBadgeStyle = (type: string) => {
+  const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'expedition': return 'badge-verified';
-      case 'dataset': return 'badge-live';
-      case 'publication': return 'badge-curated';
-      case 'station': return 'bg-[#38BDF8]/20 text-[#38BDF8] border border-[#38BDF8]/30';
-      case 'media': case 'photo': case 'video': return 'bg-[#22C7A8]/20 text-[#22C7A8] border border-[#22C7A8]/30';
-      default: return 'badge-preview';
+      case 'expedition': return Compass;
+      case 'dataset': return Database;
+      case 'publication': return FileText;
+      case 'station': return Globe;
+      case 'media': case 'photo': case 'video': return Image;
+      default: return Layers;
+    }
+  };
+
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case 'expedition': return 'text-[#D7A75D] bg-[#D7A75D]/10 border-[#D7A75D]/30';
+      case 'dataset': return 'text-[#74B8CC] bg-[#74B8CC]/10 border-[#74B8CC]/30';
+      case 'publication': return 'text-[#5BB7A5] bg-[#5BB7A5]/10 border-[#5BB7A5]/30';
+      case 'station': return 'text-[#B9DDE7] bg-[#B9DDE7]/10 border-[#B9DDE7]/30';
+      case 'media': return 'text-[#DCEEF2] bg-[#DCEEF2]/10 border-[#DCEEF2]/30';
+      default: return 'text-[#CBD5E1] bg-white/10 border-white/20';
     }
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#071A2B] text-white py-10 px-4 sm:px-6 lg:px-8 polar-grid-bg">
-      <div className="max-w-7xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="text-left space-y-2">
-          <div className="inline-flex items-center space-x-2 text-xs font-mono text-[#38BDF8] font-bold tracking-wider uppercase">
-            <Database className="w-4 h-4 text-[#38BDF8]" />
-            <span>UNIFIED POLAR KNOWLEDGE REPOSITORY</span>
+    <div className="w-full min-h-screen bg-[#07151F] text-white">
+      {/* Editorial Search Hero */}
+      <section className="relative pt-24 pb-16 px-4 sm:px-6 lg:px-8 border-b border-white/10 bg-gradient-to-b from-[#0D2735] to-[#07151F]">
+        <div className="max-w-5xl mx-auto space-y-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-mono tracking-widest text-[#B9DDE7] uppercase">
+            <Database className="w-3.5 h-3.5 text-[#74B8CC]" />
+            <span>National Polar Knowledge Repository</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-white">
-            One Search Across India's Polar Knowledge
-          </h1>
-          <p className="text-sm text-[#94A3B8] max-w-2xl">
-            Simultaneously search through scientific expeditions, validated datasets, peer-reviewed literature, field media, station telemetry, and institutional archives.
-          </p>
-        </div>
 
-        {/* Search Bar & Sample Queries */}
-        <div className="polar-panel p-6 border border-[#6EC5E9]/20 shadow-2xl space-y-4">
-          <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-3">
-            <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#38BDF8]" />
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search expeditions, datasets, papers, reports, stations, researchers..."
-                className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-[#071A2B] border border-[#6EC5E9]/30 text-white placeholder-[#647887] text-sm focus:outline-none focus:border-[#38BDF8]"
-              />
+          <h1 className="font-editorial text-4xl sm:text-5xl md:text-6xl text-white font-normal leading-tight">
+            Find the knowledge behind <br className="hidden sm:inline" />
+            <span className="italic text-[#B9DDE7]">India's polar research.</span>
+          </h1>
+
+          <p className="text-base sm:text-lg text-[#94A3B8] max-w-3xl leading-relaxed">
+            A unified discovery engine indexing expeditions, in-situ sensor datasets, peer-reviewed monographs, 
+            research station telemetry, and curated field imagery across Antarctica, the Arctic, and the Himalayas.
+          </p>
+
+          {/* Large Search Input */}
+          <form onSubmit={handleSearchSubmit} className="pt-2">
+            <div className="relative flex flex-col sm:flex-row gap-3 p-2 rounded-2xl bg-white/[0.04] border border-white/15 backdrop-blur-md shadow-2xl focus-within:border-[#74B8CC]/60 transition-all">
+              <div className="relative flex-1 flex items-center">
+                <Search className="absolute left-4 w-5 h-5 text-[#74B8CC]" />
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search 'Maitri atmosphere', '45th ISEA', 'Kongsfjorden', 'Ozone'..."
+                  className="w-full pl-12 pr-4 py-3.5 bg-transparent text-white placeholder-[#647887] text-base focus:outline-none"
+                />
+              </div>
+
+              <div className="flex items-center gap-2">
+                <select
+                  value={selectedRegion}
+                  onChange={(e) => setSelectedRegion(e.target.value)}
+                  className="px-3 py-3 rounded-xl bg-white/10 border border-white/10 text-xs font-mono text-white focus:outline-none focus:border-[#74B8CC] cursor-pointer"
+                >
+                  {REGIONS.map((r) => (
+                    <option key={r} value={r} className="bg-[#07151F] text-white">
+                      {r === 'All' ? 'All Regions' : r}
+                    </option>
+                  ))}
+                </select>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="px-6 py-3.5 rounded-xl bg-[#74B8CC] hover:bg-[#B9DDE7] text-[#07151F] font-bold text-sm tracking-wide transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer shadow-lg active:scale-95"
+                >
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+                  <span>Search Archive</span>
+                </button>
+              </div>
             </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#38BDF8] to-[#22C7A8] text-[#071A2B] font-bold text-sm hover:brightness-110 transition-all flex items-center justify-center space-x-2 shrink-0 cursor-pointer shadow-lg"
-            >
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
-              <span>Search Repository</span>
-            </button>
           </form>
 
-          {/* Preset Demo Buttons */}
-          <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
-            <span className="text-[#94A3B8] font-mono text-[11px] mr-1">Judge Demonstration Searches:</span>
+          {/* Quick Research Topics */}
+          <div className="flex flex-wrap items-center gap-2 pt-2 text-xs">
+            <span className="text-[#647887] font-mono text-xs">Curated Queries:</span>
             {SAMPLE_QUERIES.map((sq) => (
               <button
                 key={sq}
@@ -135,10 +165,10 @@ export const RepositoryPage: React.FC = () => {
                   setQuery(sq);
                   executeSearch(sq, selectedType, selectedRegion);
                 }}
-                className={`px-2.5 py-1 rounded-lg border text-[11px] font-mono transition-colors cursor-pointer ${
+                className={`px-3 py-1 rounded-full text-xs font-mono transition-all cursor-pointer ${
                   query === sq
-                    ? 'bg-[#38BDF8]/20 border-[#38BDF8] text-[#38BDF8]'
-                    : 'bg-[#071A2B] border-[#6EC5E9]/15 text-[#CBD5E1] hover:bg-[#123753]'
+                    ? 'bg-[#74B8CC]/20 border border-[#74B8CC] text-[#B9DDE7]'
+                    : 'bg-white/5 border border-white/10 text-[#94A3B8] hover:text-white hover:bg-white/10'
                 }`}
               >
                 {sq}
@@ -146,19 +176,22 @@ export const RepositoryPage: React.FC = () => {
             ))}
           </div>
         </div>
+      </section>
 
-        {/* Filter Navigation Bar */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#6EC5E9]/15 pb-4 text-xs font-mono">
-          {/* Content Type Filter Pills */}
-          <div className="flex flex-wrap gap-1.5">
+      {/* Main Results Container */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+        {/* Navigation & View Filter Bar */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-5">
+          {/* Domain Type Filter Chips */}
+          <div className="flex flex-wrap gap-2">
             {CONTENT_TYPES.map((ct) => (
               <button
                 key={ct.id}
                 onClick={() => setSelectedType(ct.id)}
-                className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-mono tracking-wide transition-all cursor-pointer flex items-center gap-1.5 ${
                   selectedType === ct.id
-                    ? 'bg-[#38BDF8] text-[#071A2B] font-bold border-[#38BDF8]'
-                    : 'bg-[#0B2538] text-[#94A3B8] hover:text-white border-[#6EC5E9]/15'
+                    ? 'bg-white text-[#07151F] font-bold shadow-md'
+                    : 'bg-white/5 text-[#94A3B8] hover:text-white border border-white/10'
                 }`}
               >
                 {ct.label}
@@ -166,98 +199,170 @@ export const RepositoryPage: React.FC = () => {
             ))}
           </div>
 
-          {/* Region Filter Dropdown */}
-          <div className="flex items-center space-x-2">
-            <span className="text-[#94A3B8] uppercase text-[10px]">Filter Region:</span>
-            <select
-              value={selectedRegion}
-              onChange={(e) => setSelectedRegion(e.target.value)}
-              className="bg-[#0B2538] border border-[#6EC5E9]/20 text-white rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#38BDF8]"
+          {/* View Mode Switcher */}
+          <div className="flex items-center gap-2 text-xs font-mono text-[#94A3B8]">
+            <span>Layout:</span>
+            <button
+              onClick={() => setViewMode('grouped')}
+              className={`px-2.5 py-1 rounded border transition-colors cursor-pointer ${
+                viewMode === 'grouped'
+                  ? 'bg-[#74B8CC]/20 border-[#74B8CC] text-[#B9DDE7]'
+                  : 'bg-white/5 border-white/10 hover:text-white'
+              }`}
             >
-              {REGIONS.map((r) => (
-                <option key={r} value={r}>
-                  {r}
-                </option>
-              ))}
-            </select>
+              Relational Clusters
+            </button>
+            <button
+              onClick={() => setViewMode('stream')}
+              className={`px-2.5 py-1 rounded border transition-colors cursor-pointer ${
+                viewMode === 'stream'
+                  ? 'bg-[#74B8CC]/20 border-[#74B8CC] text-[#B9DDE7]'
+                  : 'bg-white/5 border-white/10 hover:text-white'
+              }`}
+            >
+              Unified Stream
+            </button>
           </div>
         </div>
 
-        {/* Results Header with Relationship Counter */}
+        {/* Results Metadata & Relational Links Banner */}
         {results && (
-          <div className="flex items-center justify-between bg-[#0B2538]/60 p-4 rounded-xl border border-[#6EC5E9]/15 text-xs font-mono">
-            <div className="flex items-center space-x-2">
-              <CheckCircle2 className="w-4 h-4 text-[#22C7A8]" />
-              <span className="text-white font-semibold">
-                Found {allResultItems.length} records matching "{results.query}"
+          <div className="p-4 rounded-xl bg-white/[0.03] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-[#5BB7A5]" />
+              <span className="text-white font-medium">
+                Indexed {allResultItems.length} records matching "{results.query}"
               </span>
-              <span className="text-[#94A3B8] hidden sm:inline">
+              <span className="text-[#647887]">
                 ({selectedType} in {selectedRegion})
               </span>
             </div>
-            <div className="flex items-center space-x-2 text-[#22C7A8]">
-              <span className="w-2 h-2 rounded-full bg-[#22C7A8] animate-ping" />
-              <span className="font-bold">{results.connected_entities_count} Cross-Entity Links</span>
+            <div className="flex items-center gap-2 text-[#74B8CC]">
+              <Network className="w-4 h-4 text-[#74B8CC]" />
+              <span className="font-bold">{results.connected_entities_count} Cross-Entity Relationships</span>
             </div>
           </div>
         )}
 
-        {/* Results Grid / List */}
+        {/* Loading State */}
         {loading ? (
-          <div className="py-20 text-center space-y-3">
-            <Loader2 className="w-8 h-8 text-[#38BDF8] animate-spin mx-auto" />
-            <p className="text-sm font-mono text-[#94A3B8]">
-              Cross-indexing expeditions, datasets, papers, and media...
+          <div className="py-24 text-center space-y-4">
+            <Loader2 className="w-8 h-8 text-[#74B8CC] animate-spin mx-auto" />
+            <p className="font-mono text-sm text-[#94A3B8]">
+              Traversing relational knowledge graph across expeditions, stations, and datasets...
             </p>
           </div>
         ) : allResultItems.length === 0 ? (
-          <div className="py-20 text-center polar-panel p-8 space-y-3">
+          /* Empty State */
+          <div className="py-20 text-center border border-white/10 rounded-2xl bg-white/[0.02] p-8 space-y-3">
             <Database className="w-10 h-10 text-[#647887] mx-auto" />
-            <h3 className="text-base font-bold text-white">No Connected Records Found</h3>
-            <p className="text-xs text-[#94A3B8] max-w-sm mx-auto">
-              Try searching for "Maitri", "Ozone", "45th ISEA", or click one of the suggested search queries above.
+            <h3 className="font-editorial text-2xl text-white font-normal">No Records Found</h3>
+            <p className="text-sm text-[#94A3B8] max-w-md mx-auto">
+              We couldn't find matching records for "{query}". Try searching for broad scientific terms like "Maitri", "Atmosphere", "Ozone", or "Glacier".
             </p>
           </div>
+        ) : viewMode === 'grouped' && results ? (
+          /* Relational Clusters Layout */
+          <div className="space-y-12">
+            {Object.entries(results.results_by_type).map(([typeKey, items]) => {
+              if (items.length === 0) return null;
+              const Icon = getTypeIcon(typeKey);
+              return (
+                <div key={typeKey} className="space-y-4">
+                  <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                    <div className="flex items-center gap-2">
+                      <Icon className="w-4 h-4 text-[#74B8CC]" />
+                      <h2 className="font-editorial text-xl text-white font-normal capitalize">
+                        {typeKey} ({items.length})
+                      </h2>
+                    </div>
+                    <span className="text-xs font-mono text-[#647887]">
+                      Connected Domain Records
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {items.map((item) => (
+                      <div
+                        key={item.id}
+                        onClick={() => setLocation(item.url)}
+                        className="group p-5 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/10 hover:border-[#74B8CC]/40 transition-all cursor-pointer flex flex-col justify-between"
+                      >
+                        <div className="space-y-2.5">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className={`text-[10px] font-mono px-2 py-0.5 rounded border uppercase tracking-wider ${getTypeColor(item.type)}`}>
+                              {item.badge}
+                            </span>
+                            <span className="text-[11px] font-mono text-[#647887]">
+                              {item.region}
+                            </span>
+                          </div>
+
+                          <h3 className="text-base font-semibold text-white group-hover:text-[#B9DDE7] transition-colors leading-snug">
+                            {item.title}
+                          </h3>
+
+                          <p className="text-xs text-[#94A3B8] line-clamp-2 leading-relaxed">
+                            {item.snippet}
+                          </p>
+                        </div>
+
+                        <div className="pt-4 mt-3 border-t border-white/5 flex items-center justify-between text-xs font-mono text-[#74B8CC]">
+                          <span className="text-[#647887] text-[11px]">{item.subtitle}</span>
+                          <span className="inline-flex items-center gap-1 group-hover:underline">
+                            Explore <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         ) : (
-          <div className="space-y-4">
-            {allResultItems.map((item) => (
-              <div
-                key={item.id}
-                onClick={() => setLocation(item.url)}
-                className="polar-panel p-5 polar-panel-hover border border-[#6EC5E9]/15 flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer group text-left"
-              >
-                <div className="space-y-2 flex-1">
-                  <div className="flex items-center space-x-2">
-                    <span className={`text-[10px] font-mono px-2 py-0.5 rounded font-bold uppercase ${getBadgeStyle(item.type)}`}>
-                      {item.badge}
-                    </span>
-                    <span className="text-[10px] font-mono text-[#94A3B8] bg-[#071A2B] px-2 py-0.5 rounded border border-[#6EC5E9]/10">
-                      {item.region}
-                    </span>
-                    <span className="text-[11px] font-mono text-[#6EC5E9]">
-                      {item.subtitle}
-                    </span>
+          /* Unified Stream Layout */
+          <div className="space-y-3">
+            {allResultItems.map((item) => {
+              const Icon = getTypeIcon(item.type);
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => setLocation(item.url)}
+                  className="group p-5 rounded-xl bg-white/[0.02] hover:bg-white/[0.05] border border-white/10 hover:border-[#74B8CC]/40 transition-all cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-4"
+                >
+                  <div className="flex items-start gap-4 flex-1">
+                    <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0 text-[#74B8CC] mt-1">
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <div className="space-y-1.5 flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className={`text-[10px] font-mono px-2 py-0.5 rounded border uppercase tracking-wider ${getTypeColor(item.type)}`}>
+                          {item.badge}
+                        </span>
+                        <span className="text-[11px] font-mono text-[#647887]">
+                          {item.region}
+                        </span>
+                        <span className="text-[11px] font-mono text-[#74B8CC]/80">
+                          {item.subtitle}
+                        </span>
+                      </div>
+                      <h3 className="text-base font-semibold text-white group-hover:text-[#B9DDE7] transition-colors">
+                        {item.title}
+                      </h3>
+                      <p className="text-xs text-[#94A3B8] line-clamp-2 leading-relaxed">
+                        {item.snippet}
+                      </p>
+                    </div>
                   </div>
 
-                  <h3 className="text-base font-bold text-white group-hover:text-[#38BDF8] transition-colors">
-                    {item.title}
-                  </h3>
-
-                  <p className="text-xs text-[#94A3B8] leading-relaxed line-clamp-2">
-                    {item.snippet}
-                  </p>
-                </div>
-
-                <div className="flex items-center space-x-3 shrink-0 self-end md:self-center">
-                  <span className="text-xs text-[#38BDF8] font-semibold group-hover:underline">
-                    View Connected Dossier
-                  </span>
-                  <div className="w-8 h-8 rounded-lg bg-[#071A2B] border border-[#6EC5E9]/20 flex items-center justify-center text-[#38BDF8] group-hover:bg-[#38BDF8] group-hover:text-[#071A2B] transition-colors">
-                    <ArrowRight className="w-4 h-4" />
+                  <div className="shrink-0 flex items-center gap-2 text-xs font-mono text-[#74B8CC] self-end md:self-center">
+                    <span>Inspect Record</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

@@ -1,25 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'wouter';
 import { 
   Building2, MapPin, Compass, Thermometer, Radio, 
   Calendar, Layers, Globe, ExternalLink, ShieldCheck, 
-  Activity, ArrowUpRight, CheckCircle2
+  Activity, ArrowUpRight, CheckCircle2, ArrowRight
 } from 'lucide-react';
-import { fetchStations } from '../api';
-import { Station } from '../types';
+import L from 'leaflet';
+import { fetchStations, fetchLiveObservatory } from '../api';
+import { Station, StationWeather } from '../types';
 
 export default function StationsPage() {
   const [stations, setStations] = useState<Station[]>([]);
+  const [weatherMap, setWeatherMap] = useState<Record<string, StationWeather>>({});
+  const [selectedStationId, setSelectedStationId] = useState<string>('maitri');
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<L.Map | null>(null);
+  const markersRef = useRef<{ [key: string]: L.Marker }>({});
 
   useEffect(() => {
     async function loadData() {
       try {
         setLoading(true);
-        const data = await fetchStations();
-        setStations(data);
-      } catch (err: any) {
-        setError(err.message || 'Failed to fetch station registry');
+        const [stationsData, weatherData] = await Promise.all([
+          fetchStations(),
+          fetchLiveObservatory().catch(() => [])
+        ]);
+        setStations(stationsData);
+        
+        const wMap: Record<string, StationWeather> = {};
+        weatherData.forEach((w) => { wMap[w.station_id] = w; });
+        setWeatherMap(wMap);
+        
+        if (stationsData.length > 0) {
+          setSelectedStationId(stationsData[0].id);
+        }
+      } catch (err) {
+        console.error('Failed to load stations data:', err);
       } finally {
         setLoading(false);
       }
@@ -27,164 +45,224 @@ export default function StationsPage() {
     loadData();
   }, []);
 
+  const activeStation = stations.find((s) => s.id === selectedStationId) || stations[0];
+  const activeWeather = activeStation ? weatherMap[activeStation.id] : null;
+
+  // Initialize Map
+  useEffect(() => {
+    if (!mapContainerRef.current) return;
+    if (mapInstanceRef.current) return;
+
+    const map = L.map(mapContainerRef.current, {
+      center: [-30, 45],
+      zoom: 2,
+      minZoom: 2,
+      maxZoom: 10,
+      zoomControl: false
+    });
+
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Tiles &copy; Esri, Maxar, Earthstar Geographics',
+      maxZoom: 17
+    }).addTo(map);
+
+    L.control.zoom({ position: 'topright' }).addTo(map);
+    mapInstanceRef.current = map;
+
+    return () => {
+      map.remove();
+      mapInstanceRef.current = null;
+    };
+  }, []);
+
+  // Update Markers & Pan
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map || stations.length === 0) return;
+
+    Object.values(markersRef.current).forEach((m) => m.remove());
+    markersRef.current = {};
+
+    stations.forEach((st) => {
+      const isSelected = st.id === selectedStationId;
+      const customIcon = L.divIcon({
+        className: 'custom-polar-pin',
+        html: `
+          <div style="
+            width: ${isSelected ? '26px' : '18px'};
+            height: ${isSelected ? '26px' : '18px'};
+            background-color: ${isSelected ? '#74B8CC' : '#5BB7A5'};
+            border: 2px solid #FFFFFF;
+            border-radius: 50%;
+            box-shadow: 0 0 14px ${isSelected ? '#74B8CC' : '#5BB7A5'};
+            cursor: pointer;
+            transition: all 0.3s ease;
+          "></div>
+        `,
+        iconSize: [26, 26],
+        iconAnchor: [13, 13]
+      });
+
+      const marker = L.marker([st.latitude, st.longitude], { icon: customIcon }).addTo(map);
+      marker.on('click', () => setSelectedStationId(st.id));
+      markersRef.current[st.id] = marker;
+    });
+
+    if (activeStation) {
+      map.panTo([activeStation.latitude, activeStation.longitude], { animate: true, duration: 1 });
+    }
+  }, [stations, selectedStationId]);
+
   return (
-    <div className="min-h-screen bg-[#071A2B] text-slate-100 py-10 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen bg-[#07151F] text-[#F7F8F5] pb-20 font-sans selection:bg-[#74B8CC]/30 selection:text-[#07151F]">
+      
+      {/* Header */}
+      <div className="border-b border-[#B9DDE7]/10 bg-[#0A1B28] px-4 sm:px-8 py-8">
+        <div className="max-w-7xl mx-auto space-y-3">
+          <div className="inline-flex items-center space-x-2 text-xs font-mono text-[#74B8CC] font-semibold tracking-widest uppercase">
+            <Globe className="w-4 h-4 text-[#74B8CC]" />
+            <span>FIELD RESEARCH BASES · NCPOR INFRASTRUCTURE</span>
+          </div>
+          <h1 className="text-3xl sm:text-5xl font-serif font-bold text-white tracking-tight">
+            India's polar & high-altitude stations
+          </h1>
+          <p className="text-xs sm:text-sm text-[#8E9EA7] font-light max-w-3xl leading-relaxed">
+            Permanent multidisciplinary observatories operated across Queen Maud Land, Larsemann Hills, Svalbard, and the Chandra Basin.
+          </p>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 space-y-8">
         
-        {/* Header */}
-        <div className="border-b border-white/10 pb-8">
-          <div className="flex items-center gap-2 text-xs font-mono text-cyan-400 uppercase tracking-wider mb-2">
-            <span>Research Infrastructure</span>
-            <span>/</span>
-            <span>Field Bases</span>
-            <span>/</span>
-            <span className="text-white">Indian Polar Stations</span>
-          </div>
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-              <h1 className="text-3xl sm:text-4xl font-serif font-bold text-white tracking-tight">
-                India's Polar & High-Altitude Research Stations
-              </h1>
-              <p className="mt-2 text-slate-400 text-sm sm:text-base max-w-3xl">
-                Permanent scientific outposts operated by the National Centre for Polar and Ocean Research (NCPOR), Ministry of Earth Sciences, supporting year-round multidisciplinary observation across Antarctica, the Arctic, and the Himalayas.
-              </p>
-            </div>
-            
-            <div className="flex items-center gap-2 self-start md:self-auto bg-[#0B2538] border border-cyan-500/20 px-3 py-1.5 rounded text-xs font-mono text-cyan-300">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>Official NCPOR Field Facilities</span>
-            </div>
-          </div>
+        {/* Geographic Selector Tabs */}
+        <div className="flex flex-wrap gap-2.5">
+          {stations.map((st) => (
+            <button
+              key={st.id}
+              onClick={() => setSelectedStationId(st.id)}
+              className={`px-5 py-2.5 rounded-xl text-xs font-mono transition flex items-center gap-2 border ${
+                st.id === selectedStationId
+                  ? 'bg-[#74B8CC] text-[#07151F] font-bold border-[#74B8CC] shadow-lg'
+                  : 'bg-[#0D2735] text-[#8E9EA7] hover:text-white border-[#B9DDE7]/15'
+              }`}
+            >
+              <span className={`w-2 h-2 rounded-full ${st.id === selectedStationId ? 'bg-[#07151F]' : 'bg-[#5BB7A5]'}`} />
+              <span className="font-semibold">{st.name}</span>
+              <span className="text-[10px] opacity-75">({st.region})</span>
+            </button>
+          ))}
         </div>
 
-        {/* Stations Grid */}
-        {loading ? (
-          <div className="py-20 text-center space-y-3">
-            <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto"></div>
-            <p className="text-slate-400 text-sm font-mono">Accessing station registries...</p>
+        {/* Split Geographic Interface: Left Interactive Satellite Map, Right Station Dossier */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          {/* Map Column */}
+          <div className="lg:col-span-5 relative rounded-3xl overflow-hidden border border-[#B9DDE7]/15 h-[480px] lg:h-[620px] bg-[#050F17] shadow-xl sticky top-24">
+            <div ref={mapContainerRef} className="w-full h-full z-0" />
+            <div className="absolute bottom-4 left-4 right-4 bg-[#07151F]/90 backdrop-blur-md p-3 rounded-xl border border-[#B9DDE7]/15 text-xs font-mono text-[#DCEEF2] flex items-center justify-between">
+              <span>{activeStation?.name}</span>
+              <span className="text-[#8E9EA7]">{activeStation?.latitude.toFixed(2)}°, {activeStation?.longitude.toFixed(2)}°</span>
+            </div>
           </div>
-        ) : error ? (
-          <div className="bg-red-500/10 border border-red-500/20 p-6 rounded-lg text-center">
-            <p className="text-red-400 text-sm">{error}</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {stations.map(station => (
-              <div 
-                key={station.id}
-                className="bg-[#0B2538] border border-white/10 hover:border-cyan-500/40 rounded-xl overflow-hidden shadow-xl flex flex-col justify-between transition group"
-              >
-                <div>
-                  {/* Photo Banner */}
-                  <div className="relative aspect-[16/9] bg-[#071A2B] overflow-hidden">
-                    <img 
-                      src={station.image_url} 
-                      alt={station.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0B2538] via-transparent to-black/40"></div>
 
-                    {/* Top Badges */}
-                    <div className="absolute top-4 left-4 flex items-center gap-2">
-                      <span className="px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md border border-white/20 text-white font-mono text-xs font-semibold">
-                        {station.region}
-                      </span>
-                      <span className="px-2.5 py-1 rounded-md bg-emerald-950/70 border border-emerald-500/30 text-emerald-300 font-mono text-xs flex items-center gap-1">
-                        <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                        {station.status || 'Active Year-Round'}
-                      </span>
-                    </div>
-
-                    {/* Coordinates Overlay */}
-                    <div className="absolute bottom-3 left-4 font-mono text-xs text-cyan-300 bg-[#071A2B]/80 backdrop-blur-sm px-2.5 py-1 rounded border border-cyan-500/20 flex items-center gap-1.5">
-                      <Compass className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>{station.latitude > 0 ? `${station.latitude}°N` : `${Math.abs(station.latitude)}°S`}, {station.longitude > 0 ? `${station.longitude}°E` : `${Math.abs(station.longitude)}°W`}</span>
-                      {station.elevation_m && <span>• {station.elevation_m}m a.s.l</span>}
-                    </div>
-                  </div>
-
-                  {/* Body Content */}
-                  <div className="p-6 space-y-5">
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <h2 className="text-2xl font-serif font-bold text-white group-hover:text-cyan-200 transition">
-                          {station.name}
-                        </h2>
-                        <span className="text-xs font-mono text-slate-400">
-                          Est. {station.commissioned_year}
-                        </span>
-                      </div>
-                      <p className="text-xs font-mono text-cyan-400 mt-0.5">
-                        {station.location_description}
-                      </p>
-                    </div>
-
-                    <p className="text-sm text-slate-300 leading-relaxed">
-                      {station.purpose}
-                    </p>
-
-                    {/* Key Technical Specs */}
-                    <div className="grid grid-cols-2 gap-3 p-3 bg-[#071A2B] rounded-lg border border-white/5 text-xs font-mono">
-                      <div>
-                        <span className="text-slate-500 block text-[10px]">ELEVATION</span>
-                        <span className="text-slate-200">{station.elevation_m || 0}m a.s.l.</span>
-                      </div>
-                      <div>
-                        <span className="text-slate-500 block text-[10px]">COMMISSIONED</span>
-                        <span className="text-slate-200">{station.commissioned_year}</span>
-                      </div>
-                      <div>
-                        <span className="text-slate-500 block text-[10px]">PRIMARY REGION</span>
-                        <span className="text-slate-200">{station.region}</span>
-                      </div>
-                      <div>
-                        <span className="text-slate-500 block text-[10px]">OPERATIONAL STATUS</span>
-                        <span className="text-emerald-400">{station.status || 'Active'}</span>
-                      </div>
-                    </div>
-
-                    {/* Scientific Disciplines */}
-                    <div className="space-y-2">
-                      <h4 className="text-xs font-mono text-slate-400 uppercase tracking-wider">
-                        Primary Research Disciplines
-                      </h4>
-                      <div className="flex flex-wrap gap-1.5">
-                        {(station.research_themes || ['Atmospheric Science', 'Cryospheric Dynamics', 'Geomagnetism', 'Meteorology', 'Polar Biology']).map((theme: string, idx: number) => (
-                          <span 
-                            key={idx}
-                            className="px-2.5 py-1 rounded bg-white/5 border border-white/10 text-slate-300 text-xs font-mono"
-                          >
-                            {theme}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+          {/* Station Dossier Column */}
+          {activeStation && (
+            <div className="lg:col-span-7 space-y-6">
+              
+              {/* Architecture Photo Banner */}
+              <div className="relative aspect-[16/9] rounded-3xl overflow-hidden border border-[#B9DDE7]/15 bg-[#0D2735] shadow-2xl">
+                <img
+                  src={activeStation.image_url}
+                  alt={activeStation.name}
+                  className="w-full h-full object-cover brightness-[0.8]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#07151F] via-transparent to-transparent" />
+                
+                <div className="absolute top-4 left-4 flex items-center gap-2">
+                  <span className="px-3 py-1 rounded-full bg-[#07151F]/80 backdrop-blur-md text-xs font-mono text-white border border-[#B9DDE7]/20 font-semibold">
+                    {activeStation.region}
+                  </span>
+                  <span className="px-3 py-1 rounded-full bg-[#5BB7A5] text-[#07151F] text-xs font-mono font-bold">
+                    Active Year-Round
+                  </span>
                 </div>
 
-                {/* Card Actions */}
-                <div className="px-6 py-4 bg-[#071A2B]/60 border-t border-white/10 flex items-center justify-between">
-                  <a 
-                    href={`/datasets?station=${station.id}`}
-                    className="text-xs font-mono text-cyan-400 hover:text-cyan-300 flex items-center gap-1 transition"
-                  >
-                    <Layers className="w-3.5 h-3.5" />
-                    Station Datasets
-                  </a>
-
-                  <a 
-                    href={`/observatory?station=${station.id}`}
-                    className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded text-xs font-semibold flex items-center gap-1.5 transition shadow-md shadow-cyan-950"
-                  >
-                    <Thermometer className="w-3.5 h-3.5" />
-                    <span>Live Telemetry</span>
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  </a>
+                <div className="absolute bottom-4 left-6 right-6 flex items-center justify-between text-xs font-mono text-[#8E9EA7]">
+                  <span>Photo Credit: {activeStation.image_credit}</span>
+                  <span className="text-[#74B8CC]">Established {activeStation.commissioned_year}</span>
                 </div>
               </div>
-            ))}
-          </div>
-        )}
+
+              {/* Station Fact Sheet */}
+              <div className="bg-[#0D2735] p-8 rounded-3xl border border-[#B9DDE7]/15 space-y-6 shadow-xl">
+                <div className="space-y-2">
+                  <div className="text-xs font-mono text-[#5BB7A5] uppercase tracking-wider">
+                    {activeStation.location_description}
+                  </div>
+                  <h2 className="text-3xl font-serif font-bold text-white leading-snug">
+                    {activeStation.name}
+                  </h2>
+                  <p className="text-xs sm:text-sm text-[#DCEEF2]/85 font-light leading-relaxed">
+                    {activeStation.purpose}
+                  </p>
+                </div>
+
+                {/* Technical Specifications Grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-4 border-t border-[#B9DDE7]/10 text-xs font-mono">
+                  <div>
+                    <span className="text-[#8E9EA7] block">Coordinates</span>
+                    <span className="text-white font-semibold">{activeStation.latitude.toFixed(4)}°, {activeStation.longitude.toFixed(4)}°</span>
+                  </div>
+                  <div>
+                    <span className="text-[#8E9EA7] block">Elevation</span>
+                    <span className="text-white font-semibold">{activeStation.elevation_m} meters ASL</span>
+                  </div>
+                  <div>
+                    <span className="text-[#8E9EA7] block">Commissioned</span>
+                    <span className="text-white font-semibold">{activeStation.commissioned_year}</span>
+                  </div>
+                </div>
+
+                {/* Research Themes */}
+                <div className="space-y-2 pt-2">
+                  <span className="text-xs font-mono text-[#8E9EA7] uppercase tracking-wider block">
+                    Multidisciplinary Science Themes
+                  </span>
+                  <div className="flex flex-wrap gap-2">
+                    {activeStation.research_themes?.map((t) => (
+                      <span key={t} className="px-3 py-1 rounded-lg bg-[#07151F] text-xs font-mono text-[#74B8CC] border border-[#B9DDE7]/10">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Live Weather Preview if available */}
+                {activeWeather && (
+                  <div className="pt-4 border-t border-[#B9DDE7]/10 bg-[#07151F]/70 p-4 rounded-2xl flex flex-wrap items-center justify-between gap-4">
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-mono uppercase text-[#5BB7A5] tracking-wider block">
+                        Live Environmental Telemetry (Open-Meteo)
+                      </span>
+                      <div className="text-lg font-mono font-bold text-white">
+                        {activeWeather.temperature_c}°C · Wind: {activeWeather.wind_speed_kmh} km/h · {activeWeather.surface_pressure_hpa} hPa
+                      </div>
+                    </div>
+                    <Link
+                      href="/observatory"
+                      className="text-xs font-mono text-[#74B8CC] hover:underline flex items-center gap-1 font-bold"
+                    >
+                      <span>Observatory Console</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+            </div>
+          )}
+
+        </div>
 
       </div>
     </div>

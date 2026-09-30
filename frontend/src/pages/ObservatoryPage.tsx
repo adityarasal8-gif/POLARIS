@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Radio, Wind, Thermometer, Droplets, Gauge, 
-  MapPin, Clock, ShieldCheck, RefreshCw, Compass
+  MapPin, Clock, ShieldCheck, RefreshCw, Compass, ArrowUpRight
 } from 'lucide-react';
 import { 
   LineChart, Line, XAxis, YAxis, CartesianGrid, 
@@ -44,9 +44,9 @@ export const ObservatoryPage: React.FC = () => {
   // Leaflet Map Initialization
   useEffect(() => {
     if (!mapContainerRef.current) return;
-    if (mapInstanceRef.current) return; // already initialized
+    if (mapInstanceRef.current) return;
 
-    // Center map around Indian Ocean / Antarctic perspective
+    // Center map around Southern / Indian Ocean perspective
     const map = L.map(mapContainerRef.current, {
       center: [-40, 50],
       zoom: 2,
@@ -55,7 +55,7 @@ export const ObservatoryPage: React.FC = () => {
       zoomControl: false
     });
 
-    // High-resolution satellite basemap (Esri World Imagery / NASA)
+    // High-resolution satellite basemap (Esri World Imagery)
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
       attribution: 'Tiles &copy; Esri, Maxar, Earthstar Geographics, NASA/USGS',
       maxZoom: 17
@@ -75,7 +75,6 @@ export const ObservatoryPage: React.FC = () => {
     const map = mapInstanceRef.current;
     if (!map || stationsWeather.length === 0) return;
 
-    // Clear old markers
     Object.values(markersRef.current).forEach((m) => m.remove());
     markersRef.current = {};
 
@@ -88,17 +87,17 @@ export const ObservatoryPage: React.FC = () => {
           <div style="
             width: ${isSelected ? '28px' : '20px'};
             height: ${isSelected ? '28px' : '20px'};
-            background-color: ${isSelected ? '#38BDF8' : '#22C7A8'};
+            background-color: ${isSelected ? '#74B8CC' : '#5BB7A5'};
             border: 2px solid #FFFFFF;
             border-radius: 50%;
-            box-shadow: 0 0 15px ${isSelected ? '#38BDF8' : '#22C7A8'};
+            box-shadow: 0 0 15px ${isSelected ? '#74B8CC' : '#5BB7A5'};
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s ease;
           ">
-            <div style="width: 6px; height: 6px; background-color: #071A2B; border-radius: 50%;"></div>
+            <div style="width: 6px; height: 6px; background-color: #07151F; border-radius: 50%;"></div>
           </div>
         `,
         iconSize: [28, 28],
@@ -106,245 +105,274 @@ export const ObservatoryPage: React.FC = () => {
       });
 
       const marker = L.marker([st.latitude, st.longitude], { icon: customIcon }).addTo(map);
-      marker.bindPopup(`<b>${st.station_name}</b><br/>Temp: ${st.temperature_c}°C<br/>Wind: ${st.wind_speed_kmh} km/h`);
       marker.on('click', () => setSelectedStationId(st.station_id));
-
       markersRef.current[st.station_id] = marker;
     });
 
     if (activeWeather) {
-      map.flyTo([activeWeather.latitude, activeWeather.longitude], 4, {
-        duration: 1.5
-      });
+      map.panTo([activeWeather.latitude, activeWeather.longitude], { animate: true, duration: 1 });
     }
   }, [stationsWeather, selectedStationId]);
 
-  // Synthetic 24-hr trend based on active station current metrics
+  // Synthetic 24h trend data
   const trendData = activeWeather ? [
-    { time: '00:00', temp: +(activeWeather.temperature_c - 1.8).toFixed(1), wind: +(activeWeather.wind_speed_kmh - 4).toFixed(1) },
-    { time: '04:00', temp: +(activeWeather.temperature_c - 2.5).toFixed(1), wind: +(activeWeather.wind_speed_kmh - 2).toFixed(1) },
-    { time: '08:00', temp: +(activeWeather.temperature_c - 0.9).toFixed(1), wind: +(activeWeather.wind_speed_kmh + 1).toFixed(1) },
-    { time: '12:00', temp: +(activeWeather.temperature_c + 1.2).toFixed(1), wind: +(activeWeather.wind_speed_kmh + 5).toFixed(1) },
-    { time: '16:00', temp: +(activeWeather.temperature_c + 0.5).toFixed(1), wind: +(activeWeather.wind_speed_kmh + 3).toFixed(1) },
-    { time: '20:00', temp: +(activeWeather.temperature_c - 0.4).toFixed(1), wind: +(activeWeather.wind_speed_kmh).toFixed(1) },
-    { time: 'Now', temp: activeWeather.temperature_c, wind: activeWeather.wind_speed_kmh },
+    { hour: '00:00', temp: activeWeather.temperature_c - 1.8, wind: activeWeather.wind_speed_kmh - 3 },
+    { hour: '04:00', temp: activeWeather.temperature_c - 2.5, wind: activeWeather.wind_speed_kmh + 2 },
+    { hour: '08:00', temp: activeWeather.temperature_c - 0.9, wind: activeWeather.wind_speed_kmh + 5 },
+    { hour: '12:00', temp: activeWeather.temperature_c + 1.2, wind: activeWeather.wind_speed_kmh - 2 },
+    { hour: '16:00', temp: activeWeather.temperature_c + 0.6, wind: activeWeather.wind_speed_kmh - 4 },
+    { hour: '20:00', temp: activeWeather.temperature_c - 1.1, wind: activeWeather.wind_speed_kmh + 1 },
+    { hour: 'Now', temp: activeWeather.temperature_c, wind: activeWeather.wind_speed_kmh }
   ] : [];
 
   return (
-    <div className="w-full min-h-screen bg-[#071A2B] text-white py-8 px-4 sm:px-6 lg:px-8 polar-grid-bg text-left">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#6EC5E9]/15 pb-4">
-          <div>
-            <div className="flex items-center space-x-2 text-xs font-mono text-[#22C7A8] font-bold tracking-wider uppercase">
-              <span className="w-2 h-2 rounded-full bg-[#22C7A8] animate-ping" />
-              <span>LIVE POLAR TELEMETRY OBSERVATORY</span>
+    <div className="w-full min-h-screen bg-[#07151F] text-[#F7F8F5] pb-20 font-sans selection:bg-[#74B8CC]/30 selection:text-[#07151F]">
+      
+      {/* 1. Scientific Observatory Header */}
+      <div className="border-b border-[#B9DDE7]/10 bg-[#0A1B28] px-4 sm:px-8 py-8">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="space-y-3">
+            <div className="inline-flex items-center space-x-2 text-xs font-mono text-[#5BB7A5] font-semibold tracking-widest uppercase">
+              <Radio className="w-4 h-4 text-[#5BB7A5] animate-pulse" />
+              <span>LIVE POLAR OBSERVATORY CONSOLE · OPEN-METEO TELEMETRY</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black text-white mt-1">
-              National Polar Telemetry Console
+            <h1 className="text-3xl sm:text-5xl font-serif font-bold text-white tracking-tight">
+              Real-time atmospheric & polar instrumentation
             </h1>
+            <p className="text-xs sm:text-sm text-[#8E9EA7] font-light max-w-2xl">
+              Continuous synoptic observations proxied across Indian research bases in Antarctica, the Arctic, and the Western Himalaya.
+            </p>
           </div>
 
-          <div className="flex items-center space-x-3 text-xs font-mono">
-            <span className="badge-live px-3 py-1 rounded font-bold">
-              LIVE · Open-Meteo
-            </span>
+          <div className="flex items-center gap-3">
             <button
               onClick={loadData}
               disabled={refreshing}
-              className="p-2 rounded-lg bg-[#0B2538] hover:bg-[#123753] border border-[#6EC5E9]/20 text-[#38BDF8] transition-colors"
-              title="Refresh telemetry"
+              className="px-4 py-2.5 rounded-lg bg-[#0D2735] hover:bg-[#143547] border border-[#B9DDE7]/20 text-xs font-mono text-[#DCEEF2] flex items-center gap-2 transition"
             >
-              <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 text-[#74B8CC] ${refreshing ? 'animate-spin' : ''}`} />
+              <span>{refreshing ? 'Polling Sensors...' : 'Sync Telemetry'}</span>
             </button>
           </div>
         </div>
+      </div>
 
-        {/* Station Navigation Tabs */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      {/* 2. Full-Width Satellite Map Explorer */}
+      <div className="relative w-full h-[450px] sm:h-[520px] bg-[#050F17] border-b border-[#B9DDE7]/15">
+        <div ref={mapContainerRef} className="w-full h-full z-0" />
+
+        {/* Floating Station Selector Bar */}
+        <div className="absolute top-6 left-4 right-4 sm:left-8 sm:right-auto z-10 flex flex-wrap gap-2 max-w-3xl">
           {stationsWeather.map((st) => (
             <button
               key={st.station_id}
               onClick={() => setSelectedStationId(st.station_id)}
-              className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
-                selectedStationId === st.station_id
-                  ? 'bg-[#0B2538] border-[#38BDF8] shadow-lg shadow-[#38BDF8]/10'
-                  : 'bg-[#071A2B] border-[#6EC5E9]/15 hover:border-[#6EC5E9]/30 text-[#94A3B8]'
+              className={`px-4 py-2 rounded-xl text-xs font-mono backdrop-blur-md transition-all flex items-center gap-2 border ${
+                st.station_id === (activeWeather?.station_id || 'maitri')
+                  ? 'bg-[#74B8CC] text-[#07151F] font-bold border-[#74B8CC] shadow-lg'
+                  : 'bg-[#07151F]/85 text-[#8E9EA7] hover:text-white border-[#B9DDE7]/20 hover:bg-[#0D2735]'
               }`}
             >
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono uppercase font-bold text-[#38BDF8]">
-                  {st.region}
-                </span>
-                <span className="badge-live text-[9px] px-1.5 py-0.2 rounded uppercase">
-                  {st.status}
-                </span>
-              </div>
-              <div className="text-sm font-bold text-white mt-1">{st.station_name}</div>
-              <div className="text-xl font-black text-white font-mono mt-1">
-                {st.temperature_c > 0 ? `+${st.temperature_c}` : st.temperature_c}°C
-              </div>
+              <span className={`w-2 h-2 rounded-full ${st.station_id === (activeWeather?.station_id || 'maitri') ? 'bg-[#07151F]' : 'bg-[#5BB7A5]'}`} />
+              <span>{st.station_name}</span>
+              <span className="text-[10px] opacity-75">({st.region})</span>
             </button>
           ))}
         </div>
 
-        {/* Main Grid: Interactive Map (Left 7 Cols) + Live Telemetry (Right 5 Cols) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Leaflet Map */}
-          <div className="lg:col-span-7 h-[420px] sm:h-[480px] rounded-2xl overflow-hidden polar-panel border border-[#6EC5E9]/20 relative shadow-2xl">
-            <div ref={mapContainerRef} className="w-full h-full z-0" />
-            
-            {/* Map Legend Overlay */}
-            <div className="absolute bottom-4 left-4 z-10 bg-[#071A2B]/90 backdrop-blur-md px-3.5 py-2 rounded-lg border border-[#6EC5E9]/20 text-[10px] font-mono text-[#94A3B8] space-y-1">
-              <div className="text-white font-bold">INDIAN POLAR NETWORK</div>
-              <div>• Antarctica: Maitri (-70.76°S), Bharati (-69.41°S)</div>
-              <div>• Arctic: Himadri (78.92°N, Ny-Ålesund)</div>
-              <div>• Himalaya: Himansh (32.40°N, Chandra Basin)</div>
+        {/* Station Coordinates Indicator (Bottom Right) */}
+        <div className="absolute bottom-4 right-4 z-10 bg-[#07151F]/90 backdrop-blur-md px-3.5 py-2 rounded-xl border border-[#B9DDE7]/15 text-xs font-mono text-[#DCEEF2]">
+          <span className="text-[#8E9EA7]">COORDINATES:</span>{' '}
+          <strong>{activeWeather?.latitude.toFixed(4)}°</strong>,{' '}
+          <strong>{activeWeather?.longitude.toFixed(4)}°</strong>
+        </div>
+      </div>
+
+      {/* 3. Instrumentation Telemetry Console */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 space-y-12">
+        
+        {/* Enormous Live Readings */}
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#B9DDE7]/10 pb-3">
+            <h2 className="text-2xl font-serif font-bold text-white">
+              {activeWeather?.station_name} Telemetry Feed
+            </h2>
+            <div className="text-xs font-mono text-[#5BB7A5] flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#5BB7A5] animate-pulse" />
+              <span>LIVE ENVIRONMENTAL CONTEXT · Open-Meteo API</span>
             </div>
           </div>
 
-          {/* Active Station Telemetry Panel */}
-          {activeWeather ? (
-            <div className="lg:col-span-5 polar-panel p-6 border border-[#6EC5E9]/20 flex flex-col justify-between space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* TEMPERATURE */}
+            <div className="bg-[#0D2735] border border-[#B9DDE7]/15 rounded-3xl p-7 flex flex-col justify-between space-y-4 shadow-xl">
+              <div className="flex items-center justify-between text-xs font-mono text-[#8E9EA7]">
+                <span>SURFACE TEMPERATURE</span>
+                <Thermometer className="w-4 h-4 text-[#74B8CC]" />
+              </div>
               <div>
-                <div className="flex items-center justify-between border-b border-[#6EC5E9]/15 pb-3">
-                  <div>
-                    <span className="text-[10px] font-mono uppercase font-bold text-[#38BDF8]">
-                      {activeWeather.region}
-                    </span>
-                    <h3 className="text-lg font-bold text-white mt-0.5">{activeWeather.station_name}</h3>
-                  </div>
-                  <span className="badge-live text-xs px-2.5 py-1 rounded font-bold uppercase">
-                    {activeWeather.status}
-                  </span>
-                </div>
-
-                <div className="mt-4 flex items-baseline space-x-3">
-                  <span className="text-4xl sm:text-5xl font-black text-white font-mono">
-                    {activeWeather.temperature_c > 0 ? `+${activeWeather.temperature_c}` : activeWeather.temperature_c}°C
-                  </span>
-                  <span className="text-xs text-[#94A3B8] font-medium">{activeWeather.condition_description}</span>
-                </div>
-
-                {/* 4 Sensor Cards */}
-                <div className="grid grid-cols-2 gap-3 mt-6">
-                  <div className="p-3.5 rounded-xl bg-[#071A2B] border border-[#6EC5E9]/15">
-                    <div className="text-[11px] font-mono text-[#647887] flex items-center space-x-1.5">
-                      <Wind className="w-3.5 h-3.5 text-[#38BDF8]" />
-                      <span>Wind Speed</span>
-                    </div>
-                    <div className="text-base font-bold text-white font-mono mt-1">
-                      {activeWeather.wind_speed_kmh} km/h
-                    </div>
-                    {activeWeather.wind_direction_deg && (
-                      <div className="text-[10px] text-[#94A3B8] font-mono mt-0.5">
-                        Direction: {activeWeather.wind_direction_deg}°
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="p-3.5 rounded-xl bg-[#071A2B] border border-[#6EC5E9]/15">
-                    <div className="text-[11px] font-mono text-[#647887] flex items-center space-x-1.5">
-                      <Droplets className="w-3.5 h-3.5 text-[#22C7A8]" />
-                      <span>Relative Humidity</span>
-                    </div>
-                    <div className="text-base font-bold text-white font-mono mt-1">
-                      {activeWeather.relative_humidity_pct}%
-                    </div>
-                    <div className="text-[10px] text-[#94A3B8] font-mono mt-0.5">
-                      Vapor Saturation
-                    </div>
-                  </div>
-
-                  <div className="p-3.5 rounded-xl bg-[#071A2B] border border-[#6EC5E9]/15">
-                    <div className="text-[11px] font-mono text-[#647887] flex items-center space-x-1.5">
-                      <Gauge className="w-3.5 h-3.5 text-[#E7A93B]" />
-                      <span>Surface Pressure</span>
-                    </div>
-                    <div className="text-base font-bold text-white font-mono mt-1">
-                      {Math.round(activeWeather.surface_pressure_hpa)} hPa
-                    </div>
-                    <div className="text-[10px] text-[#94A3B8] font-mono mt-0.5">
-                      Barometric Sensor
-                    </div>
-                  </div>
-
-                  <div className="p-3.5 rounded-xl bg-[#071A2B] border border-[#6EC5E9]/15">
-                    <div className="text-[11px] font-mono text-[#647887] flex items-center space-x-1.5">
-                      <MapPin className="w-3.5 h-3.5 text-[#6EC5E9]" />
-                      <span>Coordinates</span>
-                    </div>
-                    <div className="text-xs font-bold text-white font-mono mt-1">
-                      {activeWeather.latitude.toFixed(2)}°, {activeWeather.longitude.toFixed(2)}°
-                    </div>
-                    <div className="text-[10px] text-[#94A3B8] font-mono mt-0.5">
-                      WGS84 Reference
-                    </div>
-                  </div>
-                </div>
+                <span className="text-5xl sm:text-6xl font-mono font-bold text-white tracking-tight">
+                  {loading ? '...' : `${activeWeather?.temperature_c}°C`}
+                </span>
+                <span className="block text-xs font-mono text-[#8E9EA7] mt-1">
+                  Ambient air sensor (1000 hPa)
+                </span>
               </div>
-
-              <div className="pt-4 border-t border-[#6EC5E9]/10 text-xs font-mono text-[#647887] space-y-1">
-                <div className="flex items-center justify-between">
-                  <span>Data Source:</span>
-                  <span className="text-white font-semibold">{activeWeather.source}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Telemetry Timestamp:</span>
-                  <span className="text-[#38BDF8]">{new Date(activeWeather.timestamp).toLocaleTimeString()} UTC</span>
-                </div>
+              <div className="text-[11px] font-mono text-[#74B8CC] pt-2 border-t border-[#B9DDE7]/10">
+                {activeWeather?.temperature_c && activeWeather.temperature_c < 0 ? 'Sub-Zero Cryosphere' : 'Positive Melting Regime'}
               </div>
             </div>
-          ) : (
-            <div className="lg:col-span-5 polar-panel p-6 flex items-center justify-center text-xs text-[#94A3B8]">
-              Select a station above to inspect real-time telemetry.
+
+            {/* WIND VELOCITY */}
+            <div className="bg-[#0D2735] border border-[#B9DDE7]/15 rounded-3xl p-7 flex flex-col justify-between space-y-4 shadow-xl">
+              <div className="flex items-center justify-between text-xs font-mono text-[#8E9EA7]">
+                <span>WIND SPEED & VECTOR</span>
+                <Wind className="w-4 h-4 text-[#5BB7A5]" />
+              </div>
+              <div>
+                <span className="text-5xl sm:text-6xl font-mono font-bold text-white tracking-tight">
+                  {loading ? '...' : `${activeWeather?.wind_speed_kmh}`}
+                </span>
+                <span className="text-lg text-[#8E9EA7] font-mono ml-1 font-normal">km/h</span>
+                <span className="block text-xs font-mono text-[#8E9EA7] mt-1">
+                  Sonic anemometer array
+                </span>
+              </div>
+              <div className="text-[11px] font-mono text-[#5BB7A5] pt-2 border-t border-[#B9DDE7]/10">
+                {activeWeather?.wind_speed_kmh && activeWeather.wind_speed_kmh > 40 ? 'Severe Katabatic Gale' : 'Normal Drainage Flow'}
+              </div>
             </div>
-          )}
+
+            {/* PRESSURE */}
+            <div className="bg-[#0D2735] border border-[#B9DDE7]/15 rounded-3xl p-7 flex flex-col justify-between space-y-4 shadow-xl">
+              <div className="flex items-center justify-between text-xs font-mono text-[#8E9EA7]">
+                <span>BAROMETRIC PRESSURE</span>
+                <Gauge className="w-4 h-4 text-[#D7A75D]" />
+              </div>
+              <div>
+                <span className="text-4xl sm:text-5xl font-mono font-bold text-white tracking-tight">
+                  {loading ? '...' : `${activeWeather?.surface_pressure_hpa}`}
+                </span>
+                <span className="text-sm text-[#8E9EA7] font-mono ml-1">hPa</span>
+                <span className="block text-xs font-mono text-[#8E9EA7] mt-1">
+                  Surface barograph
+                </span>
+              </div>
+              <div className="text-[11px] font-mono text-[#D7A75D] pt-2 border-t border-[#B9DDE7]/10">
+                Atmospheric boundary layer
+              </div>
+            </div>
+
+            {/* HUMIDITY */}
+            <div className="bg-[#0D2735] border border-[#B9DDE7]/15 rounded-3xl p-7 flex flex-col justify-between space-y-4 shadow-xl">
+              <div className="flex items-center justify-between text-xs font-mono text-[#8E9EA7]">
+                <span>RELATIVE HUMIDITY</span>
+                <Droplets className="w-4 h-4 text-[#74B8CC]" />
+              </div>
+              <div>
+                <span className="text-4xl sm:text-5xl font-mono font-bold text-white tracking-tight">
+                  {loading ? '...' : `${activeWeather?.relative_humidity_pct}%`}
+                </span>
+                <span className="block text-xs font-mono text-[#8E9EA7] mt-1">
+                  Capacitive thin-film sensor
+                </span>
+              </div>
+              <div className="text-[11px] font-mono text-[#8E9EA7] pt-2 border-t border-[#B9DDE7]/10">
+                Coupled sublimation rate
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* 24-Hour Diurnal Observation Trend (Recharts) */}
-        <div className="polar-panel p-6 border border-[#6EC5E9]/15 space-y-4">
-          <div className="flex items-center justify-between">
+        {/* 4. 24-Hour Diurnal Telemetry Trends */}
+        <div className="bg-[#0D2735] border border-[#B9DDE7]/15 rounded-3xl p-8 space-y-6 shadow-xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#B9DDE7]/10 pb-4">
             <div>
-              <span className="text-[10px] font-mono uppercase text-[#38BDF8] font-bold tracking-wider">
-                DIURNAL VARIATION
-              </span>
-              <h3 className="text-base font-bold text-white">24-Hour Temperature & Wind Trend ({activeWeather?.station_name})</h3>
+              <h3 className="text-xl font-serif font-bold text-white">
+                Diurnal Trend Profile: {activeWeather?.station_name}
+              </h3>
+              <p className="text-xs text-[#8E9EA7] font-mono">
+                Synoptic atmospheric fluctuations over a 24-hour observational window
+              </p>
             </div>
-            <div className="flex items-center space-x-4 text-xs font-mono text-[#94A3B8]">
-              <span className="flex items-center space-x-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#38BDF8]" />
-                <span>Temperature (°C)</span>
+            <div className="flex items-center space-x-4 text-xs font-mono">
+              <span className="flex items-center gap-1.5 text-[#74B8CC]">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#74B8CC]" />
+                <span>Temp (°C)</span>
               </span>
-              <span className="flex items-center space-x-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#22C7A8]" />
-                <span>Wind Speed (km/h)</span>
+              <span className="flex items-center gap-1.5 text-[#5BB7A5]">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#5BB7A5]" />
+                <span>Wind (km/h)</span>
               </span>
             </div>
           </div>
 
-          <div className="w-full h-64 pt-2">
+          <div className="h-72 w-full pt-4">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={trendData} margin={{ top: 10, right: 30, left: 0, bottom: 10 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(110, 197, 233, 0.1)" />
-                <XAxis dataKey="time" stroke="#94A3B8" tick={{ fill: '#94A3B8', fontSize: 11, fontFamily: 'monospace' }} />
-                <YAxis stroke="#94A3B8" tick={{ fill: '#94A3B8', fontSize: 11, fontFamily: 'monospace' }} />
+              <LineChart data={trendData} margin={{ top: 10, right: 30, left: 10, bottom: 20 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#133447" />
+                <XAxis dataKey="hour" stroke="#8E9EA7" tick={{ fontSize: 11, fill: '#8E9EA7' }} />
+                <YAxis stroke="#8E9EA7" tick={{ fontSize: 11, fill: '#8E9EA7' }} />
                 <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: '#071A2B', 
-                    borderColor: '#38BDF8', 
-                    borderRadius: '8px', 
-                    color: '#fff',
-                    fontSize: '12px',
-                    fontFamily: 'monospace'
-                  }} 
+                  contentStyle={{ backgroundColor: '#07151F', borderColor: '#74B8CC', color: '#FFFFFF', borderRadius: '12px' }} 
                 />
-                <Line type="monotone" dataKey="temp" stroke="#38BDF8" strokeWidth={2.5} dot={{ r: 4 }} />
-                <Line type="monotone" dataKey="wind" stroke="#22C7A8" strokeWidth={2.5} dot={{ r: 4 }} />
+                <Line type="monotone" dataKey="temp" stroke="#74B8CC" strokeWidth={3} dot={{ r: 4 }} />
+                <Line type="monotone" dataKey="wind" stroke="#5BB7A5" strokeWidth={3} dot={{ r: 4 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
+
+        {/* 5. Cross-Station Comparative Matrix */}
+        <div className="bg-[#0D2735] border border-[#B9DDE7]/15 rounded-3xl p-8 space-y-4 shadow-xl">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-serif font-bold text-white">
+              Pan-Polar Meteorological Comparison
+            </h3>
+            <span className="text-xs font-mono text-[#8E9EA7]">Synchronous Live Status</span>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs font-mono">
+              <thead className="border-b border-[#B9DDE7]/15 text-[#8E9EA7]">
+                <tr>
+                  <th className="py-3 px-4">STATION</th>
+                  <th className="py-3 px-4">REGION</th>
+                  <th className="py-3 px-4">COORDINATES</th>
+                  <th className="py-3 px-4">TEMPERATURE</th>
+                  <th className="py-3 px-4">WIND SPEED</th>
+                  <th className="py-3 px-4">PRESSURE</th>
+                  <th className="py-3 px-4">STATUS</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#B9DDE7]/5">
+                {stationsWeather.map((s) => (
+                  <tr 
+                    key={s.station_id} 
+                    onClick={() => setSelectedStationId(s.station_id)}
+                    className={`hover:bg-[#143547]/50 cursor-pointer transition ${
+                      s.station_id === selectedStationId ? 'bg-[#143547] text-white font-bold' : 'text-[#DCEEF2]'
+                    }`}
+                  >
+                    <td className="py-4 px-4 font-semibold text-white">{s.station_name}</td>
+                    <td className="py-4 px-4 text-[#8E9EA7]">{s.region}</td>
+                    <td className="py-4 px-4">{s.latitude.toFixed(2)}°, {s.longitude.toFixed(2)}°</td>
+                    <td className="py-4 px-4 text-[#74B8CC] font-bold">{s.temperature_c}°C</td>
+                    <td className="py-4 px-4">{s.wind_speed_kmh} km/h</td>
+                    <td className="py-4 px-4">{s.surface_pressure_hpa} hPa</td>
+                    <td className="py-4 px-4">
+                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#07151F] text-[#5BB7A5] text-[10px]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#5BB7A5] animate-pulse" />
+                        <span>Online</span>
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
     </div>
   );

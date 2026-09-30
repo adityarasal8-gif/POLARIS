@@ -31,22 +31,49 @@
   npm run build
   ```
 
+## Design Philosophy & Personality Matrix
+- **Inspiration**: NASA Scientific Visualization, British Antarctic Survey storytelling, National Geographic editorial presentation, and NPDC Research Data Portal.
+- **Color Architecture**:
+  * Deep Ink (`#07151F`): Dominant background for immersive environments.
+  * Ocean (`#0D2735`): Deep contrast surface for controls, sidebars, and navigation.
+  * Snow (`#F7F8F5`): Clean light surface for data catalogs, scholarly papers, and educational modules.
+  * Ice (`#B9DDE7`) & Glacial (`#74B8CC`): Cold atmospheric scientific accents.
+  * Aurora (`#5BB7A5`): Active operational state indicator.
+  * Warm Research Accent (`#D7A75D`): Editorial highlight for field notes, awards, and historical milestones.
+- **Typography**:
+  * Headlines: `Newsreader` (Google Fonts editorial serif).
+  * Body & UI: `Plus Jakarta Sans` (Google Fonts modern clean sans).
+  * Data & Telemetry: `JetBrains Mono` (Google Fonts monospace).
+- **Page Personas**:
+  * Home: Cinematic editorial narrative
+  * Expeditions: Documentary field journal
+  * Stations: Geographic map explorer
+  * Observatory: Scientific instrumentation console
+  * Repository: Cross-entity relational search
+  * Datasets: NPDC data catalog (clean light mode)
+  * Publications: Scholarly research library (clean light mode)
+  * Media: Photojournalistic archive
+  * Activities: Institutional journalism
+  * Knowledge Graph: Concentric interactive visualization
+  * Learn: Smart education science portal (clean light mode)
+  * Studio: Professional 3-pane editorial desk
+  * Admin: Administrative governance dashboard
+
 ## Live Data Sources & Provenance
-- **Live Environmental Telemetry**: Open-Meteo REST API (`GET /api/observatory/live`) proxied by backend with caching and fallback. Coordinates for Maitri (-70.77°S, 11.73°E), Bharati (-69.41°S, 76.19°E), Himadri (78.92°N, 11.93°E), and Himansh (32.40°N, 77.60°E). Labeled transparently: `LIVE · Open-Meteo`.
+- **Live Environmental Telemetry**: Open-Meteo REST API (`GET /api/observatory/live`) proxied by backend with caching and fallback. Coordinates for Maitri (-70.77°S, 11.73°E), Bharati (-69.41°S, 76.19°E), Himadri (78.92°N, 11.93°E), and Himansh (32.40°N, 77.60°E). Labeled transparently: `LIVE ENVIRONMENTAL CONTEXT · Source: Open-Meteo`.
 - **National Polar Data Center (NPDC) & NCPOR Curated Archives**: 10 Expeditions (45th ISEA, 44th ISEA, 43rd ISEA, Arctic, Southern Ocean campaigns), 20 Datasets across 12 NPDC categories, 15 peer-reviewed publications with DOIs, 30 media assets (licensed authentic NASA/Wikimedia/NCPOR photography), 15 institutional activities, 4 stations, 10 researchers. Labeled honestly: `VERIFIED SOURCE` and `CURATED DEMO RECORD`.
 
 ## Primary Routes
-1. `/` — Home with Three.js Polar Globe, live observatory ticker, pipeline flow, region cards, dynamic stats, timeline.
-2. `/repository` — Unified cross-entity knowledge search with relationship chips.
-3. `/expeditions` & `/expeditions/:id` — Expedition archive with mission overview, team, linked datasets, papers, media.
-4. `/datasets` & `/datasets/:id` — NPDC dataset catalog, Recharts time-series preview, CSV/JSON sample download, provenance.
-5. `/publications` — Peer-reviewed papers with filter, abstract expander, and BibTeX/APA/RIS citation generator.
-6. `/media` — Photo and video gallery with real photography, attribution badges, and lightbox.
-7. `/activities` — Institutional news, expedition updates, and announcements.
-8. `/stations` — Detailed fact sheets for Maitri, Bharati, Himadri, and Himansh with telemetry shortcuts.
-9. `/observatory` — Interactive Leaflet map with live station telemetry and diurnal charts.
-10. `/knowledge-graph` — Interactive directed SVG knowledge graph showing entity interconnections.
-11. `/learn` — Smart Education Student Hub with 3 core lessons, 10 polar glossary terms, and 5-question quiz.
-12. `/studio` — Source-Grounded AI Dissemination Studio generating Website, Instagram, X, LinkedIn, YouTube, and Newsletter outreach with citations and review flow.
-13. `/studio/calendar` — 5-day Mon-Fri scheduled outreach calendar.
-14. `/admin` — Multi-role console for Student, Scientist, Content Editor, and Administrator.
+1. `/` — Home (10-stage cinematic narrative with integrated 3D Earth, 4 regional chapters, pipeline, real-scale observatory, archive search, featured 45th ISEA).
+2. `/repository` — Unified cross-entity knowledge search with relationship clusters.
+3. `/expeditions` & `/expeditions/:id` — Expedition archive (documentary field journal & mission dossier).
+4. `/datasets` & `/datasets/:id` — NPDC dataset catalog (clean light mode data explorer & scientific data record).
+5. `/publications` — Scholarly research library with DOI badges, abstract toggle, and APA/BibTeX citation export.
+6. `/media` — Photojournalistic archive with real photography, attribution badges, and lightbox.
+7. `/activities` — Institutional journalism, expedition updates, and announcements.
+8. `/stations` — Geographic map explorer with split-screen Leaflet satellite map.
+9. `/observatory` — Scientific instrumentation console with giant live telemetry and 24h diurnal charts.
+10. `/knowledge-graph` — Concentric interactive visualization with drawer inspector.
+11. `/learn` — Smart education science portal with interactive lesson reader, lexicon, and 5-question quiz.
+12. `/studio` & `/studio/calendar` — Source-Grounded AI Dissemination Studio with 3-pane editorial desk and 6-stage workflow.
+13. `/admin` — Dedicated administrative governance console.

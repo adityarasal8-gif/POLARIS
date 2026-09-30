@@ -10,7 +10,7 @@ Every agent must read it before making changes and update it after meaningful wo
   - SQLite database `/Users/lol/Docs/antigravity/polarsetu/backend/polaris.db` seeded with 10 expeditions, 20 datasets, 15 publications, 30 media assets, 4 research stations, 15 activities, 10 researchers, and content drafts.
   - Vite v8 + React 19 + TypeScript frontend running on `http://127.0.0.1:5173` with reverse proxy to backend `/api`.
   - Frontend production build verified clean with 0 TypeScript errors via `npm run build`.
-- **Recent progress**: Built complete end-to-end prototype for SIH26063 (MoES / NCPOR) covering all P0 and P1 requirements.
+- **Recent progress**: Complete UI/UX rebuild executed from the ground up. Transformed the entire frontend from an AI-generated dashboard prototype into a production-grade scientific exploration platform (inspired by NASA scientific visualization, British Antarctic Survey storytelling, and National Geographic editorial presentation). Replaced all monotonous cyan/navy card grids with a custom Polar Editorial design system with alternating light/dark environments.
 - **Current blockers**: None. Both frontend and backend are running and verified.
 - **Known risks**: None.
 
@@ -18,7 +18,26 @@ Every agent must read it before making changes and update it after meaningful wo
 
 - **Decision**: Built POLARIS as an integrated knowledge repository, interactive observatory, and source-grounded dissemination portal for Indian polar science.
 - **Reason**: Direct response to SIH26063 problem statement and real NCPOR/NPDC ecosystem fragmentation.
-- **Live Environmental Data**: Proxied via backend `GET /api/observatory/live` using Open-Meteo REST API, attributed clearly as `LIVE · Open-Meteo`.
+- **Design Philosophy & Visual Language**:
+  - Eliminated repetitive SaaS card layouts, repeated cyan borders, and hackathon badges from public navigation.
+  - Alternating Visual Environments:
+    * Dark Ink (`#07151F`): Hero, Observatory, Polar Stations Map, Expeditions Journal, Media Archive, Knowledge Graph, Repository, Studio.
+    * Clean Light Snow (`#F7F8F5`): NPDC Datasets Catalog & Detail Records, Publications Library, Student Learn Hub.
+  - Page Personality Matrix:
+    * Home: Cinematic editorial narrative with 10 deliberate stages.
+    * Expeditions: Documentary field journal with chronological campaign records.
+    * Stations: Geographic map explorer with split-screen Leaflet satellite view.
+    * Observatory: Scientific instrumentation console with giant live telemetry readings and 24h diurnal charts.
+    * Repository: Cross-entity knowledge search & relational discovery.
+    * Datasets: NPDC research data portal with left-rail faceted filtering and tabular schema rows.
+    * Publications: Scholarly research library with DOI badges and citation generator.
+    * Media: Image-first photojournalistic archive with verified credits and full-screen lightbox.
+    * Activities: Institutional journalism dispatches and bulletins.
+    * Knowledge Graph: Full-bleed radial relational visualization with entity drawer.
+    * Learn: Educational science portal with interactive lesson reader, cryosphere lexicon, and quiz.
+    * Studio: Professional 3-pane editorial desk with 6-stage verification workflow.
+    * Admin: Dedicated administrative governance console.
+- **Live Environmental Data**: Proxied via backend `GET /api/observatory/live` using Open-Meteo REST API, attributed honestly as `LIVE ENVIRONMENTAL CONTEXT · Source: Open-Meteo`.
 - **Search Engine**: Multi-token ranked search across 6 entity tables in SQLite with relationship counting.
 - **AI Dissemination Studio**: Deterministic source-grounded content generator with strict citation traceability (Website article, Instagram carousel, X post, LinkedIn brief, YouTube description, Newsletter explainer).
 - **Date**: 2026-09-30
@@ -27,62 +46,44 @@ Every agent must read it before making changes and update it after meaningful wo
 
 - `GET /api/health` -> 200 OK
 - `GET /api/stats` -> 200 OK (10 expeditions, 20 datasets, 15 publications, 30 media assets, 4 stations, 15 activities, 10 researchers)
-- `GET /api/observatory/live` -> 200 OK (live Maitri -23.7°C, Bharati -12.2°C, Himadri -3.7°C, Himansh 4.0°C)
+- `GET /api/observatory/live` -> 200 OK (live Maitri -23.2°C, Bharati -12.2°C, Himadri -3.7°C, Himansh 4.0°C)
 - `GET /api/search?q=Maitri%20atmosphere` -> 200 OK (returns 20 interconnected results across all 6 entities)
 - `POST /api/content/generate` -> 200 OK (synthesizes structured multi-platform draft with citations)
+- Frontend production build: `npm run build` completed cleanly with **0 TypeScript and Vite compilation errors**.
 - All 16 frontend routes verified with HTTP 200 OK:
-  - `/`
-  - `/repository`
-  - `/expeditions` & `/expeditions/:id`
-  - `/datasets` & `/datasets/:id`
-  - `/publications`
-  - `/media`
-  - `/activities`
-  - `/stations`
-  - `/observatory`
-  - `/knowledge-graph`
-  - `/learn`
-  - `/studio` & `/studio/calendar`
-  - `/admin`
+  - `/` (Home: 10-stage cinematic narrative)
+  - `/repository` (Unified relational search engine)
+  - `/expeditions` & `/expeditions/:id` (Expedition journal & scientific mission dossier)
+  - `/datasets` & `/datasets/:id` (Light-mode data explorer & scientific data record)
+  - `/publications` (Light-mode academic library with APA/BibTeX citation export)
+  - `/media` (Photojournalistic archive with verified photo credits & lightbox)
+  - `/activities` (Institutional journalism)
+  - `/stations` (Geographic map explorer)
+  - `/observatory` (Scientific instrumentation console with real-scale telemetry)
+  - `/knowledge-graph` (Concentric radial interactive visualization)
+  - `/learn` (Smart education portal with interactive reader, lexicon & quiz)
+  - `/studio` & `/studio/calendar` (Editorial desk with 3-pane review)
+  - `/admin` (Dedicated administrative console)
 
 ## Session Updates
 
-### Session Update - 2026-09-30
+### Session Update - 2026-09-30 (Complete UI/UX Rebuild)
 
 #### Objective
-- Build the complete SIH26063 prototype "POLARIS: Integrated Polar Science Knowledge & Outreach Platform" in under 3 hours without using agricultural/MausamSetu legacy artifacts, generic AI gradients, or fabricated official statistics.
+- Rebuild the entire POLARIS frontend visual system and information architecture from scratch to eliminate the "AI-generated dashboard / hackathon prototype" look, while preserving all working backend APIs, SQLite models, seeded data, and client routes.
 
 #### Completed
-1. **Backend**:
-   - Built FastAPI application (`backend/main.py`) with Pydantic v2 data models.
-   - Built SQLite schema (`backend/database.py`) and seed script (`backend/seed_data.py`) with factual NCPOR records.
-   - Built live environmental proxy (`backend/observatory.py`) querying Open-Meteo with caching.
-   - Built source-grounded content generator (`backend/generator.py`) extracting structured scientific metadata with citations.
-2. **Frontend Architecture & Visuals**:
-   - Configured Vite, React 19, TypeScript, TailwindCSS v4, and Leaflet styles.
-   - Created Three.js 3D Polar Earth globe (`src/components/PolarGlobe3D.tsx`) with Southern vantage point and animated connection arcs to Maitri, Bharati, Himadri, and Himansh.
-   - Created From Field to Knowledge visual pipeline (`src/components/PipelineFlow.tsx`).
-   - Created MoES/NCPOR government header with role switcher and quick command search (`Cmd+K`).
-3. **Application Pages**:
-   - `HomePage`: Hero with 3D Globe, Live observatory ticker, 4 Discover Regions, Live stats counters, Latest research, Expedition timeline.
-   - `RepositoryPage`: Cross-entity faceted search with instant demo queries.
-   - `ExpeditionsPage` & `ExpeditionDetailPage`: 45th ISEA, 44th ISEA, Arctic, Southern Ocean campaigns with full field objectives, linked datasets, and team.
-   - `DatasetsPage` & `DatasetDetailPage`: NPDC categories, Recharts time-series preview, CSV/JSON sample download, provenance.
-   - `PublicationsPage`: Peer-reviewed papers with filter, abstract expander, and BibTeX/APA/RIS citation generator.
-   - `MediaPage`: Photo and video gallery with real photography, attribution badges, and lightbox.
-   - `ActivitiesPage`: Institutional news, expedition updates, and announcements.
-   - `StationsPage`: Detailed fact sheets for Maitri, Bharati, Himadri, and Himansh.
-   - `ObservatoryPage`: Leaflet map with live station telemetry and diurnal charts.
-   - `KnowledgeGraphPage`: Interactive directed SVG knowledge graph showing entity interconnections.
-   - `LearnPage`: Smart Education Student Hub with 3 core lessons, 10 polar glossary terms, and 5-question quiz.
-   - `StudioPage` & `CalendarPage`: Source-Grounded AI Dissemination Studio generating Website, Instagram, X, LinkedIn, YouTube, and Newsletter outreach with citations and review flow.
-   - `AdminPage`: Multi-role console for Student, Scientist, Content Editor, and Administrator.
-
-#### Verification
-- Built frontend cleanly via `npm run build` (0 TypeScript errors, bundle size optimized).
-- Tested all 16 routes and API endpoints via curl.
-- Confirmed live environmental telemetry feed from Open-Meteo.
-- Verified interactive quiz on `/learn`: simulated complete submission, achieving verified 5/5 (100%) score with green checkmarks and educational feedback.
-- Verified Global Search Modal (`Cmd+K` / button): debounced multi-keyword query `"Maitri atmosphere"` returning 20 cross-connected records across Expeditions, Datasets, Stations, and Publications.
-- Verified mobile responsiveness at 390px width (iPhone 14/15/16): accessible touch targets (>44px), legible typography, and functional mobile drawer menu.
-- Initialized local git repository, added comprehensive `.gitignore` for Python/Node, and created pristine commit `0c6ac21`.
+1. **Design System & Typography**:
+   - Replaced monotonous navy/cyan palette with a polar editorial palette: Deep Ink (`#07151F`), Ocean (`#0D2735`), Snow (`#F7F8F5`), Ice (`#B9DDE7`), Glacial (`#74B8CC`), Aurora (`#5BB7A5`), Warm Research Accent (`#D7A75D`).
+   - Integrated Google Fonts: `Newsreader` (editorial serif for headlines), `Plus Jakarta Sans` (modern sans for body/UI), and `JetBrains Mono` (telemetry/metadata).
+   - Removed repeated rounded cards, glowing cyan borders, and generic glassmorphism.
+2. **Navigation & Institutional Identity**:
+   - Header rebuilt into a national scientific platform navigation: removed `SIH26063 DEMONSTRATION PORTAL` banner, removed `LIVE TELEMETRY ON` badge, and moved public role switcher into `/admin`.
+   - Footer rebuilt into a national scientific institute footer with MoES/NCPOR governance, research programs, data policy, and discrete SIH26063 prototype disclosure.
+3. **Complete Page Recomposition**:
+   - Every page given a distinct visual identity matching its functional purpose.
+   - Alternating dark and light visual environments implemented across the application.
+   - Transparent data labeling applied to all live feeds (`LIVE ENVIRONMENTAL CONTEXT · Source: Open-Meteo`).
+4. **Verification**:
+   - Executed `npm run build`: 0 TypeScript or bundle errors.
+   - Inspected all routes in Chrome DevTools at desktop (1440x900) and mobile (390x844). Verified layout integrity, typography hierarchy, responsive touch targets, and interactive features.

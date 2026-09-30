@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Radio, Calendar, MapPin, ExternalLink, Globe, Tag, 
   Search, ShieldCheck, Newspaper, Award, Users, ChevronRight,
-  Sparkles, Megaphone
+  ArrowRight, Compass
 } from 'lucide-react';
 import { fetchActivities } from '../api';
 import { Activity } from '../types';
@@ -54,179 +54,207 @@ export default function ActivitiesPage() {
     return matchesType && matchesRegion && matchesSearch;
   });
 
-  const getTypeIcon = (type: string) => {
-    switch (type.toLowerCase()) {
-      case 'expedition update':
-        return <Radio className="w-4 h-4 text-cyan-400" />;
-      case 'conference':
-        return <Users className="w-4 h-4 text-amber-400" />;
-      case 'outreach':
-        return <Sparkles className="w-4 h-4 text-emerald-400" />;
-      case 'announcement':
-        return <Megaphone className="w-4 h-4 text-rose-400" />;
-      default:
-        return <Newspaper className="w-4 h-4 text-cyan-300" />;
-    }
-  };
+  const featuredActivity = filteredActivities[0];
+  const remainingActivities = filteredActivities.slice(1);
 
   return (
-    <div className="min-h-screen bg-[#071A2B] text-slate-100 py-10 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto space-y-8">
-        
-        {/* Header */}
-        <div className="border-b border-white/10 pb-8">
-          <div className="flex items-center gap-2 text-xs font-mono text-cyan-400 uppercase tracking-wider mb-2">
-            <span>Archive</span>
-            <span>/</span>
-            <span>Institutional Dissemination</span>
-            <span>/</span>
-            <span className="text-white">Activities & Updates</span>
+    <div className="min-h-screen bg-[#07151F] text-white">
+      {/* Editorial Header */}
+      <section className="pt-24 pb-12 px-4 sm:px-6 lg:px-8 border-b border-white/10 bg-gradient-to-b from-[#0D2735] to-[#07151F]">
+        <div className="max-w-6xl mx-auto space-y-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-[#B9DDE7] uppercase tracking-widest">
+            <Radio className="w-3.5 h-3.5 text-[#5BB7A5]" />
+            <span>Field Dispatches & Institutional News</span>
           </div>
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-              <h1 className="text-3xl sm:text-4xl font-serif font-bold text-white tracking-tight">
-                Institutional Activities & Dispatches
-              </h1>
-              <p className="mt-2 text-slate-400 text-sm sm:text-base max-w-3xl">
-                Official announcements, field expedition telemetry reports, international scientific conferences, and public polar science engagement from the National Centre for Polar and Ocean Research (MoES).
-              </p>
-            </div>
-            
-            <div className="flex items-center gap-2 self-start md:self-auto bg-[#0B2538] border border-cyan-500/20 px-3 py-1.5 rounded text-xs font-mono text-cyan-300">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>MoES Official Communications</span>
-            </div>
-          </div>
-        </div>
 
-        {/* Filter Bar */}
-        <div className="bg-[#0B2538] border border-white/10 rounded-lg p-4 space-y-4 shadow-xl">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            {/* Search */}
-            <div className="relative">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <h1 className="font-editorial text-4xl sm:text-5xl md:text-6xl text-white font-normal leading-tight">
+            Voices from the Polar Frontier.
+          </h1>
+
+          <p className="text-base sm:text-lg text-[#94A3B8] max-w-3xl leading-relaxed">
+            Official dispatches from Antarctic ice runways, Arctic fjord moorings, Himalayan high-altitude observatories, 
+            and national research policy forums.
+          </p>
+        </div>
+      </section>
+
+      {/* Filter Ribbon */}
+      <div className="border-b border-white/10 bg-white/[0.02] sticky top-16 z-20 backdrop-blur-md">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex flex-wrap gap-2">
+            {types.map(t => (
+              <button
+                key={t}
+                onClick={() => setSelectedType(t)}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-mono tracking-wide transition-all cursor-pointer ${
+                  selectedType === t
+                    ? 'bg-white text-[#07151F] font-bold'
+                    : 'bg-white/5 text-[#94A3B8] hover:text-white border border-white/10'
+                }`}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="relative flex-1 sm:w-64">
+              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#647887]" />
               <input
                 type="text"
-                placeholder="Search updates, announcements, dispatches..."
+                placeholder="Search dispatches..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#071A2B] border border-white/10 rounded pl-9 pr-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+                className="w-full bg-white/5 border border-white/10 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-[#647887] focus:outline-none focus:border-[#74B8CC]"
               />
             </div>
 
-            {/* Type */}
-            <div>
-              <select
-                value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value)}
-                className="w-full bg-[#071A2B] border border-white/10 rounded px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-cyan-400"
-              >
-                {types.map(t => (
-                  <option key={t} value={t}>Category: {t}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Region */}
-            <div>
-              <select
-                value={selectedRegion}
-                onChange={(e) => setSelectedRegion(e.target.value)}
-                className="w-full bg-[#071A2B] border border-white/10 rounded px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-cyan-400"
-              >
-                {regions.map(r => (
-                  <option key={r} value={r}>Region: {r}</option>
-                ))}
-              </select>
-            </div>
+            <select
+              value={selectedRegion}
+              onChange={(e) => setSelectedRegion(e.target.value)}
+              className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs font-mono text-white focus:outline-none focus:border-[#74B8CC] cursor-pointer"
+            >
+              {regions.map(r => (
+                <option key={r} value={r} className="bg-[#07151F] text-white">
+                  {r === 'All' ? 'All Regions' : r}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
+      </div>
 
-        {/* Activities Timeline / Cards */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
         {loading ? (
-          <div className="py-20 text-center space-y-3">
-            <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto"></div>
-            <p className="text-slate-400 text-sm font-mono">Loading institutional activities feed...</p>
+          <div className="py-24 text-center space-y-3">
+            <div className="w-8 h-8 border-2 border-[#74B8CC] border-t-transparent rounded-full animate-spin mx-auto"></div>
+            <p className="text-[#94A3B8] text-sm font-mono">Retrieving latest field communications...</p>
           </div>
         ) : error ? (
-          <div className="bg-red-500/10 border border-red-500/20 p-6 rounded-lg text-center">
-            <p className="text-red-400 text-sm">{error}</p>
+          <div className="p-6 rounded-xl bg-red-950/20 border border-red-500/30 text-red-300 text-sm">
+            {error}
           </div>
         ) : filteredActivities.length === 0 ? (
-          <div className="bg-[#0B2538] border border-white/10 rounded-lg p-12 text-center space-y-3">
-            <Newspaper className="w-10 h-10 text-slate-500 mx-auto" />
-            <h3 className="text-base font-semibold text-slate-200">No activities match your filters</h3>
-            <p className="text-xs text-slate-400">
-              Clear your search or select a different category to view more dispatches.
+          <div className="p-12 text-center border border-white/10 rounded-2xl bg-white/[0.02] space-y-3">
+            <Newspaper className="w-10 h-10 text-[#647887] mx-auto" />
+            <h3 className="font-editorial text-2xl text-white font-normal">No Dispatches Match Filters</h3>
+            <p className="text-xs text-[#94A3B8]">
+              Try clearing search terms or selecting 'All' categories.
             </p>
           </div>
         ) : (
-          <div className="space-y-6">
-            {filteredActivities.map((act, index) => (
-              <div 
-                key={act.id || index}
-                className="bg-[#0B2538]/90 border border-white/10 hover:border-cyan-500/30 rounded-lg p-5 sm:p-6 transition shadow-lg space-y-4 group"
-              >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/5 pb-3">
-                  <div className="flex items-center gap-2">
-                    <span className="p-1.5 rounded bg-white/5 border border-white/10">
-                      {getTypeIcon(act.type)}
-                    </span>
-                    <span className="text-xs font-mono font-semibold text-cyan-300 uppercase tracking-wider">
-                      {act.type}
-                    </span>
-                    {act.region && (
-                      <span className="px-2 py-0.5 rounded bg-cyan-950/70 border border-cyan-500/30 text-cyan-400 text-xs font-mono">
-                        {act.region}
+          <>
+            {/* Featured Lead Story (Institutional Journalism) */}
+            {featuredActivity && (
+              <article className="border border-white/10 rounded-2xl overflow-hidden bg-gradient-to-br from-white/[0.04] to-white/[0.01] hover:border-[#74B8CC]/40 transition-all">
+                <div className="p-6 sm:p-10 space-y-6">
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4 text-xs font-mono">
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-1 rounded bg-[#D7A75D]/10 border border-[#D7A75D]/30 text-[#D7A75D] font-bold uppercase tracking-wider">
+                        {featuredActivity.type}
                       </span>
+                      {featuredActivity.region && (
+                        <span className="px-2.5 py-1 rounded bg-white/5 border border-white/10 text-[#B9DDE7]">
+                          {featuredActivity.region}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3 text-[#647887]">
+                      <span className="flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5" />
+                        {featuredActivity.date}
+                      </span>
+                      <span>{featuredActivity.source || 'NCPOR Field Dispatch'}</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h2 className="font-editorial text-2xl sm:text-3xl md:text-4xl text-white font-normal leading-tight">
+                      {featuredActivity.title}
+                    </h2>
+                    <p className="text-base sm:text-lg text-[#CBD5E1] leading-relaxed font-light">
+                      {featuredActivity.summary}
+                    </p>
+                    {featuredActivity.content && featuredActivity.content !== featuredActivity.summary && (
+                      <p className="text-sm text-[#94A3B8] leading-relaxed pt-3 border-t border-white/5">
+                        {featuredActivity.content}
+                      </p>
                     )}
                   </div>
-                  <div className="flex items-center gap-3 text-xs font-mono text-slate-400">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-3.5 h-3.5 text-slate-500" />
-                      {act.date}
-                    </span>
-                    <span>Source: {act.source || 'NCPOR Media Bureau'}</span>
-                  </div>
-                </div>
 
-                <div className="space-y-2">
-                  <h2 className="text-lg sm:text-xl font-serif font-bold text-white group-hover:text-cyan-200 transition">
-                    {act.title}
-                  </h2>
-                  <p className="text-sm text-slate-300 leading-relaxed">
-                    {act.summary}
-                  </p>
-                  {act.content && act.content !== act.summary && (
-                    <p className="text-xs sm:text-sm text-slate-400 pt-2 leading-relaxed border-t border-white/5">
-                      {act.content}
-                    </p>
+                  {featuredActivity.expedition_id && (
+                    <div className="pt-2">
+                      <a
+                        href={`/expeditions/${featuredActivity.expedition_id}`}
+                        className="inline-flex items-center gap-2 text-xs font-mono text-[#74B8CC] hover:text-[#B9DDE7] transition-colors"
+                      >
+                        <Compass className="w-4 h-4" />
+                        <span>Inspect Linked Expedition: {featuredActivity.expedition_id}</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
                   )}
                 </div>
+              </article>
+            )}
 
-                {/* Footer linking */}
-                <div className="flex flex-wrap items-center justify-between pt-2 border-t border-white/5 text-xs">
-                  <div className="flex items-center gap-3">
-                    {act.expedition_id && (
-                      <a 
-                        href={`/expeditions/${act.expedition_id}`}
-                        className="text-cyan-400 hover:text-cyan-300 font-mono flex items-center gap-1 transition"
-                      >
-                        <Globe className="w-3 h-3" />
-                        View Linked Expedition ({act.expedition_id})
-                        <ChevronRight className="w-3 h-3" />
-                      </a>
-                    )}
-                  </div>
-                  <span className="text-[11px] font-mono text-slate-500">
-                    Smart India Hackathon 2026 — Official Dissemination Stream
-                  </span>
+            {/* Editorial Article Rows */}
+            {remainingActivities.length > 0 && (
+              <div className="space-y-4 pt-6">
+                <div className="border-b border-white/10 pb-3">
+                  <h3 className="font-editorial text-2xl text-white font-normal">
+                    Chronological Dispatches
+                  </h3>
+                </div>
+
+                <div className="divide-y divide-white/10">
+                  {remainingActivities.map((act) => (
+                    <article
+                      key={act.id}
+                      className="py-6 group transition-all space-y-3"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+                        <div className="flex items-center gap-2">
+                          <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[#74B8CC] uppercase text-[10px]">
+                            {act.type}
+                          </span>
+                          {act.region && (
+                            <span className="text-[#647887]">
+                              {act.region}
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-[#647887] text-[11px]">
+                          {act.date} · {act.source || 'NCPOR Dispatches'}
+                        </span>
+                      </div>
+
+                      <h4 className="text-lg sm:text-xl font-semibold text-white group-hover:text-[#B9DDE7] transition-colors">
+                        {act.title}
+                      </h4>
+
+                      <p className="text-sm text-[#94A3B8] leading-relaxed line-clamp-2">
+                        {act.summary}
+                      </p>
+
+                      {act.expedition_id && (
+                        <div className="pt-1">
+                          <a
+                            href={`/expeditions/${act.expedition_id}`}
+                            className="inline-flex items-center gap-1.5 text-xs font-mono text-[#74B8CC] hover:underline"
+                          >
+                            <span>Linked Expedition ({act.expedition_id})</span>
+                            <ChevronRight className="w-3 h-3" />
+                          </a>
+                        </div>
+                      )}
+                    </article>
+                  ))}
                 </div>
               </div>
-            ))}
-          </div>
+            )}
+          </>
         )}
-
       </div>
     </div>
   );

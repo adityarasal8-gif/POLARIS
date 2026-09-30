@@ -1,27 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'wouter';
+import { Link, useLocation } from 'wouter';
 import { 
-  Compass, Radio, Database, ArrowRight, ShieldCheck, 
+  Compass, Radio, Database, ArrowRight, 
   Wind, Thermometer, Droplets, Gauge, ChevronRight,
-  Calendar, BookOpen, Layers, Award
+  BookOpen, Search, Layers, Award, Sparkles, MapPin, 
+  Calendar, FileText, CheckCircle2, Globe
 } from 'lucide-react';
 import { PolarGlobe3D } from '../components/PolarGlobe3D';
-import { PipelineFlow } from '../components/PipelineFlow';
-import { fetchStats, fetchLiveObservatory, fetchExpeditions, fetchPublications } from '../api';
-import { Stats, StationWeather, Expedition, Publication } from '../types';
+import { fetchStats, fetchLiveObservatory, fetchExpeditions, fetchPublications, unifiedSearch } from '../api';
+import { Stats, StationWeather, Expedition, Publication, SearchResponse } from '../types';
 
 export const HomePage: React.FC = () => {
+  const [, setLocation] = useLocation();
   const [stats, setStats] = useState<Stats | null>(null);
   const [weatherList, setWeatherList] = useState<StationWeather[]>([]);
+  const [selectedStationWeatherId, setSelectedStationWeatherId] = useState<string>('maitri');
   const [latestExpeditions, setLatestExpeditions] = useState<Expedition[]>([]);
   const [latestResearch, setLatestResearch] = useState<Publication[]>([]);
   const [weatherLoading, setWeatherLoading] = useState(true);
 
+  // Search in homepage archive section
+  const [homeSearchQuery, setHomeSearchQuery] = useState('Maitri atmosphere');
+  const [homeSearchResults, setHomeSearchResults] = useState<SearchResponse | null>(null);
+  const [homeSearchLoading, setHomeSearchLoading] = useState(false);
+
   useEffect(() => {
-    // 1. Fetch live database counts
+    // 1. Database stats
     fetchStats().then(setStats).catch(console.error);
 
-    // 2. Fetch live Open-Meteo telemetry
+    // 2. Live Open-Meteo telemetry
     fetchLiveObservatory()
       .then((data) => {
         setWeatherList(data);
@@ -32,444 +39,753 @@ export const HomePage: React.FC = () => {
         setWeatherLoading(false);
       });
 
-    // 3. Fetch latest expeditions & publications
+    // 3. Expeditions & Publications
     fetchExpeditions().then((res) => setLatestExpeditions(res.slice(0, 3))).catch(console.error);
     fetchPublications().then((res) => setLatestResearch(res.slice(0, 3))).catch(console.error);
+
+    // 4. Initial archive search preview
+    executeHomeSearch('Maitri atmosphere');
   }, []);
+
+  const executeHomeSearch = async (q: string) => {
+    if (!q.trim()) return;
+    setHomeSearchLoading(true);
+    try {
+      const data = await unifiedSearch(q.trim());
+      setHomeSearchResults(data);
+    } catch (err) {
+      console.error('Home search failed:', err);
+    } finally {
+      setHomeSearchLoading(false);
+    }
+  };
+
+  const activeWeather = weatherList.find((w) => w.station_id === selectedStationWeatherId) || weatherList[0];
 
   const REGIONS = [
     {
+      id: 'antarctica',
       name: 'ANTARCTICA',
       title: 'The Frozen Continent',
-      desc: 'Decades of winter-over research at Maitri and Bharati stations exploring ice-sheet stability, ozone holes, and paleoclimate.',
-      stations: 'Maitri (1988) • Bharati (2012)',
-      themes: ['Cryosphere', 'Atmospheric Physics', 'Paleoclimatology'],
-      image: 'https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=800&q=80',
-      credit: 'NCPOR Official Photographic Archive'
+      desc: 'Decades of winter-over research at Maitri and Bharati stations exploring ice-sheet dynamics, ozone depletion chemistry, and paleoclimatology.',
+      stations: 'Maitri (1988) · Bharati (2012)',
+      themes: ['Cryosphere Stability', 'Atmospheric Physics', 'Paleoclimatology'],
+      image: 'https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=1200&q=85',
+      coordinates: '70°46′S, 11°44′E',
+      link: '/expeditions?region=Antarctica'
     },
     {
+      id: 'arctic',
       name: 'ARCTIC',
-      title: 'High-Latitude Warming',
-      desc: 'Research station Himadri in Svalbard investigating Arctic amplification and its direct teleconnections with the Indian Summer Monsoon.',
+      title: 'High-Latitude Amplification',
+      desc: 'Station Himadri in Svalbard investigates Arctic amplification and its direct physical teleconnections with the Indian Summer Monsoon.',
       stations: 'Himadri (Ny-Ålesund, 2008)',
-      themes: ['Fjord Oceanography', 'Aerosol Haze', 'Arctic Teleconnections'],
-      image: 'https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?auto=format&fit=crop&w=800&q=80',
-      credit: 'Kings Bay Fjord Science / NCPOR'
+      themes: ['Fjord Oceanography', 'Aerosol Haze', 'Monsoon Teleconnections'],
+      image: 'https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?auto=format&fit=crop&w=1200&q=85',
+      coordinates: '78°55′N, 11°55′E',
+      link: '/expeditions?region=Arctic'
     },
     {
+      id: 'himalaya',
       name: 'HIMALAYA',
       title: 'The Third Pole',
-      desc: 'High-altitude observatory Himansh in Chandra Basin monitoring benchmark glacier mass balances, snow-melt discharge, and black carbon.',
-      stations: 'Himansh (Spiti, 2016)',
-      themes: ['Glacier Mass Balance', 'Hydrological Discharge', 'Permafrost'],
-      image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80',
-      credit: 'NCPOR Cryosphere Division'
+      desc: 'High-altitude observatory Himansh in Chandra Basin monitors benchmark glacier mass balances, snow-melt discharge, and black carbon deposition.',
+      stations: 'Himansh (Spiti Valley, 2016)',
+      themes: ['Glacier Mass Balance', 'Hydrological Runoff', 'Permafrost Dynamics'],
+      image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=85',
+      coordinates: '32°24′N, 77°36′E (4,050m)',
+      link: '/expeditions?region=Himalaya'
     },
     {
+      id: 'southern-ocean',
       name: 'SOUTHERN OCEAN',
       title: 'Planetary Heat & Carbon Sink',
-      desc: 'Oceanographic campaigns aboard research vessels traversing Sub-Antarctic and Polar Fronts to quantify oceanic carbon sequestration.',
+      desc: 'Oceanographic campaigns aboard research vessels traversing Sub-Antarctic and Polar Fronts to quantify oceanic carbon sequestration and deep water formation.',
       stations: 'Ocean Transects & Bio-Argo Floats',
       themes: ['Marine Biogeochemistry', 'CTD Profiling', 'Diatom Fluxes'],
-      image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80',
-      credit: 'NCPOR Southern Ocean Group / S.A. Agulhas II'
+      image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=85',
+      coordinates: '40°S – 68°S Transect',
+      link: '/expeditions?region=Southern+Ocean'
     }
   ];
 
-  const TIMELINE_EVENTS = [
-    { year: 1981, title: 'Inaugural Antarctic Mission', desc: 'Operation Gangotri sets sail under Dr. S.Z. Qasim, planting the Indian flag on Antarctic ice.' },
-    { year: 1988, title: 'Maitri Station Commissioned', desc: 'Second permanent Indian station established in the ice-free rocky Schirmacher Oasis.' },
-    { year: 2008, title: 'Himadri Arctic Station Established', desc: 'India opens its dedicated Arctic observatory in Ny-Ålesund, Svalbard (79°N).' },
-    { year: 2012, title: 'Bharati Station Commissioned', desc: 'State-of-the-art modular research station commissioned in Larsemann Hills, East Antarctica.' },
-    { year: 2016, title: 'Himansh Glaciological Hub', desc: 'High-altitude research station established at 4,050m in the Chandra Basin of Western Himalaya.' },
-    { year: '2025–26', title: '45th Indian Antarctic Expedition', desc: 'Flagship ongoing mission executing deep ice-core drilling and green hydrogen microgrid testing.' }
+  const PIPELINE_STEPS = [
+    {
+      num: '01',
+      title: 'FIELD EXPEDITION',
+      subtitle: 'Field Operations',
+      desc: 'Long-term scientific deployments across East Antarctica, Svalbard fjords, and Himalayan glaciers.',
+      accent: '#74B8CC'
+    },
+    {
+      num: '02',
+      title: 'OBSERVATION',
+      subtitle: 'Sensor Telemetry',
+      desc: 'Autonomous weather stations, CTD profilers, fluxgate magnetometers, and shallow ice-core drilling.',
+      accent: '#5BB7A5'
+    },
+    {
+      num: '03',
+      title: 'NPDC DATASET',
+      subtitle: 'Data Standards',
+      desc: 'Quality-calibrated, metadata-indexed open datasets archived under CC-BY-NC 4.0 policy.',
+      accent: '#B9DDE7'
+    },
+    {
+      num: '04',
+      title: 'ANALYTICAL RESEARCH',
+      subtitle: 'Cryosphere Modeling',
+      desc: 'Planetary heat budgets, teleconnection modeling, and paleoclimate isotopic reconstructions.',
+      accent: '#D7A75D'
+    },
+    {
+      num: '05',
+      title: 'PEER-REVIEWED PUBLICATION',
+      subtitle: 'Literature & DOIs',
+      desc: 'High-impact research papers indexed across international cryosphere and atmospheric journals.',
+      accent: '#74B8CC'
+    },
+    {
+      num: '06',
+      title: 'PUBLIC OUTREACH',
+      subtitle: 'Source-Grounded Media',
+      desc: 'Traceable scientific dissemination through the POLARIS editorial studio and student hub.',
+      accent: '#5BB7A5'
+    }
   ];
 
   return (
-    <div className="w-full bg-[#071A2B] text-white">
-      {/* 1. HERO SECTION */}
-      <section className="relative pt-12 pb-20 overflow-hidden polar-grid-bg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            {/* Left Column: Mission Narrative */}
-            <div className="lg:col-span-6 space-y-6 text-left">
-              <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#0B2538] border border-[#6EC5E9]/30 text-xs font-mono">
-                <span className="w-2 h-2 rounded-full bg-[#38BDF8] animate-pulse" />
-                <span className="text-[#38BDF8] font-semibold">NATIONAL POLAR SCIENCE KNOWLEDGE PLATFORM</span>
+    <div className="w-full bg-[#07151F] text-[#F7F8F5] selection:bg-[#74B8CC]/30 selection:text-[#07151F]">
+      
+      {/* ========================================================================= */}
+      {/* 1. CINEMATIC HERO: Full-Viewport Planetary Composition with 3D Earth       */}
+      {/* ========================================================================= */}
+      <section className="relative min-h-[92vh] flex items-center overflow-hidden border-b border-[#B9DDE7]/10 polar-hero-glow polar-subtle-grid">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            
+            {/* Left Narrative Block */}
+            <div className="lg:col-span-7 space-y-6 text-left">
+              <div className="inline-flex items-center space-x-2.5 px-3 py-1.5 rounded-full bg-[#0D2735] border border-[#74B8CC]/30 text-xs font-mono text-[#DCEEF2]">
+                <span className="w-2 h-2 rounded-full bg-[#5BB7A5] animate-pulse" />
+                <span>INDIA'S POLAR SCIENCE INITIATIVE · MoES</span>
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
-                Explore India's <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6EC5E9] via-[#38BDF8] to-[#22C7A8]">
-                  Polar Science.
-                </span>
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-serif font-bold text-white tracking-tight leading-[1.08]">
+                At the edge of the Earth,<br />
+                <span className="italic text-[#B9DDE7]">India is reading the planet.</span>
               </h1>
 
-              <p className="text-base sm:text-lg text-[#94A3B8] leading-relaxed max-w-xl">
-                One connected gateway to expeditions, research datasets, publications, field activities, and the scientific stories behind India's work in the world's most extreme environments.
+              <p className="text-base sm:text-xl text-[#8E9EA7] leading-relaxed max-w-2xl font-light">
+                Explore four decades of scientific expeditions, year-round research stations, calibrated observational datasets, and planetary discoveries across Antarctica, the Arctic, the Himalayas, and the Southern Ocean.
               </p>
 
-              <div className="flex flex-wrap gap-4 pt-2">
+              {/* Action Buttons */}
+              <div className="flex flex-wrap gap-4 pt-3">
                 <Link
                   href="/repository"
-                  className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#38BDF8] to-[#22C7A8] text-[#071A2B] font-bold text-sm hover:brightness-110 transition-all shadow-lg flex items-center space-x-2"
+                  className="px-6 py-3.5 rounded-lg bg-[#74B8CC] hover:bg-[#B9DDE7] text-[#07151F] font-bold text-xs uppercase tracking-wider transition-all shadow-lg flex items-center space-x-2.5 group"
                 >
-                  <Database className="w-4 h-4 text-[#071A2B]" />
-                  <span>EXPLORE THE ARCHIVE</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <Database className="w-4 h-4 text-[#07151F]" />
+                  <span>EXPLORE POLAR RESEARCH</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
 
                 <Link
                   href="/observatory"
-                  className="px-6 py-3.5 rounded-xl bg-[#0B2538] hover:bg-[#123753] border border-[#6EC5E9]/30 text-white font-semibold text-sm transition-all flex items-center space-x-2"
+                  className="px-6 py-3.5 rounded-lg bg-[#0D2735] hover:bg-[#143547] border border-[#B9DDE7]/20 text-[#F7F8F5] font-semibold text-xs uppercase tracking-wider transition-all flex items-center space-x-2.5"
                 >
-                  <Radio className="w-4 h-4 text-[#38BDF8]" />
-                  <span>LIVE OBSERVATORY</span>
+                  <Radio className="w-4 h-4 text-[#5BB7A5]" />
+                  <span>VIEW LIVE OBSERVATORY</span>
                 </Link>
               </div>
 
-              {/* Verified scientific badge */}
-              <div className="pt-4 flex items-center space-x-6 text-xs text-[#94A3B8] font-mono border-t border-[#6EC5E9]/10">
-                <div className="flex items-center space-x-2">
-                  <ShieldCheck className="w-4 h-4 text-[#22C7A8]" />
-                  <span>MoES / NCPOR Verified</span>
+              {/* Verified Institutional Evidence Pill */}
+              <div className="pt-6 flex flex-wrap items-center gap-6 text-xs text-[#8E9EA7] font-mono border-t border-[#B9DDE7]/10">
+                <div className="flex items-center gap-2">
+                  <span className="text-[#F7F8F5] font-bold">{stats?.expeditions || 10}</span>
+                  <span>Expeditions</span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#E7A93B]" />
-                  <span>NPDC Data Standards</span>
+                <span className="text-[#61747E]">·</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[#F7F8F5] font-bold">4</span>
+                  <span>Polar Stations</span>
+                </div>
+                <span className="text-[#61747E]">·</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[#F7F8F5] font-bold">{stats?.datasets || 20}</span>
+                  <span>NPDC Datasets</span>
+                </div>
+                <span className="text-[#61747E]">·</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[#F7F8F5] font-bold">{stats?.publications || 15}</span>
+                  <span>Peer-Reviewed Papers</span>
                 </div>
               </div>
             </div>
 
-            {/* Right Column: Interactive 3D Polar Globe */}
-            <div className="lg:col-span-6 flex justify-center">
-              <PolarGlobe3D />
+            {/* Right: Integrated 3D Polar Earth Globe (Seamlessly blended, not boxed) */}
+            <div className="lg:col-span-5 relative flex items-center justify-center min-h-[460px] sm:min-h-[540px]">
+              <div className="w-full h-full min-h-[460px] sm:min-h-[540px]">
+                <PolarGlobe3D onSelectStation={(stId) => setLocation(`/stations`)} />
+              </div>
+
+              {/* Geographic Legend Overlay */}
+              <div className="absolute bottom-2 left-2 right-2 bg-[#07151F]/80 backdrop-blur-md border border-[#B9DDE7]/15 rounded-lg p-3 text-[11px] font-mono text-[#8E9EA7] flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <span className="w-2 h-2 rounded-full bg-[#74B8CC]" />
+                  <span className="text-white font-medium">Southern Axis & Orbital Telemetry</span>
+                </div>
+                <div className="text-[10px] text-[#61747E]">
+                  Maitri · Bharati · Himadri · Himansh
+                </div>
+              </div>
             </div>
+
           </div>
         </div>
       </section>
 
-      {/* 2. FROM FIELD TO KNOWLEDGE: PIPELINE */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-[#6EC5E9]/10">
-        <PipelineFlow />
-      </section>
-
-      {/* 3. LIVE POLAR OBSERVATORY SECTION */}
-      <section className="py-16 bg-[#051320] border-y border-[#6EC5E9]/15">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8">
-            <div>
-              <div className="flex items-center space-x-2 text-xs font-mono text-[#22C7A8] font-bold tracking-wider uppercase mb-1">
-                <span className="w-2 h-2 rounded-full bg-[#22C7A8] animate-ping" />
-                <span>LIVE ENVIRONMENTAL TELEMETRY</span>
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-white">
-                Live Polar Observatory Feed
-              </h2>
-              <p className="text-xs sm:text-sm text-[#94A3B8] mt-1">
-                Real-time surface meteorology retrieved for India's 4 polar research facilities.
-              </p>
+      {/* ========================================================================= */}
+      {/* 2. SECTION 1: "Four Regions. One Scientific Mission." (Large Imagery)    */}
+      {/* ========================================================================= */}
+      <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#B9DDE7]/10 pb-8">
+          <div>
+            <div className="text-xs font-mono uppercase tracking-widest text-[#74B8CC] mb-2 font-semibold">
+              Geographic Scope
             </div>
-
-            <div className="mt-4 md:mt-0 flex items-center space-x-3 text-xs font-mono text-[#94A3B8]">
-              <span className="badge-live px-2.5 py-1 rounded text-[11px] font-semibold">
-                LIVE · Open-Meteo
-              </span>
-              <Link href="/observatory" className="text-[#38BDF8] hover:underline flex items-center space-x-1">
-                <span>Interactive Telemetry Map</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
+            <h2 className="text-3xl sm:text-5xl font-serif font-bold text-white">
+              Four regions. One scientific mission.
+            </h2>
           </div>
-
-          {/* 4 Station Telemetry Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {weatherLoading ? (
-              <div className="col-span-4 text-center py-12 text-[#94A3B8] text-sm font-mono">
-                Establishing satellite telemetry link with polar stations...
-              </div>
-            ) : (
-              weatherList.map((st) => (
-                <div
-                  key={st.station_id}
-                  className="polar-panel p-5 polar-panel-hover flex flex-col justify-between"
-                >
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-mono uppercase font-bold tracking-wider text-[#38BDF8]">
-                        {st.region}
-                      </span>
-                      <span className="badge-live text-[10px] px-2 py-0.5 rounded uppercase font-bold">
-                        {st.status}
-                      </span>
-                    </div>
-
-                    <h3 className="text-base font-bold text-white mt-1.5">{st.station_name}</h3>
-                    <p className="text-[11px] text-[#94A3B8] font-mono mt-0.5">
-                      {st.latitude > 0 ? `${st.latitude.toFixed(2)}°N` : `${Math.abs(st.latitude).toFixed(2)}°S`},{' '}
-                      {st.longitude > 0 ? `${st.longitude.toFixed(2)}°E` : `${Math.abs(st.longitude).toFixed(2)}°W`}
-                    </p>
-
-                    <div className="mt-5 flex items-baseline space-x-2">
-                      <span className="text-3xl font-black text-white font-mono">
-                        {st.temperature_c > 0 ? `+${st.temperature_c}` : st.temperature_c}°C
-                      </span>
-                      <span className="text-xs text-[#94A3B8] font-medium">{st.condition_description}</span>
-                    </div>
-
-                    <div className="mt-4 grid grid-cols-3 gap-2 py-3 border-y border-[#6EC5E9]/10 text-xs font-mono">
-                      <div>
-                        <div className="text-[10px] text-[#647887] flex items-center space-x-1">
-                          <Wind className="w-3 h-3 text-[#38BDF8]" />
-                          <span>Wind</span>
-                        </div>
-                        <div className="font-semibold text-white mt-0.5">{st.wind_speed_kmh} km/h</div>
-                      </div>
-                      <div>
-                        <div className="text-[10px] text-[#647887] flex items-center space-x-1">
-                          <Droplets className="w-3 h-3 text-[#22C7A8]" />
-                          <span>Hum</span>
-                        </div>
-                        <div className="font-semibold text-white mt-0.5">{st.relative_humidity_pct}%</div>
-                      </div>
-                      <div>
-                        <div className="text-[10px] text-[#647887] flex items-center space-x-1">
-                          <Gauge className="w-3 h-3 text-[#E7A93B]" />
-                          <span>Press</span>
-                        </div>
-                        <div className="font-semibold text-white mt-0.5">{Math.round(st.surface_pressure_hpa)} hPa</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 pt-2 flex items-center justify-between text-[11px] text-[#647887] font-mono">
-                    <span>Source: {st.source}</span>
-                    <Link href={`/stations`} className="text-[#38BDF8] hover:underline font-semibold">
-                      Station Profile →
-                    </Link>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* 4. DISCOVER INDIA'S POLAR REGIONS (4 Authentic Cards) */}
-      <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <span className="text-xs uppercase font-mono tracking-widest text-[#38BDF8] font-bold">
-            GEOGRAPHIC MANDATE
-          </span>
-          <h2 className="text-3xl font-bold text-white mt-1.5">
-            Discover India's Polar Presence
-          </h2>
-          <p className="text-sm text-[#94A3B8] max-w-2xl mx-auto mt-2">
-            NCPOR operates specialized observation infrastructures across four distinct polar cryospheric realms.
+          <p className="text-sm sm:text-base text-[#8E9EA7] max-w-xl font-light">
+            India conducts uninterrupted year-round field research across the planetary cold spots that regulate climate, oceanic circulation, and global sea-level rise.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {REGIONS.map((reg) => (
-            <div
-              key={reg.name}
-              className="polar-panel overflow-hidden border border-[#6EC5E9]/15 flex flex-col justify-between group hover:border-[#38BDF8]/40 transition-all duration-300"
+        {/* 4 Large Photographic Visual Chapters */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {REGIONS.map((region) => (
+            <Link 
+              key={region.id} 
+              href={region.link}
+              className="group relative block aspect-[16/10] rounded-2xl overflow-hidden border border-[#B9DDE7]/15 hover:border-[#74B8CC]/40 transition duration-500 shadow-2xl cursor-pointer"
             >
-              <div>
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={reg.image}
-                    alt={reg.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0B2538] via-transparent to-transparent" />
-                  <span className="absolute top-3 left-3 text-[10px] font-mono px-2 py-0.5 rounded bg-[#071A2B]/80 text-[#38BDF8] font-bold border border-[#6EC5E9]/30">
-                    {reg.name}
-                  </span>
+              {/* Background Photograph */}
+              <img 
+                src={region.image} 
+                alt={region.title}
+                className="w-full h-full object-cover polar-image-zoom brightness-[0.78] group-hover:brightness-95"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#07151F] via-[#07151F]/40 to-transparent opacity-90 group-hover:opacity-80 transition-opacity" />
+
+              {/* Coordinates Pill */}
+              <div className="absolute top-5 left-5 bg-[#07151F]/80 backdrop-blur-md px-3 py-1 rounded text-[11px] font-mono text-[#B9DDE7] border border-[#B9DDE7]/15">
+                {region.coordinates}
+              </div>
+
+              {/* Bottom Editorial Content */}
+              <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 space-y-3">
+                <div className="text-xs font-mono tracking-widest uppercase text-[#5BB7A5] font-semibold">
+                  {region.name} · {region.stations}
                 </div>
+                <h3 className="text-2xl sm:text-3xl font-serif font-bold text-white group-hover:text-[#B9DDE7] transition-colors">
+                  {region.title}
+                </h3>
+                <p className="text-xs sm:text-sm text-[#DCEEF2]/85 line-clamp-2 font-light leading-relaxed">
+                  {region.desc}
+                </p>
 
-                <div className="p-5">
-                  <h3 className="text-lg font-bold text-white">{reg.title}</h3>
-                  <p className="text-xs text-[#38BDF8] font-mono mt-0.5">{reg.stations}</p>
-                  <p className="text-xs text-[#94A3B8] mt-3 leading-relaxed">
-                    {reg.desc}
-                  </p>
-
-                  <div className="mt-4 flex flex-wrap gap-1.5">
-                    {reg.themes.map((t) => (
-                      <span
-                        key={t}
-                        className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#071A2B] text-[#CBD5E1] border border-[#6EC5E9]/15"
-                      >
+                <div className="pt-2 flex items-center justify-between text-xs font-mono text-[#74B8CC]">
+                  <div className="flex flex-wrap gap-2">
+                    {region.themes.map((t) => (
+                      <span key={t} className="px-2 py-0.5 rounded bg-[#07151F]/60 border border-[#B9DDE7]/10 text-[10px] text-[#DCEEF2]">
                         {t}
                       </span>
                     ))}
                   </div>
+                  <span className="flex items-center gap-1 group-hover:translate-x-1.5 transition-transform font-bold">
+                    <span>Explore</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </span>
                 </div>
               </div>
-
-              <div className="p-5 pt-0">
-                <div className="text-[9px] text-[#647887] font-mono mb-2">
-                  Photo Credit: {reg.credit}
-                </div>
-                <Link
-                  href={`/repository?region=${reg.name === 'ANTARCTICA' ? 'Antarctica' : reg.name === 'ARCTIC' ? 'Arctic' : reg.name === 'HIMALAYA' ? 'Himalaya' : 'Southern Ocean'}`}
-                  className="w-full py-2 rounded-lg bg-[#071A2B] hover:bg-[#123753] border border-[#6EC5E9]/20 text-[#38BDF8] text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors"
-                >
-                  <span>Explore {reg.name} Archive</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
 
-      {/* 5. KNOWLEDGE AT A GLANCE: LIVE BACKEND STATS */}
-      <section className="py-12 bg-[#051320] border-y border-[#6EC5E9]/15">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-[#22C7A8] font-bold">
-              VERIFIED ARCHIVE METRICS
-            </span>
-            <h2 className="text-xl sm:text-2xl font-bold text-white mt-1">
-              Knowledge Repository at a Glance
+      {/* ========================================================================= */}
+      {/* 3. SECTION 2: "From Fieldwork to Knowledge" (Horizontal Journey)         */}
+      {/* ========================================================================= */}
+      <section className="py-20 bg-[#0A1B28] border-y border-[#B9DDE7]/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          <div className="text-center max-w-3xl mx-auto space-y-3">
+            <div className="text-xs font-mono uppercase tracking-widest text-[#5BB7A5] font-semibold">
+              The Scientific Method at 70° South
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-serif font-bold text-white">
+              From fieldwork to planetary knowledge
             </h2>
-            <p className="text-xs text-[#94A3B8] mt-0.5">
-              Real-time database statistics retrieved from <code className="font-mono text-[#38BDF8]">GET /api/stats</code>
+            <p className="text-sm text-[#8E9EA7] font-light">
+              How raw environmental observations in extreme polar environments transform into calibrated data, peer-reviewed discoveries, and verified public understanding.
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {[
-              { label: 'Expeditions', val: stats?.expeditions ?? 10, icon: Compass, color: '#38BDF8', path: '/expeditions' },
-              { label: 'Datasets', val: stats?.datasets ?? 20, icon: Database, color: '#22C7A8', path: '/datasets' },
-              { label: 'Publications', val: stats?.publications ?? 15, icon: BookOpen, color: '#6EC5E9', path: '/publications' },
-              { label: 'Media Assets', val: stats?.media_assets ?? 30, icon: Layers, color: '#E7A93B', path: '/media' },
-              { label: 'Stations', val: stats?.stations ?? 4, icon: Radio, color: '#38BDF8', path: '/stations' },
-              { label: 'Activities', val: stats?.activities ?? 15, icon: Award, color: '#22C7A8', path: '/activities' },
-            ].map((item) => {
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.label}
-                  href={item.path}
-                  className="polar-panel p-4 text-center hover:border-[#38BDF8]/40 transition-all cursor-pointer group"
-                >
-                  <div
-                    className="w-10 h-10 mx-auto rounded-xl flex items-center justify-center mb-2.5 transition-transform group-hover:scale-110"
-                    style={{ backgroundColor: `${item.color}15`, color: item.color }}
-                  >
-                    <Icon className="w-5 h-5" />
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {PIPELINE_STEPS.map((step) => (
+              <div 
+                key={step.num}
+                className="bg-[#07151F] border border-[#B9DDE7]/10 p-5 rounded-xl space-y-3 hover:border-[#74B8CC]/30 transition-all flex flex-col justify-between"
+              >
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between font-mono text-xs text-[#61747E]">
+                    <span className="text-[#74B8CC] font-bold">{step.num}</span>
+                    <span className="uppercase text-[10px]">{step.subtitle}</span>
                   </div>
-                  <div className="text-2xl font-black text-white font-mono">{item.val}</div>
-                  <div className="text-xs text-[#94A3B8] font-medium mt-0.5 group-hover:text-white transition-colors">
-                    {item.label}
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* 6. LATEST RESEARCH SPOTLIGHT & EXPEDITION TIMELINE */}
-      <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          {/* Latest Research Publications (7 Cols) */}
-          <div className="lg:col-span-7 space-y-6 text-left">
-            <div className="flex items-center justify-between">
-              <div>
-                <span className="text-xs font-mono text-[#38BDF8] uppercase font-bold tracking-wider">
-                  PEER-REVIEWED LITERATURE
-                </span>
-                <h2 className="text-2xl font-bold text-white mt-1">Latest Polar Discoveries</h2>
+                  <h4 className="text-xs font-bold font-sans tracking-wide text-white uppercase">
+                    {step.title}
+                  </h4>
+                </div>
+                <p className="text-xs text-[#8E9EA7] leading-relaxed font-light">
+                  {step.desc}
+                </p>
               </div>
-              <Link href="/publications" className="text-xs text-[#38BDF8] hover:underline flex items-center space-x-1">
-                <span>View All 15 Papers</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-            <div className="space-y-4">
-              {latestResearch.map((paper) => (
-                <div
-                  key={paper.id}
-                  className="polar-panel p-5 polar-panel-hover border border-[#6EC5E9]/15"
+      {/* ========================================================================= */}
+      {/* 4. SECTION 3: "Inside India's Polar Observatories" (Real Telemetry)       */}
+      {/* ========================================================================= */}
+      <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#B9DDE7]/10 pb-6">
+          <div>
+            <div className="text-xs font-mono uppercase tracking-widest text-[#5BB7A5] mb-2 font-semibold">
+              Live Station Environment
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-serif font-bold text-white">
+              Inside India's polar observatories
+            </h2>
+          </div>
+          <div className="text-xs font-mono text-[#8E9EA7] space-y-1">
+            <div className="flex items-center gap-1.5 text-[#5BB7A5]">
+              <span className="w-2 h-2 rounded-full bg-[#5BB7A5] animate-pulse" />
+              <span className="font-semibold uppercase">LIVE ENVIRONMENTAL CONTEXT</span>
+            </div>
+            <div>Source: Open-Meteo API (Station Latitude/Longitude)</div>
+          </div>
+        </div>
+
+        {/* Station Selector Tabs */}
+        <div className="flex flex-wrap gap-2">
+          {weatherList.map((st) => (
+            <button
+              key={st.station_id}
+              onClick={() => setSelectedStationWeatherId(st.station_id)}
+              className={`px-4 py-2 rounded-lg text-xs font-mono transition-all flex items-center gap-2 ${
+                st.station_id === (activeWeather?.station_id || 'maitri')
+                  ? 'bg-[#74B8CC] text-[#07151F] font-bold shadow-md'
+                  : 'bg-[#0D2735] text-[#8E9EA7] hover:text-white border border-[#B9DDE7]/10'
+              }`}
+            >
+              <span>{st.station_name}</span>
+              <span className="text-[10px] opacity-75">({st.region})</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Large Observatory Split Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          {/* Station Visual Context */}
+          <div className="lg:col-span-5 relative rounded-2xl overflow-hidden border border-[#B9DDE7]/15 min-h-[360px] flex flex-col justify-end p-6 sm:p-8 bg-[#0D2735]">
+            <img 
+              src={
+                activeWeather?.station_id === 'bharati'
+                  ? 'https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=800&q=80'
+                  : activeWeather?.station_id === 'himadri'
+                  ? 'https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?auto=format&fit=crop&w=800&q=80'
+                  : activeWeather?.station_id === 'himansh'
+                  ? 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80'
+                  : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80'
+              }
+              alt={activeWeather?.station_name || 'Station'}
+              className="absolute inset-0 w-full h-full object-cover brightness-[0.7]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#07151F] via-[#07151F]/40 to-transparent" />
+
+            <div className="relative z-10 space-y-2">
+              <span className="px-2.5 py-1 rounded bg-[#07151F]/80 backdrop-blur-md text-[11px] font-mono text-[#5BB7A5] border border-[#5BB7A5]/30">
+                {activeWeather?.region} · {activeWeather?.latitude.toFixed(2)}°, {activeWeather?.longitude.toFixed(2)}°
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-serif font-bold text-white">
+                {activeWeather?.station_name}
+              </h3>
+              <p className="text-xs text-[#DCEEF2]/85 font-light leading-relaxed">
+                {activeWeather?.condition_description}
+              </p>
+              <div className="pt-2">
+                <Link
+                  href="/observatory"
+                  className="inline-flex items-center space-x-1.5 text-xs font-mono text-[#74B8CC] hover:underline"
                 >
-                  <div className="flex items-center justify-between text-[11px] font-mono text-[#6EC5E9] mb-1.5">
-                    <span>{paper.journal} ({paper.year})</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-[#071A2B] border border-[#6EC5E9]/20 text-[#38BDF8]">
-                      {paper.region}
-                    </span>
-                  </div>
-                  <h3 className="text-sm font-bold text-white leading-snug">
-                    {paper.title}
-                  </h3>
-                  <p className="text-xs text-[#94A3B8] mt-2 line-clamp-2">
-                    {paper.abstract}
-                  </p>
-                  <div className="mt-3 pt-3 border-t border-[#6EC5E9]/10 flex items-center justify-between text-xs">
-                    <span className="text-[11px] text-[#647887] font-mono">
-                      DOI: {paper.doi}
-                    </span>
-                    <span className="text-[#22C7A8] font-mono text-[11px]">
-                      {paper.citation_count} Citations
-                    </span>
-                  </div>
-                </div>
-              ))}
+                  <span>Open Full Observatory Console</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
             </div>
           </div>
 
-          {/* Expedition Timeline (5 Cols) */}
-          <div className="lg:col-span-5 space-y-6 text-left">
-            <div>
-              <span className="text-xs font-mono text-[#E7A93B] uppercase font-bold tracking-wider">
-                HISTORICAL CONTINUITY
-              </span>
-              <h2 className="text-2xl font-bold text-white mt-1">Expedition Timeline</h2>
+          {/* Enormous Live Instrument Readings */}
+          <div className="lg:col-span-7 grid grid-cols-2 gap-4">
+            <div className="bg-[#0D2735] border border-[#B9DDE7]/15 rounded-2xl p-6 sm:p-8 flex flex-col justify-between">
+              <div className="flex items-center justify-between text-xs font-mono text-[#8E9EA7]">
+                <span>SURFACE TEMPERATURE</span>
+                <Thermometer className="w-4 h-4 text-[#74B8CC]" />
+              </div>
+              <div className="py-4">
+                <span className="text-4xl sm:text-6xl font-mono font-bold text-white tracking-tight">
+                  {weatherLoading ? '...' : `${activeWeather?.temperature_c}°C`}
+                </span>
+                <span className="block text-xs font-mono text-[#8E9EA7] mt-1">
+                  Ambient air sensor
+                </span>
+              </div>
+              <div className="text-[11px] font-mono text-[#5BB7A5]">
+                {activeWeather?.temperature_c && activeWeather.temperature_c < 0 ? 'Sub-Zero Cryosphere Regime' : 'Temperate High-Altitude'}
+              </div>
             </div>
 
-            <div className="relative border-l border-[#6EC5E9]/20 pl-6 ml-2 space-y-6">
-              {TIMELINE_EVENTS.map((event, idx) => (
-                <div key={idx} className="relative group">
-                  <div className="absolute -left-[31px] top-1.5 w-3.5 h-3.5 rounded-full bg-[#071A2B] border-2 border-[#38BDF8] group-hover:scale-125 transition-transform" />
-                  <span className="text-xs font-mono font-bold text-[#38BDF8] bg-[#0B2538] px-2 py-0.5 rounded border border-[#38BDF8]/30">
-                    {event.year}
-                  </span>
-                  <h4 className="text-sm font-bold text-white mt-1.5">{event.title}</h4>
-                  <p className="text-xs text-[#94A3B8] mt-1 leading-relaxed">{event.desc}</p>
-                </div>
-              ))}
+            <div className="bg-[#0D2735] border border-[#B9DDE7]/15 rounded-2xl p-6 sm:p-8 flex flex-col justify-between">
+              <div className="flex items-center justify-between text-xs font-mono text-[#8E9EA7]">
+                <span>WIND VELOCITY</span>
+                <Wind className="w-4 h-4 text-[#5BB7A5]" />
+              </div>
+              <div className="py-4">
+                <span className="text-4xl sm:text-6xl font-mono font-bold text-white tracking-tight">
+                  {weatherLoading ? '...' : `${activeWeather?.wind_speed_kmh}`}
+                </span>
+                <span className="text-lg text-[#8E9EA7] font-mono font-normal ml-1">km/h</span>
+                <span className="block text-xs font-mono text-[#8E9EA7] mt-1">
+                  Anemometer at 10m height
+                </span>
+              </div>
+              <div className="text-[11px] font-mono text-[#74B8CC]">
+                {activeWeather?.wind_speed_kmh && activeWeather.wind_speed_kmh > 40 ? 'Gale/Blizzard Warning' : 'Moderate Katabatic Flow'}
+              </div>
+            </div>
+
+            <div className="bg-[#0D2735] border border-[#B9DDE7]/15 rounded-2xl p-6 sm:p-8 flex flex-col justify-between">
+              <div className="flex items-center justify-between text-xs font-mono text-[#8E9EA7]">
+                <span>BAROMETRIC PRESSURE</span>
+                <Gauge className="w-4 h-4 text-[#D7A75D]" />
+              </div>
+              <div className="py-4">
+                <span className="text-3xl sm:text-5xl font-mono font-bold text-white tracking-tight">
+                  {weatherLoading ? '...' : `${activeWeather?.surface_pressure_hpa}`}
+                </span>
+                <span className="text-sm text-[#8E9EA7] font-mono font-normal ml-1">hPa</span>
+                <span className="block text-xs font-mono text-[#8E9EA7] mt-1">
+                  Atmospheric barograph
+                </span>
+              </div>
+              <div className="text-[11px] font-mono text-[#8E9EA7]">
+                Synoptic pressure trend
+              </div>
+            </div>
+
+            <div className="bg-[#0D2735] border border-[#B9DDE7]/15 rounded-2xl p-6 sm:p-8 flex flex-col justify-between">
+              <div className="flex items-center justify-between text-xs font-mono text-[#8E9EA7]">
+                <span>RELATIVE HUMIDITY</span>
+                <Droplets className="w-4 h-4 text-[#74B8CC]" />
+              </div>
+              <div className="py-4">
+                <span className="text-3xl sm:text-5xl font-mono font-bold text-white tracking-tight">
+                  {weatherLoading ? '...' : `${activeWeather?.relative_humidity_pct}%`}
+                </span>
+                <span className="block text-xs font-mono text-[#8E9EA7] mt-1">
+                  Hygrometric sensor
+                </span>
+              </div>
+              <div className="text-[11px] font-mono text-[#8E9EA7]">
+                Dewpoint coupled
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 7. CALL TO ACTION: AI DISSEMINATION STUDIO */}
-      <section className="py-16 bg-gradient-to-r from-[#0B2538] via-[#0d2f47] to-[#0B2538] border-t border-[#6EC5E9]/20">
-        <div className="max-w-5xl mx-auto px-4 text-center space-y-4">
-          <span className="text-xs uppercase font-mono tracking-widest text-[#22C7A8] font-bold">
-            SOURCE-GROUNDED AI DISSEMINATION
-          </span>
-          <h2 className="text-3xl font-extrabold text-white">
-            Transform Complex Scientific Records into Public Outreach
-          </h2>
-          <p className="text-sm text-[#94A3B8] max-w-xl mx-auto leading-relaxed">
-            The POLARIS AI Content Studio reads authentic expedition charters, datasets, and publications, synthesizing multi-platform media with traceable provenance.
-          </p>
-          <div className="pt-2">
+      {/* ========================================================================= */}
+      {/* 5. SECTION 4: "Explore the Archive" (Unified Cross-Entity Discovery)      */}
+      {/* ========================================================================= */}
+      <section className="py-24 bg-[#0A1B28] border-y border-[#B9DDE7]/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+          <div className="max-w-3xl space-y-4">
+            <div className="text-xs font-mono uppercase tracking-widest text-[#74B8CC] font-semibold">
+              Unified Knowledge Discovery
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-serif font-bold text-white">
+              What are you looking for?
+            </h2>
+            <p className="text-sm sm:text-base text-[#8E9EA7] font-light leading-relaxed">
+              Query across expeditions, observational datasets, peer-reviewed publications, research facilities, and scientific photography in one cross-connected index.
+            </p>
+          </div>
+
+          {/* Large Search Bar */}
+          <div className="relative max-w-3xl">
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-[#74B8CC]" />
+            <input 
+              type="text"
+              value={homeSearchQuery}
+              onChange={(e) => {
+                setHomeSearchQuery(e.target.value);
+                executeHomeSearch(e.target.value);
+              }}
+              placeholder="Search expeditions, datasets, publications (e.g. 'Maitri atmosphere')..."
+              className="w-full pl-14 pr-32 py-5 rounded-2xl bg-[#07151F] border border-[#B9DDE7]/20 text-white placeholder-[#61747E] text-base sm:text-lg focus:outline-none focus:border-[#74B8CC] shadow-2xl transition"
+            />
             <Link
-              href="/studio"
-              className="inline-flex items-center space-x-2 px-6 py-3 rounded-xl bg-[#22C7A8] hover:bg-[#1fb396] text-[#071A2B] font-bold text-sm shadow-xl transition-all"
+              href={`/repository?q=${encodeURIComponent(homeSearchQuery)}`}
+              className="absolute right-3 top-1/2 -translate-y-1/2 px-5 py-2.5 rounded-xl bg-[#74B8CC] hover:bg-[#B9DDE7] text-[#07151F] font-bold text-xs uppercase font-mono transition"
             >
-              <span>Launch AI Content Studio</span>
-              <ArrowRight className="w-4 h-4" />
+              Search
             </Link>
           </div>
+
+          {/* Quick Demo Search Chips */}
+          <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-[#8E9EA7]">
+            <span>Try searching:</span>
+            {['Maitri atmosphere', '45th ISEA', 'Kongsfjorden IndArc', 'Chhota Shigri', 'Southern Ocean CTD'].map((chip) => (
+              <button
+                key={chip}
+                onClick={() => {
+                  setHomeSearchQuery(chip);
+                  executeHomeSearch(chip);
+                }}
+                className="px-3 py-1 rounded-md bg-[#07151F] hover:bg-[#143547] border border-[#B9DDE7]/15 text-[#DCEEF2] transition"
+              >
+                {chip}
+              </button>
+            ))}
+          </div>
+
+          {/* Cross-Entity Connected Results Preview */}
+          {homeSearchResults && (
+            <div className="pt-6 border-t border-[#B9DDE7]/10 space-y-4">
+              <div className="flex items-center justify-between text-xs font-mono text-[#8E9EA7]">
+                <span>
+                  Found <strong className="text-white">{homeSearchResults.total_results}</strong> connected records for "{homeSearchQuery}"
+                </span>
+                <Link href={`/repository?q=${encodeURIComponent(homeSearchQuery)}`} className="text-[#74B8CC] hover:underline flex items-center gap-1">
+                  <span>View all in repository</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Expeditions Match */}
+                {homeSearchResults.results_by_type.expeditions?.slice(0, 1).map((item) => (
+                  <div key={item.id} className="bg-[#07151F] border border-[#5BB7A5]/30 p-5 rounded-xl space-y-2">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-[#5BB7A5] font-semibold block">
+                      EXPEDITION
+                    </span>
+                    <h4 className="text-sm font-bold text-white">{item.title}</h4>
+                    <p className="text-xs text-[#8E9EA7] line-clamp-2">{item.snippet || item.subtitle}</p>
+                    <Link href={`/expeditions/${item.id}`} className="text-xs text-[#74B8CC] hover:underline font-mono inline-block pt-1">
+                      View Expedition Dossier →
+                    </Link>
+                  </div>
+                ))}
+
+                {/* Datasets Match */}
+                {homeSearchResults.results_by_type.datasets?.slice(0, 1).map((item) => (
+                  <div key={item.id} className="bg-[#07151F] border border-[#74B8CC]/30 p-5 rounded-xl space-y-2">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-[#74B8CC] font-semibold block">
+                      NPDC DATASET
+                    </span>
+                    <h4 className="text-sm font-bold text-white">{item.title}</h4>
+                    <p className="text-xs text-[#8E9EA7] line-clamp-2">{item.snippet || item.subtitle}</p>
+                    <Link href={`/datasets/${item.id}`} className="text-xs text-[#74B8CC] hover:underline font-mono inline-block pt-1">
+                      Inspect Telemetry & Download →
+                    </Link>
+                  </div>
+                ))}
+
+                {/* Publications Match */}
+                {homeSearchResults.results_by_type.publications?.slice(0, 1).map((item) => (
+                  <div key={item.id} className="bg-[#07151F] border border-[#D7A75D]/30 p-5 rounded-xl space-y-2">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-[#D7A75D] font-semibold block">
+                      PEER-REVIEWED PUBLICATION
+                    </span>
+                    <h4 className="text-sm font-bold text-white">{item.title}</h4>
+                    <p className="text-xs text-[#8E9EA7] line-clamp-2">{item.snippet || item.subtitle}</p>
+                    <Link href="/publications" className="text-xs text-[#D7A75D] hover:underline font-mono inline-block pt-1">
+                      Read Paper & Citation →
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
+
+      {/* ========================================================================= */}
+      {/* 6. SECTION 5: Featured Expedition (Large Editorial Showcase)              */}
+      {/* ========================================================================= */}
+      <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="relative rounded-3xl overflow-hidden border border-[#B9DDE7]/15 bg-[#0D2735] shadow-2xl">
+          <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch">
+            
+            <div className="lg:col-span-7 relative min-h-[380px] lg:min-h-[500px]">
+              <img 
+                src="https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=1200&q=85" 
+                alt="45th ISEA Expedition"
+                className="absolute inset-0 w-full h-full object-cover brightness-75"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#0D2735]/40 to-[#0D2735] hidden lg:block" />
+              <div className="absolute top-6 left-6 bg-[#07151F]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-mono text-[#5BB7A5] border border-[#5BB7A5]/30">
+                ACTIVE FIELD CAMPAIGN · 2025–2026
+              </div>
+            </div>
+
+            <div className="lg:col-span-5 p-8 sm:p-12 flex flex-col justify-between space-y-6">
+              <div className="space-y-4">
+                <div className="text-xs font-mono uppercase tracking-widest text-[#74B8CC] font-semibold">
+                  Flagship Mission Showcase
+                </div>
+                <h3 className="text-3xl sm:text-4xl font-serif font-bold text-white leading-tight">
+                  45th Indian Scientific Expedition to Antarctica
+                </h3>
+                <p className="text-xs sm:text-sm text-[#8E9EA7] font-light leading-relaxed">
+                  Deployed aboard ice-class research vessels to Schirmacher Oasis and Larsemann Hills, executing deep ice drilling, boundary-layer atmospheric physics, and green hydrogen pilot infrastructure.
+                </p>
+                <div className="space-y-2 pt-2 text-xs font-mono text-[#DCEEF2]">
+                  <div><strong className="text-[#8E9EA7]">Voyage:</strong> Cape Town → Maitri → Bharati</div>
+                  <div><strong className="text-[#8E9EA7]">Expedition Leader:</strong> Dr. Ananya Mukherjee (NCPOR)</div>
+                  <div><strong className="text-[#8E9EA7]">Linked Data:</strong> NPDC-ATMO-2025-01, NPDC-CRYO-2025-02</div>
+                </div>
+              </div>
+
+              <div>
+                <Link
+                  href="/expeditions/exp_45_isea"
+                  className="inline-flex items-center space-x-2 px-6 py-3 rounded-lg bg-[#74B8CC] hover:bg-[#B9DDE7] text-[#07151F] font-bold text-xs uppercase font-mono tracking-wider transition"
+                >
+                  <span>EXPLORE EXPEDITION DOSSIER</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 7. SECTION 6: Research & Publications (Editorial Layout)                  */}
+      {/* ========================================================================= */}
+      <section className="py-24 bg-[#0A1B28] border-t border-[#B9DDE7]/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#B9DDE7]/10 pb-6">
+            <div>
+              <div className="text-xs font-mono uppercase tracking-widest text-[#D7A75D] font-semibold mb-2">
+                Peer-Reviewed Science
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-serif font-bold text-white">
+                Research from the polar frontier
+              </h2>
+            </div>
+            <Link href="/publications" className="text-xs font-mono text-[#74B8CC] hover:underline flex items-center gap-1.5">
+              <span>View full publications archive ({stats?.publications || 15} papers)</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          {/* One Large Featured Paper + Two Smaller Papers */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {latestResearch[0] && (
+              <div className="lg:col-span-7 bg-[#07151F] border border-[#B9DDE7]/15 rounded-2xl p-8 space-y-6 flex flex-col justify-between">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between text-xs font-mono">
+                    <span className="px-2.5 py-0.5 rounded bg-[#D7A75D]/15 text-[#D7A75D] border border-[#D7A75D]/30 font-semibold">
+                      FEATURED PAPER · {latestResearch[0].journal} ({latestResearch[0].year})
+                    </span>
+                    <span className="text-[#8E9EA7]">DOI: {latestResearch[0].doi}</span>
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-serif font-bold text-white leading-snug">
+                    {latestResearch[0].title}
+                  </h3>
+                  <div className="text-xs text-[#8E9EA7] font-mono">
+                    {Array.isArray(latestResearch[0].authors) ? latestResearch[0].authors.join(', ') : latestResearch[0].authors}
+                  </div>
+                  <p className="text-xs sm:text-sm text-[#DCEEF2]/80 leading-relaxed font-light line-clamp-4">
+                    {latestResearch[0].abstract}
+                  </p>
+                </div>
+                <div className="pt-4 border-t border-[#B9DDE7]/10 flex items-center justify-between">
+                  <span className="text-xs font-mono text-[#8E9EA7]">Cited by {latestResearch[0].citation_count} international studies</span>
+                  <Link href="/publications" className="text-xs font-mono text-[#74B8CC] hover:underline font-bold">
+                    Read Abstract & Export Citation →
+                  </Link>
+                </div>
+              </div>
+            )}
+
+            <div className="lg:col-span-5 space-y-6">
+              {latestResearch.slice(1, 3).map((pub) => (
+                <div key={pub.id} className="bg-[#07151F] border border-[#B9DDE7]/15 rounded-2xl p-6 space-y-3">
+                  <div className="text-[11px] font-mono text-[#D7A75D]">
+                    {pub.journal} ({pub.year})
+                  </div>
+                  <h4 className="text-base font-bold text-white hover:text-[#74B8CC] transition">
+                    {pub.title}
+                  </h4>
+                  <p className="text-xs text-[#8E9EA7] line-clamp-2 font-light">
+                    {pub.abstract}
+                  </p>
+                  <Link href="/publications" className="text-xs font-mono text-[#74B8CC] hover:underline inline-block pt-1">
+                    Citation Tools & Full Record →
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 8. SECTION 7 & 8: Smart Education Teaser ("Not only for scientists")      */}
+      {/* ========================================================================= */}
+      <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="bg-gradient-to-br from-[#0D2735] to-[#07151F] border border-[#74B8CC]/20 rounded-3xl p-8 sm:p-14 relative overflow-hidden shadow-2xl">
+          <div className="max-w-2xl space-y-6 relative z-10">
+            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded bg-[#74B8CC]/15 text-[#74B8CC] border border-[#74B8CC]/30 text-xs font-mono">
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>SMART EDUCATION HUB</span>
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-serif font-bold text-white leading-tight">
+              Polar science is not only for scientists.
+            </h2>
+            <p className="text-sm sm:text-base text-[#8E9EA7] font-light leading-relaxed">
+              Explore interactive modules decoding planetary albedo, Antarctic bottom water formation, and Spiti glacier monitoring. Test your understanding with our curated science quiz.
+            </p>
+            <div className="pt-2">
+              <Link
+                href="/learn"
+                className="px-6 py-3.5 rounded-lg bg-[#74B8CC] hover:bg-[#B9DDE7] text-[#07151F] font-bold text-xs uppercase font-mono tracking-wider transition inline-flex items-center space-x-2"
+              >
+                <span>ENTER STUDENT HUB & TAKE QUIZ</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </div>
   );
 };

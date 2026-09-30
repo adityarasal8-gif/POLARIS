@@ -64,22 +64,22 @@ export const PolarGlobe3D: React.FC<{ onSelectStation?: (id: string) => void }> 
 
     const GLOBE_RADIUS = 1.8;
 
-    // 2. Base Sphere with deep navy gradient
+    // 2. Base Sphere with rich oceanic sheen
     const sphereGeo = new THREE.SphereGeometry(GLOBE_RADIUS, 64, 64);
     const sphereMat = new THREE.MeshPhongMaterial({
-      color: 0x071A2B,
-      emissive: 0x051320,
-      specular: 0x1d3f5e,
-      shininess: 25,
+      color: 0x0D2735,
+      emissive: 0x07151F,
+      specular: 0x74B8CC,
+      shininess: 40,
       transparent: true,
-      opacity: 0.95,
+      opacity: 0.98,
       wireframe: false,
     });
     const globeMesh = new THREE.Mesh(sphereGeo, sphereMat);
     globeGroup.add(globeMesh);
 
-    // 3. Latitude & Longitude Coordinate Grid Rings
-    const gridMat = new THREE.LineBasicMaterial({ color: 0x38BDF8, transparent: true, opacity: 0.14 });
+    // 3. Latitude & Longitude Coordinate Grid Rings (Brighter Glacial Lines)
+    const gridMat = new THREE.LineBasicMaterial({ color: 0x74B8CC, transparent: true, opacity: 0.32 });
     for (let lat = -80; lat <= 80; lat += 20) {
       const radius = GLOBE_RADIUS * Math.cos((lat * Math.PI) / 180);
       const y = GLOBE_RADIUS * Math.sin((lat * Math.PI) / 180);
@@ -124,8 +124,8 @@ export const PolarGlobe3D: React.FC<{ onSelectStation?: (id: string) => void }> 
       fragmentShader: `
         varying vec3 vNormal;
         void main() {
-          float intensity = pow(0.65 - dot(vNormal, vec3(0, 0, 1.0)), 2.5);
-          gl_FragColor = vec4(0.22, 0.74, 0.97, 1.0) * intensity * 0.45;
+          float intensity = pow(0.65 - dot(vNormal, vec3(0, 0, 1.0)), 2.2);
+          gl_FragColor = vec4(0.45, 0.72, 0.85, 1.0) * intensity * 0.65;
         }
       `,
       blending: THREE.AdditiveBlending,
@@ -288,37 +288,26 @@ export const PolarGlobe3D: React.FC<{ onSelectStation?: (id: string) => void }> 
   }, []);
 
   return (
-    <div className="relative w-full h-[540px] flex items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-b from-[#071A2B]/40 to-[#0B2538]/60 border border-[#6EC5E9]/15">
+    <div className="relative w-full h-full min-h-[500px] flex items-center justify-center overflow-visible">
       {/* Three.js Container */}
-      <div ref={containerRef} className="w-full h-full" />
+      <div ref={containerRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
 
-      {/* Floating Scientific Badge (Top Left) */}
-      <div className="absolute top-4 left-4 z-10 pointer-events-none bg-[#071A2B]/90 backdrop-blur-md px-3.5 py-2 rounded-lg border border-[#6EC5E9]/20 text-xs">
-        <div className="flex items-center space-x-2 text-[#38BDF8] font-mono font-semibold tracking-wider uppercase">
-          <span className="w-2 h-2 rounded-full bg-[#22C7A8] animate-ping" />
-          <span>Interactive Polar Space Telemetry</span>
-        </div>
-        <p className="text-[11px] text-[#94A3B8] mt-0.5 font-mono">
-          VANTAGE: SOUTHERN AXIS • ANTARCTICA ↔ INDIA ARCS
-        </p>
-      </div>
-
-      {/* Program Pillar Legend (Bottom Left) */}
-      <div className="absolute bottom-4 left-4 z-10 hidden sm:flex items-center space-x-3 bg-[#071A2B]/85 backdrop-blur-md px-4 py-2 rounded-lg border border-[#6EC5E9]/15 text-[11px] text-[#94A3B8] font-mono">
+      {/* Program Pillar Legend (Bottom) */}
+      <div className="absolute bottom-2 z-10 hidden sm:flex items-center space-x-3 bg-[#07151F]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-[#B9DDE7]/15 text-[11px] text-[#8E9EA7] font-mono">
         <span className="flex items-center space-x-1.5">
-          <span className="w-2 h-2 rounded-full bg-[#38BDF8]" />
+          <span className="w-2 h-2 rounded-full bg-[#74B8CC]" />
           <span>Maitri</span>
         </span>
         <span className="flex items-center space-x-1.5">
-          <span className="w-2 h-2 rounded-full bg-[#22C7A8]" />
+          <span className="w-2 h-2 rounded-full bg-[#5BB7A5]" />
           <span>Bharati</span>
         </span>
         <span className="flex items-center space-x-1.5">
-          <span className="w-2 h-2 rounded-full bg-[#6EC5E9]" />
+          <span className="w-2 h-2 rounded-full bg-[#B9DDE7]" />
           <span>Himadri</span>
         </span>
         <span className="flex items-center space-x-1.5">
-          <span className="w-2 h-2 rounded-full bg-[#E7A93B]" />
+          <span className="w-2 h-2 rounded-full bg-[#D7A75D]" />
           <span>Himansh</span>
         </span>
       </div>

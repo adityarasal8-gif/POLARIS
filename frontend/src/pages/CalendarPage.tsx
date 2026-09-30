@@ -95,38 +95,40 @@ export const CalendarPage: React.FC = () => {
   const getPlatformIcon = (platform: string) => {
     switch (platform) {
       case 'instagram': return <InstagramIcon className="w-3.5 h-3.5 text-[#E1306C]" />;
-      case 'x': return <TwitterIcon className="w-3.5 h-3.5 text-[#1DA1F2]" />;
-      case 'linkedin': return <LinkedinIcon className="w-3.5 h-3.5 text-[#0A66C2]" />;
-      case 'youtube': return <YoutubeIcon className="w-3.5 h-3.5 text-[#FF0000]" />;
-      default: return <FileText className="w-3.5 h-3.5 text-[#38BDF8]" />;
+      case 'x': return <TwitterIcon className="w-3.5 h-3.5 text-[#74B8CC]" />;
+      case 'linkedin': return <LinkedinIcon className="w-3.5 h-3.5 text-[#5BB7A5]" />;
+      case 'youtube': return <YoutubeIcon className="w-3.5 h-3.5 text-[#FF5A5F]" />;
+      default: return <FileText className="w-3.5 h-3.5 text-[#B9DDE7]" />;
     }
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#071A2B] text-white py-10 px-4 sm:px-6 lg:px-8 polar-grid-bg text-left">
+    <div className="w-full min-h-screen bg-[#07151F] text-white py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Navigation */}
-        <Link href="/studio" className="inline-flex items-center space-x-2 text-xs font-mono text-[#38BDF8] hover:underline">
+        <Link href="/studio" className="inline-flex items-center gap-2 text-xs font-mono text-[#74B8CC] hover:text-[#B9DDE7] transition-colors">
           <ArrowLeft className="w-3.5 h-3.5" />
-          <span>Back to AI Content Studio</span>
+          <span>Return to Content Studio</span>
         </Link>
 
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#6EC5E9]/15 pb-4">
-          <div>
-            <div className="inline-flex items-center space-x-2 text-xs font-mono text-[#38BDF8] font-bold tracking-wider uppercase mb-1">
-              <Calendar className="w-4 h-4 text-[#38BDF8]" />
-              <span>EDITORIAL GOVERNANCE</span>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-6">
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-2 text-xs font-mono text-[#74B8CC] uppercase tracking-wider">
+              <Calendar className="w-3.5 h-3.5" />
+              <span>Dissemination Governance</span>
             </div>
-            <h1 className="text-3xl font-black text-white">Outreach Dissemination Calendar</h1>
+            <h1 className="font-editorial text-3xl sm:text-4xl text-white font-normal">
+              Public Release Calendar
+            </h1>
             <p className="text-xs sm:text-sm text-[#94A3B8]">
-              Verified scheduled public communications across social feeds and web press releases.
+              Verified scheduled public communications across social feeds and web releases.
             </p>
           </div>
 
           <Link
             href="/studio"
-            className="px-4 py-2 rounded-xl bg-[#22C7A8] hover:bg-[#1fb396] text-[#071A2B] font-bold text-xs flex items-center space-x-1.5 transition-colors cursor-pointer"
+            className="px-4 py-2.5 rounded-xl bg-[#74B8CC] hover:bg-[#B9DDE7] text-[#07151F] font-bold text-xs font-mono flex items-center gap-1.5 transition-all cursor-pointer shadow-md"
           >
             <Plus className="w-4 h-4" />
             <span>Generate New Post</span>
@@ -138,28 +140,30 @@ export const CalendarPage: React.FC = () => {
           {DAYS.map((d) => {
             const itemsForDay = SCHEDULED_DEMO.filter((item) => item.day === d.day);
             return (
-              <div key={d.day} className="polar-panel p-4 border border-[#6EC5E9]/15 flex flex-col justify-between min-h-[380px]">
+              <div key={d.day} className="border border-white/10 rounded-2xl bg-white/[0.02] p-4 flex flex-col justify-between min-h-[380px]">
                 <div>
-                  <div className="border-b border-[#6EC5E9]/15 pb-2 mb-3">
+                  <div className="border-b border-white/10 pb-2 mb-3">
                     <h3 className="text-xs font-bold text-white uppercase font-mono tracking-wider">{d.day}</h3>
-                    <p className="text-[11px] text-[#38BDF8] font-mono">{d.date}</p>
+                    <p className="text-xs text-[#74B8CC] font-mono">{d.date}</p>
                   </div>
 
-                  <div className="space-y-3">
+                  <div className="space-y-2.5">
                     {itemsForDay.map((item) => (
                       <div
                         key={item.id}
-                        className="p-3 rounded-lg bg-[#071A2B] border border-[#6EC5E9]/20 space-y-2 hover:border-[#38BDF8]/40 transition-colors"
+                        className="p-3 rounded-xl bg-[#07151F] border border-white/10 space-y-2 hover:border-[#74B8CC]/40 transition-all"
                       >
                         <div className="flex items-center justify-between text-[10px] font-mono">
                           <span className="text-[#94A3B8]">{item.time}</span>
-                          <span className="badge-live px-1.5 py-0.2 rounded font-semibold">
+                          <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase ${
+                            item.status === 'Approved' ? 'bg-[#5BB7A5]/20 text-[#5BB7A5]' : 'bg-[#74B8CC]/20 text-[#74B8CC]'
+                          }`}>
                             {item.status}
                           </span>
                         </div>
 
-                        <div className="flex items-start space-x-2">
-                          <div className="mt-0.5">{getPlatformIcon(item.platform)}</div>
+                        <div className="flex items-start gap-2">
+                          <div className="mt-0.5 shrink-0">{getPlatformIcon(item.platform)}</div>
                           <h4 className="text-xs font-semibold text-white leading-snug">{item.title}</h4>
                         </div>
 
@@ -171,9 +175,9 @@ export const CalendarPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-[#6EC5E9]/10 text-center">
+                <div className="pt-3 border-t border-white/5 text-center">
                   <span className="text-[10px] font-mono text-[#647887]">
-                    {itemsForDay.length} Scheduled
+                    {itemsForDay.length} Scheduled Dispatches
                   </span>
                 </div>
               </div>

@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { 
   GraduationCap, BookOpen, Compass, HelpCircle, CheckCircle2, 
-  XCircle, ArrowRight, RotateCcw, Award, Lightbulb, Sparkles, 
-  Layers, Thermometer, Wind, Mountain, ChevronRight, Globe,
-  ShieldCheck, AlertCircle
+  XCircle, ArrowRight, RotateCcw, Sparkles, Layers, 
+  Thermometer, Wind, Mountain, ChevronRight, Globe, Award, Search
 } from 'lucide-react';
 
 interface QuizQuestion {
@@ -25,7 +24,7 @@ const QUIZ_QUESTIONS: QuizQuestion[] = [
       "Cold water prevents cloud formation, allowing more solar rays to strike Earth"
     ],
     correctIndex: 1,
-    explanation: "Albedo measures surface reflectivity. Ice reflects up to 90% of solar energy back into space. When it melts into dark seawater, reflectivity plummets to ~10%, causing the ocean to absorb massive amounts of solar heat."
+    explanation: "Albedo measures surface reflectivity. Fresh snow/ice reflects up to 90% of solar energy back into space. When it melts into dark seawater, reflectivity plummets to ~10%, causing the ocean to absorb massive amounts of solar heat."
   },
   {
     id: 2,
@@ -41,7 +40,7 @@ const QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     id: 3,
-    question: "How does deep Antarctic Bottom Water (AABW) influence global weather and the Indian Monsoon?",
+    question: "How does deep Antarctic Bottom Water (AABW) influence global climate and the Indian Monsoon?",
     options: [
       "It drives the global Thermohaline Circulation ('ocean conveyor belt'), transporting heat, oxygen, and nutrients across planetary oceans",
       "It creates high-pressure cyclones that strike Mumbai annually",
@@ -93,6 +92,7 @@ const GLOSSARY_TERMS = [
 export default function LearnPage() {
   const [activeTab, setActiveTab] = useState<'lessons' | 'glossary' | 'quiz'>('lessons');
   const [activeLesson, setActiveLesson] = useState(1);
+  const [glossarySearch, setGlossarySearch] = useState('');
 
   // Quiz State
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
@@ -121,220 +121,187 @@ export default function LearnPage() {
     setQuizSubmitted(false);
   };
 
+  const filteredGlossary = GLOSSARY_TERMS.filter(item => 
+    item.term.toLowerCase().includes(glossarySearch.toLowerCase()) ||
+    item.definition.toLowerCase().includes(glossarySearch.toLowerCase())
+  );
+
   return (
-    <div className="min-h-screen bg-[#071A2B] text-slate-100 py-10 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto space-y-8">
-        
-        {/* Header */}
-        <div className="border-b border-white/10 pb-8">
-          <div className="flex items-center gap-2 text-xs font-mono text-cyan-400 uppercase tracking-wider mb-2">
-            <span>Smart Education</span>
-            <span>/</span>
-            <span>Science Outreach</span>
-            <span>/</span>
-            <span className="text-white">Polar Knowledge Hub</span>
+    <div className="min-h-screen bg-[#F7F8F5] text-[#10212B]">
+      {/* Light Editorial Education Hero */}
+      <section className="pt-24 pb-14 px-4 sm:px-6 lg:px-8 bg-white border-b border-[#E2E8F0]">
+        <div className="max-w-6xl mx-auto space-y-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#07151F]/5 border border-[#07151F]/10 text-xs font-mono uppercase tracking-widest text-[#61747E]">
+            <GraduationCap className="w-3.5 h-3.5 text-[#07151F]" />
+            <span>Open Science Education & Public Discovery</span>
           </div>
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-              <h1 className="text-3xl sm:text-4xl font-serif font-bold text-white tracking-tight">
-                Polar Science, Explained.
-              </h1>
-              <p className="mt-2 text-slate-400 text-sm sm:text-base max-w-3xl">
-                An interactive educational portal for students, educators, and citizens to discover how India conducts research in the world's most extreme environments, why the cryosphere matters to the monsoon, and how polar stations survive.
-              </p>
-            </div>
-            
-            <div className="flex items-center gap-2 self-start md:self-auto bg-[#0B2538] border border-cyan-500/20 px-3 py-1.5 rounded text-xs font-mono text-cyan-300">
-              <GraduationCap className="w-4 h-4 text-cyan-400" />
-              <span>SIH 2026 Smart Education Portal</span>
-            </div>
+
+          <h1 className="font-editorial text-4xl sm:text-5xl md:text-6xl text-[#07151F] font-normal leading-tight">
+            Polar Science, <span className="italic text-[#74B8CC]">Demystified.</span>
+          </h1>
+
+          <p className="text-base sm:text-lg text-[#61747E] max-w-3xl leading-relaxed">
+            Understand how Earth's cryosphere regulates the Indian monsoon, how scientists extract 800,000-year paleoclimate records from Antarctic ice cores, and how human outposts survive polar blizzards.
+          </p>
+
+          {/* Navigation Tabs */}
+          <div className="pt-4 flex items-center gap-2">
+            <button
+              onClick={() => setActiveTab('lessons')}
+              className={`px-4 py-2 rounded-xl text-xs font-mono tracking-wide transition-all cursor-pointer flex items-center gap-2 ${
+                activeTab === 'lessons'
+                  ? 'bg-[#07151F] text-white font-bold shadow-md'
+                  : 'bg-[#F7F8F5] text-[#61747E] hover:text-[#10212B] border border-[#E2E8F0]'
+              }`}
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>Interactive Modules</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('glossary')}
+              className={`px-4 py-2 rounded-xl text-xs font-mono tracking-wide transition-all cursor-pointer flex items-center gap-2 ${
+                activeTab === 'glossary'
+                  ? 'bg-[#07151F] text-white font-bold shadow-md'
+                  : 'bg-[#F7F8F5] text-[#61747E] hover:text-[#10212B] border border-[#E2E8F0]'
+              }`}
+            >
+              <Compass className="w-3.5 h-3.5" />
+              <span>Cryospheric Lexicon</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('quiz')}
+              className={`px-4 py-2 rounded-xl text-xs font-mono tracking-wide transition-all cursor-pointer flex items-center gap-2 ${
+                activeTab === 'quiz'
+                  ? 'bg-[#07151F] text-white font-bold shadow-md'
+                  : 'bg-[#F7F8F5] text-[#61747E] hover:text-[#10212B] border border-[#E2E8F0]'
+              }`}
+            >
+              <HelpCircle className="w-3.5 h-3.5" />
+              <span>Science Challenge</span>
+            </button>
           </div>
         </div>
+      </section>
 
-        {/* Navigation Tabs */}
-        <div className="flex items-center gap-2 bg-[#0B2538] p-1.5 rounded-lg border border-white/10 max-w-md">
-          <button
-            onClick={() => setActiveTab('lessons')}
-            className={`flex-1 py-2 px-3 rounded text-xs font-mono flex items-center justify-center gap-2 transition ${
-              activeTab === 'lessons'
-                ? 'bg-cyan-500 text-black font-semibold shadow-md'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            <BookOpen className="w-3.5 h-3.5" />
-            Core Lessons
-          </button>
-          <button
-            onClick={() => setActiveTab('glossary')}
-            className={`flex-1 py-2 px-3 rounded text-xs font-mono flex items-center justify-center gap-2 transition ${
-              activeTab === 'glossary'
-                ? 'bg-cyan-500 text-black font-semibold shadow-md'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            <Compass className="w-3.5 h-3.5" />
-            Polar Glossary
-          </button>
-          <button
-            onClick={() => setActiveTab('quiz')}
-            className={`flex-1 py-2 px-3 rounded text-xs font-mono flex items-center justify-center gap-2 transition ${
-              activeTab === 'quiz'
-                ? 'bg-cyan-500 text-black font-semibold shadow-md'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            <HelpCircle className="w-3.5 h-3.5" />
-            Interactive Quiz
-          </button>
-        </div>
-
+      {/* Main Educational Workspace */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* TAB 1: INTERACTIVE LESSONS */}
         {activeTab === 'lessons' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {/* Lesson Selector Sidebar */}
-            <div className="lg:col-span-4 space-y-3">
-              <h3 className="text-xs font-mono uppercase text-slate-400 tracking-wider px-1">
-                Select Interactive Module
-              </h3>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            {/* Module Picker Sidebar (4 cols) */}
+            <div className="lg:col-span-4 space-y-3 sticky top-20">
+              <span className="text-xs font-mono uppercase text-[#61747E] tracking-wider px-1">
+                Course Modules
+              </span>
 
-              <div 
-                onClick={() => setActiveLesson(1)}
-                className={`p-4 rounded-lg border transition cursor-pointer space-y-1.5 ${
-                  activeLesson === 1
-                    ? 'bg-[#0B2538] border-cyan-500/50 shadow-lg shadow-cyan-950/40'
-                    : 'bg-[#0B2538]/60 border-white/5 hover:border-white/20'
-                }`}
-              >
-                <div className="flex items-center justify-between text-xs font-mono">
-                  <span className="text-cyan-400">MODULE 01</span>
-                  <span className="text-slate-500">10 min read</span>
+              {[
+                { id: 1, mod: 'MODULE 01', time: '8 min read', title: "Why Polar Regions Govern Earth's Climate", desc: "Planetary albedo, oceanic conveyor belts, and monsoon teleconnections." },
+                { id: 2, mod: 'MODULE 02', time: '10 min read', title: "How Scientists Decode Glaciers & Ice Cores", desc: "Mass-balance stake networks, isotopic paleoclimatology, and radar sounding." },
+                { id: 3, mod: 'MODULE 03', time: '7 min read', title: "Anatomy of an Antarctic Station: Maitri & Bharati", desc: "Aerodynamic container architecture, microgrids, and zero-discharge protocols." },
+              ].map((m) => (
+                <div 
+                  key={m.id}
+                  onClick={() => setActiveLesson(m.id)}
+                  className={`p-5 rounded-2xl border transition-all cursor-pointer space-y-2 ${
+                    activeLesson === m.id
+                      ? 'bg-white border-[#07151F] shadow-lg shadow-black/5 ring-1 ring-[#07151F]'
+                      : 'bg-white/60 border-[#E2E8F0] hover:bg-white hover:border-[#CBD5E1]'
+                  }`}
+                >
+                  <div className="flex items-center justify-between text-xs font-mono">
+                    <span className="text-[#74B8CC] font-bold">{m.mod}</span>
+                    <span className="text-[#61747E]">{m.time}</span>
+                  </div>
+                  <h3 className="font-editorial text-lg text-[#07151F] font-normal leading-snug">
+                    {m.title}
+                  </h3>
+                  <p className="text-xs text-[#61747E] leading-relaxed">
+                    {m.desc}
+                  </p>
                 </div>
-                <h4 className="text-sm font-semibold text-white">
-                  Why Polar Regions Govern Earth's Climate
-                </h4>
-                <p className="text-xs text-slate-400 line-clamp-2">
-                  Planetary albedo, oceanic thermohaline conveyor belts, and why Antarctic ice changes trigger monsoon swings in India.
-                </p>
-              </div>
+              ))}
 
-              <div 
-                onClick={() => setActiveLesson(2)}
-                className={`p-4 rounded-lg border transition cursor-pointer space-y-1.5 ${
-                  activeLesson === 2
-                    ? 'bg-[#0B2538] border-cyan-500/50 shadow-lg shadow-cyan-950/40'
-                    : 'bg-[#0B2538]/60 border-white/5 hover:border-white/20'
-                }`}
-              >
-                <div className="flex items-center justify-between text-xs font-mono">
-                  <span className="text-cyan-400">MODULE 02</span>
-                  <span className="text-slate-500">12 min read</span>
+              {/* Quiz Callout Card */}
+              <div className="p-5 rounded-2xl bg-white border border-[#E2E8F0] shadow-sm space-y-2.5 mt-6">
+                <div className="flex items-center gap-2 text-xs font-mono text-[#D7A75D] font-bold">
+                  <Sparkles className="w-4 h-4" />
+                  <span>Test Your Comprehension</span>
                 </div>
-                <h4 className="text-sm font-semibold text-white">
-                  How Scientists Decode Glaciers & Ice Cores
-                </h4>
-                <p className="text-xs text-slate-400 line-clamp-2">
-                  From mass-balance stake networks in Spiti to deep ice drilling in East Antarctica, unlocking 800,000 years of paleoclimate records.
-                </p>
-              </div>
-
-              <div 
-                onClick={() => setActiveLesson(3)}
-                className={`p-4 rounded-lg border transition cursor-pointer space-y-1.5 ${
-                  activeLesson === 3
-                    ? 'bg-[#0B2538] border-cyan-500/50 shadow-lg shadow-cyan-950/40'
-                    : 'bg-[#0B2538]/60 border-white/5 hover:border-white/20'
-                }`}
-              >
-                <div className="flex items-center justify-between text-xs font-mono">
-                  <span className="text-cyan-400">MODULE 03</span>
-                  <span className="text-slate-500">8 min read</span>
-                </div>
-                <h4 className="text-sm font-semibold text-white">
-                  Anatomy of an Antarctic Station: Maitri & Bharati
-                </h4>
-                <p className="text-xs text-slate-400 line-clamp-2">
-                  Combined heat-and-power microgrids, snow-melting water treatment, zero-discharge waste repatriation under the Antarctic Treaty.
-                </p>
-              </div>
-
-              {/* Quiz Callout */}
-              <div className="p-4 rounded-lg bg-gradient-to-br from-cyan-950/50 to-[#0B2538] border border-cyan-500/30 space-y-2 mt-4">
-                <div className="flex items-center gap-2 text-cyan-300 text-xs font-mono font-semibold">
-                  <Sparkles className="w-4 h-4 text-amber-400" />
-                  Test Your Understanding
-                </div>
-                <p className="text-xs text-slate-300">
-                  Ready to test your knowledge? Take our 5-question scientific quiz with instant scoring and explanations.
+                <p className="text-xs text-[#61747E] leading-relaxed">
+                  Validate your learning across albedo, ice cores, and treaty protocols in our 5-question challenge.
                 </p>
                 <button
                   onClick={() => setActiveTab('quiz')}
-                  className="w-full py-1.5 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded text-xs transition"
+                  className="w-full py-2 bg-[#07151F] hover:bg-[#0D2735] text-white font-mono text-xs font-medium rounded-xl transition-colors cursor-pointer"
                 >
-                  Start Quiz
+                  Take Science Quiz →
                 </button>
               </div>
             </div>
 
-            {/* Lesson Detail Reader */}
-            <div className="lg:col-span-8 bg-[#0B2538] border border-white/10 rounded-xl p-6 sm:p-8 space-y-6 shadow-xl">
+            {/* Lesson Reader (8 cols) */}
+            <div className="lg:col-span-8 bg-white border border-[#E2E8F0] rounded-3xl p-6 sm:p-10 space-y-8 shadow-sm">
               {activeLesson === 1 && (
                 <div className="space-y-6">
-                  <div className="border-b border-white/10 pb-4">
-                    <span className="text-xs font-mono text-cyan-400 uppercase">Lesson 01 • Planetary Systems</span>
-                    <h2 className="text-2xl sm:text-3xl font-serif font-bold text-white mt-1">
+                  <div className="border-b border-[#E2E8F0] pb-4">
+                    <span className="text-xs font-mono uppercase tracking-widest text-[#74B8CC] font-semibold">
+                      Lesson 01 · Planetary Energetics
+                    </span>
+                    <h2 className="font-editorial text-3xl sm:text-4xl text-[#07151F] font-normal mt-1 leading-tight">
                       Why Polar Regions Govern Earth's Climate
                     </h2>
                   </div>
 
-                  {/* Interactive Diagram Box */}
-                  <div className="p-4 bg-[#071A2B] rounded-lg border border-cyan-500/20 space-y-3 font-mono text-xs text-slate-300">
-                    <div className="flex items-center justify-between text-cyan-400 font-semibold border-b border-white/10 pb-2">
-                      <span>THE ICE-ALBEDO POSITIVE FEEDBACK LOOP</span>
-                      <span className="text-amber-400">AMPLIFICATION CYCLE</span>
+                  {/* Educational Feedback Diagram */}
+                  <div className="p-5 bg-[#F7F8F5] rounded-2xl border border-[#E2E8F0] space-y-3">
+                    <div className="flex items-center justify-between text-xs font-mono border-b border-[#E2E8F0] pb-2 text-[#07151F]">
+                      <span className="font-bold">THE ICE-ALBEDO POSITIVE FEEDBACK LOOP</span>
+                      <span className="text-[#D7A75D] font-semibold">AMPLIFICATION CYCLE</span>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 text-center pt-2">
-                      <div className="p-2.5 rounded bg-white/5 border border-white/10">
-                        <span className="text-slate-400 block text-[10px]">STEP 1</span>
-                        Global Warming Temp Rise
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-center font-mono text-xs">
+                      <div className="p-3 rounded-xl bg-white border border-[#E2E8F0]">
+                        <span className="text-[10px] text-[#61747E] block">STEP 1</span>
+                        <span className="font-semibold text-[#07151F]">Rising Global Temperature</span>
                       </div>
-                      <div className="p-2.5 rounded bg-white/5 border border-white/10">
-                        <span className="text-slate-400 block text-[10px]">STEP 2</span>
-                        Sea Ice & Glaciers Melt
+                      <div className="p-3 rounded-xl bg-white border border-[#E2E8F0]">
+                        <span className="text-[10px] text-[#61747E] block">STEP 2</span>
+                        <span className="font-semibold text-[#07151F]">Sea Ice Surface Melts</span>
                       </div>
-                      <div className="p-2.5 rounded bg-white/5 border border-white/10">
-                        <span className="text-slate-400 block text-[10px]">STEP 3</span>
-                        Dark Seawater Absorbs Heat
+                      <div className="p-3 rounded-xl bg-white border border-[#E2E8F0]">
+                        <span className="text-[10px] text-[#61747E] block">STEP 3</span>
+                        <span className="font-semibold text-[#07151F]">Dark Ocean Absorbs Heat</span>
                       </div>
-                      <div className="p-2.5 rounded bg-cyan-950 border border-cyan-500/40 text-cyan-300">
-                        <span className="text-cyan-400 block text-[10px]">STEP 4</span>
-                        Accelerated Warming
+                      <div className="p-3 rounded-xl bg-[#07151F] text-white">
+                        <span className="text-[10px] text-[#B9DDE7] block">STEP 4</span>
+                        <span className="font-semibold">Accelerated Cryosphere Loss</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="prose prose-invert max-w-none text-slate-300 text-sm sm:text-base leading-relaxed space-y-4">
+                  <div className="text-base text-[#10212B] leading-relaxed space-y-5">
                     <p>
-                      The polar regions act as the primary refrigerators of the Earth system. Because the poles receive incoming solar radiation at oblique angles and are insulated by high-albedo ice sheets, they maintain massive cold thermal sinks that drive planetary winds and oceanic currents.
-                    </p>
-                    <h3 className="text-lg font-serif font-semibold text-white pt-2">
-                      1. Planetary Albedo & Heat Reflection
-                    </h3>
-                    <p>
-                      Fresh polar snow reflects upwards of 85% to 90% of incoming solar irradiance directly back into space. By contrast, open ocean water reflects less than 10%, absorbing the remaining 90% as thermal energy. When polar ice coverage decreases, the exposed darker ocean absorbs exponentially more heat, triggering a powerful positive feedback loop known as <em>polar amplification</em>.
+                      The polar regions function as Earth's primary heat radiators. Because incoming solar radiation strikes the poles at steep oblique angles while pristine ice sheets reflect most sunlight back into space, the poles maintain immense thermal gradients that drive planetary jet streams and ocean conveyor systems.
                     </p>
 
-                    <h3 className="text-lg font-serif font-semibold text-white pt-2">
-                      2. The Ocean Conveyor Belt (Thermohaline Circulation)
+                    <h3 className="font-editorial text-2xl text-[#07151F] font-normal pt-2">
+                      1. Surface Albedo & Planetary Radiation Balance
                     </h3>
                     <p>
-                      Around the coasts of Antarctica and the Weddell/Ross Seas, the freezing of sea ice excludes salt, creating extremely dense, cold, saline water. This water sinks to the ocean floor to form <strong>Antarctic Bottom Water (AABW)</strong>. AABW flows northward across ocean basins, oxygenating the abyss and driving the global thermohaline circulation that distributes nutrients and stabilizes world climates.
+                      Albedo describes how effectively a surface reflects solar radiation. Fresh snow has an albedo of 0.85 to 0.90—reflecting up to 90% of incoming solar energy. In contrast, dark open ocean water has an albedo of approximately 0.06 to 0.10, absorbing over 90% of solar radiation. When sea ice retreats, the newly exposed seawater absorbs vastly more heat, driving <em>polar amplification</em>.
                     </p>
 
-                    <h3 className="text-lg font-serif font-semibold text-white pt-2">
+                    <h3 className="font-editorial text-2xl text-[#07151F] font-normal pt-2">
+                      2. The Planetary Thermohaline Conveyor
+                    </h3>
+                    <p>
+                      Along the Antarctic coast, winter freezing excludes salt from sea ice crystals, creating hypersaline, frigid brine. This exceptionally dense water plunges thousands of meters downward to form <strong>Antarctic Bottom Water (AABW)</strong>. AABW flows northward along the seafloor across all ocean basins, oxygenating the deep ocean and powering the global thermohaline circulation.
+                    </p>
+
+                    <h3 className="font-editorial text-2xl text-[#07151F] font-normal pt-2">
                       3. Teleconnection with the Indian Monsoon
                     </h3>
                     <p>
-                      Research conducted by NCPOR scientists reveals significant teleconnections between Antarctic cryosphere variability and the Indian Summer Monsoon. Shifts in the Southern Ocean's Mascarene High pressure ridge directly modulate moisture transport toward the Indian subcontinent, demonstrating that changes in the Southern Ocean directly touch agriculture and livelihoods across India.
+                      NCPOR research demonstrates that thermodynamic shifts in the Southern Ocean directly modulate the intensity of the Mascarene High—the high-pressure ridge off Madagascar that funnels moisture toward the Indian subcontinent during the Southwest Monsoon. What transpires in Antarctica directly impacts rainfall and agriculture across India.
                     </p>
                   </div>
                 </div>
@@ -342,37 +309,39 @@ export default function LearnPage() {
 
               {activeLesson === 2 && (
                 <div className="space-y-6">
-                  <div className="border-b border-white/10 pb-4">
-                    <span className="text-xs font-mono text-cyan-400 uppercase">Lesson 02 • Glaciological Methods</span>
-                    <h2 className="text-2xl sm:text-3xl font-serif font-bold text-white mt-1">
+                  <div className="border-b border-[#E2E8F0] pb-4">
+                    <span className="text-xs font-mono uppercase tracking-widest text-[#74B8CC] font-semibold">
+                      Lesson 02 · Glaciological Methodologies
+                    </span>
+                    <h2 className="font-editorial text-3xl sm:text-4xl text-[#07151F] font-normal mt-1 leading-tight">
                       How Scientists Decode Glaciers & Ice Cores
                     </h2>
                   </div>
 
-                  <div className="prose prose-invert max-w-none text-slate-300 text-sm sm:text-base leading-relaxed space-y-4">
+                  <div className="text-base text-[#10212B] leading-relaxed space-y-5">
                     <p>
-                      Glaciers are continuous archives of Earth's atmospheric history. Indian scientists monitor both polar ice sheets in Antarctica and the "Third Pole" in the Himalayas (Chandra Basin, Spiti Valley) using complementary ground-based and remote sensing methodologies.
+                      Glaciers are natural time capsules. By analyzing ancient snow deposited over millennia without melting, scientists reconstruct historical atmospheric compositions, temperature swings, and volcanic eruptions.
                     </p>
 
-                    <h3 className="text-lg font-serif font-semibold text-white pt-2">
-                      1. Mass Balance Measurement Networks
+                    <h3 className="font-editorial text-2xl text-[#07151F] font-normal pt-2">
+                      1. Mass Balance Monitoring Networks
                     </h3>
                     <p>
-                      Glacier mass balance is the net change in glacier mass over a hydrologic year. At the Himalayan station <strong>Himansh (4080m a.s.l.)</strong>, researchers maintain extensive networks of stakes drilled into glaciers like Sutri Dhaka and Batal. By measuring stake exposure across accumulation (winter) and ablation (summer) zones, scientists quantify annual volumetric ice gain or loss.
+                      Glacier mass balance represents the net change in glacier mass over a hydrologic year. At India's high-altitude research station <strong>Himansh (4,080m)</strong> in the Himalayas, scientists maintain networks of ablation stakes drilled across glaciers such as Sutri Dhaka and Batal to measure snow accumulation versus summer melting.
                     </p>
 
-                    <h3 className="text-lg font-serif font-semibold text-white pt-2">
+                    <h3 className="font-editorial text-2xl text-[#07151F] font-normal pt-2">
                       2. Ice Core Paleoclimatology
                     </h3>
                     <p>
-                      In East Antarctica, snow compacts into firn and eventually solid ice without melting. Tiny air bubbles trapped during compaction preserve pristine samples of ancient atmospheric gas. By measuring stable water isotopes (δ18O and δD), scientists reconstruct historical temperatures, while methane and CO2 analysis reveals pre-industrial greenhouse gas baselines over past glacial-interglacial cycles.
+                      In East Antarctica, snow compacts into firn and solid ice under increasing pressure. Tiny atmospheric air bubbles become permanently sealed inside the ice matrix. By analyzing stable water isotopes (δ18O and δD), paleoclimatologists quantify ambient temperatures when that snow fell hundreds of thousands of years ago, establishing pre-industrial baselines for CO2 and methane.
                     </p>
 
-                    <h3 className="text-lg font-serif font-semibold text-white pt-2">
-                      3. Ground Penetrating Radar (GPR) & Satellite Gravimetry
+                    <h3 className="font-editorial text-2xl text-[#07151F] font-normal pt-2">
+                      3. Ground Penetrating Radar (GPR) & Satellites
                     </h3>
                     <p>
-                      To gauge ice thickness and internal stratigraphy without drilling, scientists drag GPR antennas across ice sheets. At planetary scales, satellite missions like GRACE and ICESat-2 measure subtle gravitational anomalies and laser surface altimetry to track total ice mass changes with sub-centimeter vertical accuracy.
+                      To gauge glacier thickness without drilling thousands of core meters, researchers drag GPR antennas across ice surfaces. Radar reflections at bedrock boundaries reveal ice thickness, while satellite missions like NASA/ISRO SAR and GRACE-FO measure regional gravitational fluctuations to calculate planetary ice loss.
                     </p>
                   </div>
                 </div>
@@ -380,37 +349,39 @@ export default function LearnPage() {
 
               {activeLesson === 3 && (
                 <div className="space-y-6">
-                  <div className="border-b border-white/10 pb-4">
-                    <span className="text-xs font-mono text-cyan-400 uppercase">Lesson 03 • Station Engineering</span>
-                    <h2 className="text-2xl sm:text-3xl font-serif font-bold text-white mt-1">
+                  <div className="border-b border-[#E2E8F0] pb-4">
+                    <span className="text-xs font-mono uppercase tracking-widest text-[#74B8CC] font-semibold">
+                      Lesson 03 · Polar Engineering
+                    </span>
+                    <h2 className="font-editorial text-3xl sm:text-4xl text-[#07151F] font-normal mt-1 leading-tight">
                       Anatomy of an Antarctic Station: Maitri & Bharati
                     </h2>
                   </div>
 
-                  <div className="prose prose-invert max-w-none text-slate-300 text-sm sm:text-base leading-relaxed space-y-4">
+                  <div className="text-base text-[#10212B] leading-relaxed space-y-5">
                     <p>
-                      Operating a permanent human outpost in Antarctica requires self-contained life support engineering capable of withstanding -40°C blizzard temperatures, 150 km/h katabatic winds, and complete physical isolation during eight months of polar night.
+                      Maintaining a permanent scientific outpost on the Antarctic continent requires specialized life-support engineering that can withstand -40°C blizzards, 150 km/h katabatic winds, and eight months of continuous winter darkness.
                     </p>
 
-                    <h3 className="text-lg font-serif font-semibold text-white pt-2">
+                    <h3 className="font-editorial text-2xl text-[#07151F] font-normal pt-2">
                       1. Bharati's Aerodynamic Container Architecture
                     </h3>
                     <p>
-                      Commissioned in 2012 at Larsemann Hills, India's <strong>Bharati</strong> station was constructed using 134 prefabricated shipping containers wrapped in a high-efficiency aerodynamic thermal envelope. Elevated on stilts, its airfoil profile prevents drifting snow accumulation beneath the structure and reduces wind load resistance during winter blizzards.
+                      Commissioned in 2012 in the Larsemann Hills, India's <strong>Bharati</strong> station was built from 134 prefabricated shipping containers encased inside an aerodynamic thermal envelope. Elevated on steel stilts, its airfoil profile prevents snowdrift accumulation beneath the structure and dramatically lowers structural wind resistance.
                     </p>
 
-                    <h3 className="text-lg font-serif font-semibold text-white pt-2">
+                    <h3 className="font-editorial text-2xl text-[#07151F] font-normal pt-2">
                       2. Combined Heat and Power (CHP) Microgrid
                     </h3>
                     <p>
-                      Bharati operates automated diesel generators with heat exchangers that harvest waste engine heat to melt glacial ice for drinking water and provide radiant hydronic heating throughout living quarters, achieving exceptionally high fuel thermal efficiency.
+                      Bharati operates clean diesel-electric generator sets coupled to exhaust and coolant heat exchangers. This harvested waste thermal energy melts glacial ice into potable water and drives hydronic underfloor heating throughout all living quarters, achieving remarkable thermal efficiency.
                     </p>
 
-                    <h3 className="text-lg font-serif font-semibold text-white pt-2">
-                      3. Zero-Discharge Environmental Protocol
+                    <h3 className="font-editorial text-2xl text-[#07151F] font-normal pt-2">
+                      3. Zero-Discharge Environmental Protocols
                     </h3>
                     <p>
-                      In adherence to the Antarctic Treaty's Madrid Protocol, Indian stations enforce strict environmental compliance. Gray water and sewage undergo biological treatment and filtration. All solid waste, spent oil, packaging, and non-biodegradable refuse are compacted, sealed in maritime containers, and repatriated back to the Indian mainland each summer.
+                      In strict compliance with the Antarctic Treaty's Madrid Protocol, gray water and black water undergo multi-stage biological digestion and filtration. All solid refuse, packaging, and non-biodegradable waste are containerized and repatriated back to the Indian mainland each summer.
                     </p>
                   </div>
                 </div>
@@ -421,36 +392,44 @@ export default function LearnPage() {
 
         {/* TAB 2: POLAR GLOSSARY */}
         {activeTab === 'glossary' && (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between border-b border-white/10 pb-4">
+          <div className="space-y-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-6">
               <div>
-                <h2 className="text-xl sm:text-2xl font-serif font-bold text-white">
-                  Polar & Cryospheric Lexicon
+                <h2 className="font-editorial text-3xl text-[#07151F] font-normal">
+                  Cryospheric & Polar Science Lexicon
                 </h2>
-                <p className="text-xs text-slate-400 mt-1">
-                  Authoritative scientific definitions of terms frequently used in NCPOR expedition reports and research datasets.
+                <p className="text-sm text-[#61747E] mt-1">
+                  Standard scientific terminology used across NCPOR expedition archives and NPDC research records.
                 </p>
               </div>
-              <span className="text-xs font-mono text-cyan-400 bg-[#0B2538] px-3 py-1.5 rounded border border-cyan-500/20">
-                10 Curated Terms
-              </span>
+
+              <div className="relative w-full sm:w-72">
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#61747E]" />
+                <input
+                  type="text"
+                  placeholder="Search glossary terms..."
+                  value={glossarySearch}
+                  onChange={(e) => setGlossarySearch(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2 bg-white border border-[#E2E8F0] rounded-xl text-xs text-[#07151F] placeholder-[#61747E] focus:outline-none focus:border-[#74B8CC]"
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {GLOSSARY_TERMS.map((item, idx) => (
+              {filteredGlossary.map((item, idx) => (
                 <div 
                   key={idx}
-                  className="bg-[#0B2538] border border-white/10 hover:border-cyan-500/30 rounded-lg p-5 space-y-2 transition shadow-lg group"
+                  className="bg-white border border-[#E2E8F0] hover:border-[#74B8CC] rounded-2xl p-6 space-y-2 transition-all shadow-sm group"
                 >
                   <div className="flex items-center justify-between">
-                    <h3 className="text-base font-serif font-bold text-cyan-300 group-hover:text-white transition">
+                    <h3 className="font-editorial text-xl text-[#07151F] group-hover:text-[#74B8CC] transition-colors font-normal">
                       {item.term}
                     </h3>
-                    <span className="text-[10px] font-mono text-slate-500">
+                    <span className="text-[10px] font-mono text-[#61747E]">
                       LEX #{String(idx + 1).padStart(2, '0')}
                     </span>
                   </div>
-                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  <p className="text-sm text-[#61747E] leading-relaxed">
                     {item.definition}
                   </p>
                 </div>
@@ -459,106 +438,101 @@ export default function LearnPage() {
           </div>
         )}
 
-        {/* TAB 3: 5-QUESTION QUIZ */}
+        {/* TAB 3: QUIZ CHALLENGE */}
         {activeTab === 'quiz' && (
           <div className="max-w-3xl mx-auto space-y-8">
-            <div className="bg-[#0B2538] border border-cyan-500/30 rounded-xl p-6 sm:p-8 space-y-6 shadow-2xl">
-              {/* Quiz Header */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
+            <div className="bg-white border border-[#E2E8F0] rounded-3xl p-6 sm:p-10 space-y-8 shadow-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-6">
                 <div>
-                  <div className="flex items-center gap-2 text-xs font-mono text-cyan-400 mb-1">
-                    <GraduationCap className="w-4 h-4" />
-                    <span>SMART EDUCATION ASSESSMENT</span>
-                  </div>
-                  <h2 className="text-2xl font-serif font-bold text-white">
+                  <span className="text-xs font-mono uppercase tracking-widest text-[#74B8CC] font-semibold">
+                    Interactive Assessment
+                  </span>
+                  <h2 className="font-editorial text-3xl text-[#07151F] font-normal mt-1">
                     Polar Science Knowledge Challenge
                   </h2>
                 </div>
-                
+
                 {quizSubmitted ? (
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-4">
                     <div className="text-right">
-                      <span className="text-xs font-mono text-slate-400 block">FINAL SCORE</span>
-                      <span className="text-xl font-bold font-mono text-cyan-300">
-                        {calculateScore()} / {QUIZ_QUESTIONS.length} ({Math.round((calculateScore() / QUIZ_QUESTIONS.length) * 100)}%)
+                      <span className="text-xs font-mono text-[#61747E] block">FINAL SCORE</span>
+                      <span className="text-2xl font-bold font-mono text-[#07151F]">
+                        {calculateScore()} / {QUIZ_QUESTIONS.length}
                       </span>
                     </div>
                     <button
                       onClick={resetQuiz}
-                      className="p-2 bg-white/5 hover:bg-white/10 rounded text-slate-300 hover:text-white transition"
+                      className="p-2.5 rounded-xl bg-[#F7F8F5] border border-[#E2E8F0] text-[#07151F] hover:bg-white transition-colors cursor-pointer"
                       title="Reset Quiz"
                     >
                       <RotateCcw className="w-4 h-4" />
                     </button>
                   </div>
                 ) : (
-                  <div className="text-xs font-mono text-slate-400">
-                    Answer all 5 questions to receive feedback
-                  </div>
+                  <span className="text-xs font-mono text-[#61747E]">
+                    Answer all 5 questions
+                  </span>
                 )}
               </div>
 
-              {/* Questions List */}
+              {/* Questions */}
               <div className="space-y-8">
-                {QUIZ_QUESTIONS.map((q, qIndex) => {
+                {QUIZ_QUESTIONS.map((q) => {
                   const userAnswer = selectedAnswers[q.id];
                   const isAnswered = userAnswer !== undefined;
-                  const isCorrect = isAnswered && userAnswer === q.correctIndex;
 
                   return (
-                    <div key={q.id} className="space-y-3">
-                      <div className="flex items-start gap-2.5">
-                        <span className="w-6 h-6 rounded-full bg-cyan-950 border border-cyan-500/40 text-cyan-300 text-xs font-mono flex items-center justify-center shrink-0 mt-0.5">
+                    <div key={q.id} className="space-y-4">
+                      <div className="flex items-start gap-3">
+                        <span className="w-7 h-7 rounded-xl bg-[#07151F] text-white text-xs font-mono flex items-center justify-center shrink-0 mt-0.5 font-bold">
                           {q.id}
                         </span>
-                        <h3 className="text-sm sm:text-base font-semibold text-white">
+                        <h3 className="text-base font-semibold text-[#07151F] leading-snug">
                           {q.question}
                         </h3>
                       </div>
 
-                      {/* Options */}
-                      <div className="space-y-2 pl-8">
-                        {q.options.map((option, optIdx) => {
+                      <div className="space-y-2.5 pl-10">
+                        {q.options.map((opt, optIdx) => {
                           const isSelected = userAnswer === optIdx;
-                          let optionClass = "bg-[#071A2B] border-white/10 text-slate-300 hover:border-cyan-500/30";
+                          let optionClass = "bg-[#F7F8F5] border-[#E2E8F0] text-[#10212B] hover:border-[#CBD5E1]";
 
                           if (quizSubmitted) {
                             if (optIdx === q.correctIndex) {
-                              optionClass = "bg-emerald-950/60 border-emerald-500/60 text-emerald-200 font-medium";
+                              optionClass = "bg-emerald-50 border-emerald-500 text-emerald-900 font-medium";
                             } else if (isSelected && optIdx !== q.correctIndex) {
-                              optionClass = "bg-red-950/60 border-red-500/60 text-red-200";
+                              optionClass = "bg-red-50 border-red-500 text-red-900";
                             } else {
-                              optionClass = "bg-[#071A2B]/40 border-white/5 text-slate-500 opacity-60";
+                              optionClass = "bg-[#F7F8F5] border-[#E2E8F0] text-[#61747E] opacity-50";
                             }
                           } else if (isSelected) {
-                            optionClass = "bg-cyan-950/70 border-cyan-400 text-white font-medium shadow-md shadow-cyan-950";
+                            optionClass = "bg-[#07151F] border-[#07151F] text-white font-medium shadow-md";
                           }
 
                           return (
                             <div
                               key={optIdx}
                               onClick={() => handleSelectOption(q.id, optIdx)}
-                              className={`p-3 rounded-lg border text-xs sm:text-sm transition flex items-center justify-between cursor-pointer ${optionClass}`}
+                              className={`p-3.5 rounded-xl border text-sm transition-all flex items-center justify-between cursor-pointer ${optionClass}`}
                             >
-                              <span>{option}</span>
+                              <span>{opt}</span>
                               {quizSubmitted && optIdx === q.correctIndex && (
-                                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 ml-2" />
+                                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 ml-2" />
                               )}
                               {quizSubmitted && isSelected && optIdx !== q.correctIndex && (
-                                <XCircle className="w-4 h-4 text-red-400 shrink-0 ml-2" />
+                                <XCircle className="w-4 h-4 text-red-600 shrink-0 ml-2" />
                               )}
                             </div>
                           );
                         })}
                       </div>
 
-                      {/* Explanation if submitted */}
                       {quizSubmitted && (
-                        <div className="ml-8 p-3 rounded bg-[#071A2B] border border-white/10 text-xs space-y-1">
-                          <span className="font-mono text-cyan-400 font-semibold uppercase text-[11px] block">
-                            Scientific Explanation:
+                        <div className="ml-10 p-4 rounded-xl bg-[#F7F8F5] border border-[#E2E8F0] text-xs space-y-1.5">
+                          <span className="font-mono text-[#07151F] font-bold uppercase text-[10px] block">
+                            Scientific Rationale
                           </span>
-                          <p className="text-slate-300">{q.explanation}</p>
+                          <p className="text-[#61747E] leading-relaxed">{q.explanation}</p>
                         </div>
                       )}
                     </div>
@@ -566,35 +540,34 @@ export default function LearnPage() {
                 })}
               </div>
 
-              {/* Quiz Submit Action */}
-              <div className="pt-4 border-t border-white/10 flex items-center justify-between">
-                <span className="text-xs font-mono text-slate-400">
-                  {Object.keys(selectedAnswers).length} of {QUIZ_QUESTIONS.length} questions answered
+              {/* Action Bar */}
+              <div className="pt-6 border-t border-[#E2E8F0] flex items-center justify-between">
+                <span className="text-xs font-mono text-[#61747E]">
+                  {Object.keys(selectedAnswers).length} of {QUIZ_QUESTIONS.length} selected
                 </span>
 
                 {!quizSubmitted ? (
                   <button
                     onClick={() => setQuizSubmitted(true)}
                     disabled={Object.keys(selectedAnswers).length < QUIZ_QUESTIONS.length}
-                    className="px-6 py-2.5 bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed text-black font-semibold rounded text-xs font-mono transition flex items-center gap-1.5 shadow-lg shadow-cyan-950"
+                    className="px-6 py-2.5 bg-[#07151F] hover:bg-[#0D2735] disabled:opacity-40 disabled:cursor-not-allowed text-white font-mono text-xs font-bold rounded-xl transition-all flex items-center gap-2 cursor-pointer shadow-md"
                   >
-                    <span>Submit Answers</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <span>Evaluate Responses</span>
+                    <ArrowRight className="w-4 h-4" />
                   </button>
                 ) : (
                   <button
                     onClick={resetQuiz}
-                    className="px-6 py-2.5 bg-white/10 hover:bg-white/20 text-white font-semibold rounded text-xs font-mono transition flex items-center gap-1.5"
+                    className="px-6 py-2.5 bg-white border border-[#E2E8F0] hover:bg-[#F7F8F5] text-[#07151F] font-mono text-xs font-bold rounded-xl transition-all flex items-center gap-2 cursor-pointer"
                   >
-                    <RotateCcw className="w-3.5 h-3.5" />
-                    <span>Try Quiz Again</span>
+                    <RotateCcw className="w-4 h-4" />
+                    <span>Retake Assessment</span>
                   </button>
                 )}
               </div>
             </div>
           </div>
         )}
-
       </div>
     </div>
   );
