@@ -9,9 +9,9 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, 
   Tooltip, ResponsiveContainer, AreaChart, Area
 } from 'recharts';
-import L from 'leaflet';
 import { fetchLiveObservatory, fetchStationHistory, getStationTelemetryExportUrl } from '../api';
 import { StationWeather, StationHistoryResponse, TelemetryHourlyReading } from '../types';
+import { DetailedPolarMap } from '../components/DetailedPolarMap';
 
 export const ObservatoryPage: React.FC = () => {
   const [stationsWeather, setStationsWeather] = useState<StationWeather[]>([]);
@@ -21,10 +21,6 @@ export const ObservatoryPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [historyLoading, setHistoryLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-
-  const mapContainerRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<L.Map | null>(null);
-  const markersRef = useRef<{ [key: string]: L.Marker }>({});
 
   const loadLiveData = async () => {
     try {
@@ -67,78 +63,6 @@ export const ObservatoryPage: React.FC = () => {
   }, [selectedStationId]);
 
   const activeWeather = stationsWeather.find((s) => s.station_id === selectedStationId) || stationsWeather[0];
-
-  // Leaflet Map Initialization
-  useEffect(() => {
-    if (!mapContainerRef.current) return;
-    if (mapInstanceRef.current) return;
-
-    // Center map around Southern / Indian Ocean perspective
-    const map = L.map(mapContainerRef.current, {
-      center: [-40, 50],
-      zoom: 2,
-      minZoom: 2,
-      maxZoom: 10,
-      zoomControl: true,
-      attributionControl: false
-    });
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    mapInstanceRef.current = map;
-
-    return () => {
-      map.remove();
-      mapInstanceRef.current = null;
-    };
-  }, []);
-
-  // Update Markers & Pan on Selection
-  useEffect(() => {
-    const map = mapInstanceRef.current;
-    if (!map || stationsWeather.length === 0) return;
-
-    Object.values(markersRef.current).forEach((m) => m.remove());
-    markersRef.current = {};
-
-    stationsWeather.forEach((st) => {
-      const isSelected = st.station_id === selectedStationId;
-      
-      const customIcon = L.divIcon({
-        className: 'custom-polar-pin',
-        html: `
-          <div style="
-            width: ${isSelected ? '28px' : '18px'};
-            height: ${isSelected ? '28px' : '18px'};
-            background-color: ${isSelected ? '#111111' : '#FFFFFF'};
-            border: 2px solid ${isSelected ? '#2563EB' : '#111111'};
-            border-radius: 50%;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.25s ease;
-          ">
-            <div style="width: 7px; height: 7px; background-color: ${isSelected ? '#3B82F6' : '#111111'}; border-radius: 50%;"></div>
-          </div>
-        `,
-        iconSize: [28, 28],
-        iconAnchor: [14, 14]
-      });
-
-      const marker = L.marker([st.latitude, st.longitude], { icon: customIcon }).addTo(map);
-      marker.on('click', () => setSelectedStationId(st.station_id));
-      markersRef.current[st.station_id] = marker;
-    });
-
-    if (activeWeather) {
-      map.panTo([activeWeather.latitude, activeWeather.longitude], { animate: true, duration: 1 });
-    }
-  }, [stationsWeather, selectedStationId]);
 
   // Chart data source from history readings
   const chartReadings = historyData?.readings || [];
@@ -187,50 +111,19 @@ export const ObservatoryPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 2. Full-Width Map Explorer */}
-      <div className="relative w-full h-[450px] sm:h-[500px] bg-[#F4F2EE] border-b border-[#E8E6E0]">
-        <div ref={mapContainerRef} className="w-full h-full z-0" />
-
-        {/* Floating Station Selector Bar */}
-        <div className="absolute top-6 left-4 right-4 sm:left-8 sm:right-auto z-10 flex flex-wrap gap-2 max-w-3xl">
-          {stationsWeather.map((st) => {
-            const isSelected = st.station_id === (activeWeather?.station_id || 'maitri');
-            return (
-              <button
-                key={st.station_id}
-                onClick={() => setSelectedStationId(st.station_id)}
-                className={`px-4 py-2.5 rounded-full text-xs font-mono backdrop-blur-md transition-all flex items-center gap-2 border shadow-sm ${
-                  isSelected
-                    ? 'bg-[#111111] text-white font-medium border-[#111111] ring-2 ring-[#2563EB]/40'
-                    : 'bg-white/95 text-[#555558] hover:text-[#111111] border-[#E8E6E0] hover:bg-white'
-                }`}
-              >
-                <span className={`w-2 h-2 rounded-full ${isSelected ? 'bg-[#3B82F6] animate-pulse' : 'bg-[#16A34A]'}`} />
-                <span className="font-semibold">{st.station_name}</span>
-                <span className="text-[10px] opacity-60">({st.region})</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Station Coordinates Indicator (Bottom Right) */}
-        <div className="absolute bottom-4 right-4 z-10 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-[#E8E6E0] text-xs font-mono text-[#111111] shadow-md flex items-center gap-3">
-          <div className="flex items-center gap-1.5 text-[#555558]">
-            <MapPin className="w-3.5 h-3.5 text-[#2563EB]" />
-            <span>GEO-POS:</span>
-          </div>
-          <strong>{activeWeather?.latitude.toFixed(4)}°N</strong>,{' '}
-          <strong>{activeWeather?.longitude.toFixed(4)}°E</strong>
-          {historyData && (
-            <span className="text-[#8E8E91] pl-2 border-l border-[#E8E6E0]">
-              ALT {historyData.elevation_m}m ASL
-            </span>
-          )}
-        </div>
-      </div>
+      {/* 2. Scientific Polar Command Map Explorer */}
+      <DetailedPolarMap
+        stationsWeather={stationsWeather}
+        selectedStationId={selectedStationId}
+        onSelectStation={setSelectedStationId}
+        height="540px"
+        onViewTelemetry={() => {
+          document.getElementById('instrumentation-console')?.scrollIntoView({ behavior: 'smooth' });
+        }}
+      />
 
       {/* 3. Instrumentation Telemetry Console */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 space-y-12">
+      <div id="instrumentation-console" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 space-y-12">
         
         {/* Enormous Live Readings */}
         <div className="space-y-4">

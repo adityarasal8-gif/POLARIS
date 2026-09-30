@@ -1,23 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'wouter';
 import { 
   Building2, MapPin, Compass, Thermometer, Radio, 
   Calendar, Layers, Globe, ExternalLink, ShieldCheck, 
   Activity, ArrowUpRight, CheckCircle2, ArrowRight
 } from 'lucide-react';
-import L from 'leaflet';
 import { fetchStations, fetchLiveObservatory } from '../api';
 import { Station, StationWeather } from '../types';
+import { DetailedPolarMap } from '../components/DetailedPolarMap';
 
 export default function StationsPage() {
   const [stations, setStations] = useState<Station[]>([]);
+  const [weatherList, setWeatherList] = useState<StationWeather[]>([]);
   const [weatherMap, setWeatherMap] = useState<Record<string, StationWeather>>({});
   const [selectedStationId, setSelectedStationId] = useState<string>('maitri');
   const [loading, setLoading] = useState(true);
-
-  const mapContainerRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<L.Map | null>(null);
-  const markersRef = useRef<{ [key: string]: L.Marker }>({});
 
   useEffect(() => {
     async function loadData() {
@@ -28,6 +25,7 @@ export default function StationsPage() {
           fetchLiveObservatory().catch(() => [])
         ]);
         setStations(stationsData);
+        setWeatherList(weatherData);
         
         const wMap: Record<string, StationWeather> = {};
         weatherData.forEach((w) => { wMap[w.station_id] = w; });
@@ -48,87 +46,10 @@ export default function StationsPage() {
   const activeStation = stations.find((s) => s.id === selectedStationId) || stations[0];
   const activeWeather = activeStation ? weatherMap[activeStation.id] : null;
 
-  // Initialize Map
-  useEffect(() => {
-    if (!mapContainerRef.current) return;
-    if (mapInstanceRef.current) return;
-
-    const map = L.map(mapContainerRef.current, {
-      center: [-30, 45],
-      zoom: 2,
-      minZoom: 2,
-      maxZoom: 10,
-      zoomControl: true,
-      attributionControl: false
-    });
-
-    // OpenStreetMap clean cartographic tiles
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    mapInstanceRef.current = map;
-
-    return () => {
-      map.remove();
-      mapInstanceRef.current = null;
-    };
-  }, []);
-
-  // Update Markers
-  useEffect(() => {
-    const map = mapInstanceRef.current;
-    if (!map || stations.length === 0) return;
-
-    // Clear previous markers
-    Object.values(markersRef.current).forEach((m) => m.remove());
-    markersRef.current = {};
-
-    stations.forEach((st) => {
-      const isSelected = st.id === selectedStationId;
-      const customIcon = L.divIcon({
-        className: 'custom-station-pin',
-        html: `
-          <div style="
-            width: ${isSelected ? '24px' : '18px'};
-            height: ${isSelected ? '24px' : '18px'};
-            border-radius: 9999px;
-            background: ${isSelected ? '#111111' : '#FFFFFF'};
-            border: 2px solid #111111;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-          ">
-            <div style="
-              width: 6px;
-              height: 6px;
-              border-radius: 9999px;
-              background: ${isSelected ? '#FFFFFF' : '#111111'};
-            "></div>
-          </div>
-        `,
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
-      });
-
-      const marker = L.marker([st.latitude, st.longitude], { icon: customIcon }).addTo(map);
-      marker.on('click', () => setSelectedStationId(st.id));
-      markersRef.current[st.id] = marker;
-    });
-
-    if (activeStation) {
-      map.panTo([activeStation.latitude, activeStation.longitude], { animate: true, duration: 1 });
-    }
-  }, [stations, selectedStationId]);
-
   return (
     <div className="min-h-screen bg-[#FAFAF8] text-[#111111] pb-24 font-sans selection:bg-[#111111] selection:text-white">
       
-      {/* Header */}
+      {/* 1. Header */}
       <div className="border-b border-[#E8E6E0] bg-[#FAFAF8] px-4 sm:px-8 py-12">
         <div className="max-w-7xl mx-auto space-y-4">
           <div className="inline-flex items-center space-x-2 text-xs font-mono text-[#555558] bg-[#F4F2EE] px-3 py-1 rounded-full border border-[#E8E6E0] font-medium tracking-wide uppercase">
@@ -144,7 +65,22 @@ export default function StationsPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 space-y-8">
+      {/* 2. Interactive High-Precision Polar Map Deck */}
+      <div className="border-b border-[#E8E6E0]">
+        <DetailedPolarMap
+          stations={stations}
+          stationsWeather={weatherList}
+          selectedStationId={selectedStationId}
+          onSelectStation={setSelectedStationId}
+          height="540px"
+          onViewTelemetry={() => {
+            document.getElementById('station-dossier-section')?.scrollIntoView({ behavior: 'smooth' });
+          }}
+        />
+      </div>
+
+      {/* 3. Detailed Station Architectural & Scientific Dossier */}
+      <div id="station-dossier-section" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 space-y-8">
         
         {/* Geographic Selector Tabs */}
         <div className="flex flex-wrap gap-2">
@@ -165,19 +101,49 @@ export default function StationsPage() {
           ))}
         </div>
 
-        {/* Split Geographic Interface: Left Interactive Map, Right Station Dossier */}
+        {/* Station Dossier Grid: Left Photo Banner, Right Detailed Fact Sheet */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* Map Column */}
-          <div className="lg:col-span-5 relative rounded-2xl overflow-hidden border border-[#E8E6E0] h-[480px] lg:h-[620px] bg-[#F4F2EE] shadow-sm sticky top-24">
-            <div ref={mapContainerRef} className="w-full h-full z-0" />
-            <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md p-3 rounded-xl border border-[#E8E6E0] text-xs font-mono text-[#111111] flex items-center justify-between shadow-sm">
-              <span className="font-semibold">{activeStation?.name}</span>
-              <span className="text-[#8E8E91]">{activeStation?.latitude.toFixed(2)}°, {activeStation?.longitude.toFixed(2)}°</span>
-            </div>
-          </div>
+          {/* Station Photo Column */}
+          {activeStation && (
+            <div className="lg:col-span-5 space-y-4">
+              <div className="relative aspect-[16/10] rounded-2xl overflow-hidden border border-[#E8E6E0] bg-[#F4F2EE] shadow-sm">
+                <img
+                  src={activeStation.image_url}
+                  alt={activeStation.name}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                
+                <div className="absolute top-4 left-4 flex items-center gap-2">
+                  <span className="px-3 py-1 rounded-full bg-white/90 backdrop-blur-md text-xs font-mono text-[#111111] border border-white/40 font-semibold shadow-sm">
+                    {activeStation.region}
+                  </span>
+                  <span className="px-3 py-1 rounded-full bg-[#111111] text-white text-xs font-mono font-medium flex items-center gap-1.5 shadow-sm">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]" />
+                    Active Year-Round
+                  </span>
+                </div>
 
-          {/* Station Dossier Column */}
+                <div className="absolute bottom-4 left-6 right-6 flex items-center justify-between text-xs font-mono text-white/90">
+                  <span>Photo Credit: {activeStation.image_credit}</span>
+                  <span className="font-medium bg-black/40 px-2 py-0.5 rounded backdrop-blur-sm">Est. {activeStation.commissioned_year}</span>
+                </div>
+              </div>
+
+              {/* Station Geographic Quick Bar */}
+              <div className="bg-white p-4 rounded-2xl border border-[#E8E6E0] flex items-center justify-between text-xs font-mono text-[#111111] shadow-sm">
+                <div className="flex items-center gap-2 text-[#555558]">
+                  <MapPin className="w-3.5 h-3.5 text-[#2563EB]" />
+                  <span>COORDINATES:</span>
+                </div>
+                <span className="font-semibold">{activeStation.latitude.toFixed(4)}°N, {activeStation.longitude.toFixed(4)}°E</span>
+                <span className="text-[#8E8E91] pl-2 border-l border-[#E8E6E0]">ALT {activeStation.elevation_m}m</span>
+              </div>
+            </div>
+          )}
+
+          {/* Station Technical Dossier Column */}
           {activeStation && (
             <div className="lg:col-span-7 space-y-6">
               

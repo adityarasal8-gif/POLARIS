@@ -165,3 +165,24 @@ Every agent must read it before making changes and update it after meaningful wo
     - **Automated Verification Suite (`backend/test_api.py`)**:
       * Implemented 20-test automated suite covering health, stats, stations, live weather, 24h diurnal history, CSV exports, expeditions, datasets, publications, media, activities, researchers, search, content draft CRUD lifecycle, and knowledge graph.
       * Verified: **20 passed, 0 failed out of 20 tests**.
+14. **High-Precision Polar Command Map Deck (`DetailedPolarMap.tsx`)**:
+    - **Architecture & Component (`frontend/src/components/DetailedPolarMap.tsx`)**:
+      * Engineered an advanced, scientific, high-UI/UX polar map engine replacing generic, washed-out OpenStreetMap tiles with 4 keyless, watermark-free high-precision tile services:
+        1. **Esri World Imagery**: True-color satellite imagery displaying authentic Antarctic nunataks, blue-ice fields, glacial tongues, and Svalbard fjords.
+        2. **Topographic & Glaciers (Esri World Topo)**: Elevation contours, glacial terrain, and mountain pass geography.
+        3. **Ocean & Bathymetry (Esri Ocean Base)**: Continental shelves, oceanic trenches, and Southern Ocean sea floor bathymetric relief.
+        4. **Polar Command Dark (Esri Dark Gray Base)**: Low-light command-center aesthetic for evening/operational monitoring.
+      * **Regional Flight Presets**: Smooth fly-to animations to Pan-Polar Global, Antarctica (Maitri & Bharati), Arctic (Himadri Svalbard), and Western Himalaya (Himansh).
+      * **Authentic Polar Science Overlays**:
+        1. *Indian Expedition Supply Corridors*: Geodetic nautical and alpine routes (Cape Town ➔ Maitri across Queen Maud Land, Cape Town ➔ Bharati across Prydz Bay, Longyearbyen ➔ Ny-Ålesund Kings Bay corridor, and Manali ➔ Chandra Basin alpine staging).
+        2. *Polar Circles*: Antarctic Circle (66°33′ S) and Arctic Circle (66°33′ N) reference coordinate rings.
+        3. *Surrounding Science Landmarks*: Priyadarshini Lake, Schirmacher Oasis, Grovnes Peninsula, Zeppelin Observatory, Midtre Lovénbreen Glacier, Sutri Dhaka Glacier terminus.
+      * **Radar Ping Beacons**: Station markers with pulsing radar wave animations, real-time temperature badges, and interactive tooltips.
+      * **Floating Glassmorphic Station Dossier Inspector**: Live telemetry snapshot (Temp, Wind, Pressure), satellite carrier uplink specs, contingent size, station commander, and 9x satellite zoom button.
+      * **Telemetry Coordinates HUD & Fullscreen**: Live WGS84 EPSG:4326 cursor coordinates tracker, map reset, zoom controls, and fullscreen toggle.
+    - **Observatory & Stations Page Integration (`ObservatoryPage.tsx`, `StationsPage.tsx`)**:
+      * Replaced the inline basic Leaflet map in `ObservatoryPage.tsx` with `<DetailedPolarMap />` linked directly to the live 24-hour diurnal telemetry console.
+      * Upgraded `StationsPage.tsx` with the panoramic command map deck at the top, synchronizing station selections with the architectural dossier below.
+      * Verified in Chrome DevTools: full basemap switching, camera flight to Arctic/Antarctica/Himalayas, layer toggles, and zero console errors.
+      * Preserved all original wave canvas colors in `AgentShieldCanvas.tsx` (`#2563EB` Polar Blue system).
+
