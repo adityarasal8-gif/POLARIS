@@ -97,6 +97,10 @@ Every agent must read it before making changes and update it after meaningful wo
 6. **Hero Icon Opacity Refinement**:
    - Lowered the opacity of floating perimeter scientific icons (`Compass`, `Globe`, `Activity`, `Radio`, `Search`, `Shield`) from 70% to 25% (`text-[color]/25`).
    - Removed harsh drop shadows and tuned stroke widths to `1.5` for a subtle, elegant ambient watermark effect.
-7. **Verification**:
+7. **Wave Animation Dynamics & Depth**:
+   - Sped up wave progression frame step from `0.008` to `0.014` for more energetic, fluid organic movement.
+   - Slightly increased wave amplitude and harmonic frequency across all ribbon layers.
+   - Added a 5th subtle polar teal ribbon layer (`rgba(52, 211, 153, ...)`) reflecting marine and cryosphere telemetry.
+8. **Verification**:
    - `npm run build` ran cleanly with 0 TypeScript/Vite errors.
    - Runtime verified in Chrome DevTools on `http://127.0.0.1:5173/` at 1440x900 viewport with visual screenshot confirmation.
