@@ -206,6 +206,85 @@ def init_db():
         conn.commit()
 
 
+def init_search_fts(conn: sqlite3.Connection):
+    """
+    Initializes the SQLite FTS5 virtual table with unicode61 tokenizer
+    for sub-millisecond full-text indexing and BM25 relevance scoring.
+    """
+    try:
+        cursor = conn.cursor()
+        cursor.execute("""
+        CREATE VIRTUAL TABLE IF NOT EXISTS search_fts USING fts5(
+            entity_id UNINDEXED,
+            entity_type UNINDEXED,
+            title,
+            subtitle,
+            region,
+            content_body,
+            tokenize = 'porter unicode61'
+        );
+        """)
+        conn.commit()
+    except Exception as e:
+        # FTS5 might not be enabled in some environments
+        print(f"FTS5 initialization notice: {e}")
+
+
+def sync_search_fts(conn: sqlite3.Connection):
+    """
+    Synchronizes the search_fts index with all active records across the 6 core entities.
+    """
+    try:
+        init_search_fts(conn)
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM search_fts;")
+        
+        # 1. Expeditions
+        cursor.execute("""
+        INSERT INTO search_fts (entity_id, entity_type, title, subtitle, region, content_body)
+        SELECT id, 'expedition', code || ' — ' || name, 'Field Campaign | ' || region || ' | ' || dates, region, summary || ' ' || COALESCE(mission_overview, '')
+        FROM expeditions;
+        """)
+        
+        # 2. Datasets
+        cursor.execute("""
+        INSERT INTO search_fts (entity_id, entity_type, title, subtitle, region, content_body)
+        SELECT id, 'dataset', title, 'Dataset Ref: ' || identifier || ' | ' || science_category, region, description || ' ' || science_category || ' ' || identifier
+        FROM datasets;
+        """)
+        
+        # 3. Publications
+        cursor.execute("""
+        INSERT INTO search_fts (entity_id, entity_type, title, subtitle, region, content_body)
+        SELECT id, 'publication', title, journal || ' (' || year || ') | DOI: ' || doi, region, abstract || ' ' || authors || ' ' || journal
+        FROM publications;
+        """)
+        
+        # 4. Stations
+        cursor.execute("""
+        INSERT INTO search_fts (entity_id, entity_type, title, subtitle, region, content_body)
+        SELECT id, 'station', name, 'Research Facility | ' || region || ' | ' || location_description, region, purpose || ' ' || location_description
+        FROM stations;
+        """)
+        
+        # 5. Media
+        cursor.execute("""
+        INSERT INTO search_fts (entity_id, entity_type, title, subtitle, region, content_body)
+        SELECT id, 'media', title, UPPER(type) || ' | ' || region || ' | Credit: ' || credit, region, caption || ' ' || credit || ' ' || COALESCE(tags, '')
+        FROM media_assets;
+        """)
+        
+        # 6. Activities
+        cursor.execute("""
+        INSERT INTO search_fts (entity_id, entity_type, title, subtitle, region, content_body)
+        SELECT id, 'activity', title, type || ' | ' || date, COALESCE(region, 'General'), summary || ' ' || COALESCE(content, '')
+        FROM activities;
+        """)
+        conn.commit()
+    except Exception as e:
+        print(f"FTS5 sync notice: {e}")
+
+
 def ensure_seeded():
     """
     Self-healing database initialization: guarantees that tables exist and
@@ -218,6 +297,7 @@ def ensure_seeded():
         if count == 0:
             from seed_data import seed_all
             seed_all()
+        sync_search_fts(conn)
 
 
 def row_to_dict(row: sqlite3.Row, json_fields: Optional[List[str]] = None) -> Dict[str, Any]:

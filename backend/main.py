@@ -616,6 +616,8 @@ def unified_search(
                 score += 3
         return score
 
+    target_region = region if (region and region.lower() != "all") else None
+
     with get_db() as conn:
         # 1. Expeditions
         if not type or type in ["all", "expeditions"]:
@@ -623,6 +625,9 @@ def unified_search(
             exp_params = []
             for t in tokens:
                 exp_params.extend([f"%{t}%", f"%{t}%", f"%{t}%", f"%{t}%"])
+            if target_region:
+                exp_conds = f"({exp_conds}) AND region = ?"
+                exp_params.append(target_region)
             exp_rows = conn.execute(
                 f"SELECT id, code, name, region, dates, summary FROM expeditions WHERE {exp_conds}",
                 exp_params
@@ -647,6 +652,9 @@ def unified_search(
             ds_params = []
             for t in tokens:
                 ds_params.extend([f"%{t}%", f"%{t}%", f"%{t}%", f"%{t}%"])
+            if target_region:
+                ds_conds = f"({ds_conds}) AND region = ?"
+                ds_params.append(target_region)
             ds_rows = conn.execute(
                 f"SELECT id, identifier, title, science_category, region, description, access_status FROM datasets WHERE {ds_conds}",
                 ds_params
@@ -671,6 +679,9 @@ def unified_search(
             pub_params = []
             for t in tokens:
                 pub_params.extend([f"%{t}%", f"%{t}%", f"%{t}%", f"%{t}%"])
+            if target_region:
+                pub_conds = f"({pub_conds}) AND region = ?"
+                pub_params.append(target_region)
             pub_rows = conn.execute(
                 f"SELECT id, title, journal, year, doi, abstract, region FROM publications WHERE {pub_conds}",
                 pub_params
@@ -695,6 +706,9 @@ def unified_search(
             st_params = []
             for t in tokens:
                 st_params.extend([f"%{t}%", f"%{t}%", f"%{t}%"])
+            if target_region:
+                st_conds = f"({st_conds}) AND region = ?"
+                st_params.append(target_region)
             st_rows = conn.execute(
                 f"SELECT id, name, region, location_description, purpose FROM stations WHERE {st_conds}",
                 st_params
@@ -719,6 +733,9 @@ def unified_search(
             med_params = []
             for t in tokens:
                 med_params.extend([f"%{t}%", f"%{t}%", f"%{t}%"])
+            if target_region:
+                med_conds = f"({med_conds}) AND region = ?"
+                med_params.append(target_region)
             med_rows = conn.execute(
                 f"SELECT id, title, type, region, caption, credit FROM media_assets WHERE {med_conds}",
                 med_params
@@ -743,6 +760,9 @@ def unified_search(
             act_params = []
             for t in tokens:
                 act_params.extend([f"%{t}%", f"%{t}%", f"%{t}%"])
+            if target_region:
+                act_conds = f"({act_conds}) AND (region = ? OR region = 'General' OR region IS NULL)"
+                act_params.append(target_region)
             act_rows = conn.execute(
                 f"SELECT id, title, type, date, summary, region FROM activities WHERE {act_conds}",
                 act_params
