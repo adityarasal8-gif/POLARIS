@@ -258,6 +258,48 @@ Every agent must read it before making changes and update it after meaningful wo
       * `npm run build` passed with 0 TypeScript/Vite errors.
       * `python3 backend/test_api.py` passed 20/20 test cases.
       * Browser subagent verified and confirmed visual excellence across all pages with captured screenshots (`homepage_hero`, `expeditions_page`, `publications_page`, `datasets_page`, `learn_page`, `observatory_page`).
-
-
-
+18. **Knowledge Graph, Media Gallery, Activities & Studio Dynamic Elevation (Session 18)**:
+    - **Knowledge Graph (`KnowledgeGraphPage.tsx`)**:
+      * Added continuous 60fps harmonic orbital drift (`requestAnimationFrame`) so nodes breathe and float in zero-gravity polar coordinate space.
+      * Implemented dynamic streaming telemetry data packets along active relational conduits.
+      * Added interactive Zoom In, Zoom Out, Reset, and node centering pan controls.
+      * Built live Graph Telemetry HUD (35 verified entities, 49 relational conduits, live flux status).
+      * Added ambient floating scientific perimeter glyphs (`Network`, `Globe`, `Compass`, `Database`).
+    - **Polar Photographic & Media Archive (`MediaPage.tsx`)**:
+      * Added dynamic Curated Polar Lens Filmstrip showcasing polar highlights.
+      * Enhanced full-screen Lightbox with smooth left/right arrow and keyboard navigation (ArrowLeft, ArrowRight, Escape).
+      * Added authentic video player handling in the lightbox and poster thumbnails for video media assets.
+      * Integrated simulated Optics & Provenance HUD (Format, Registry, License, Verified NCPOR Provenance).
+    - **Field Dispatches & Activities Wire (`ActivitiesPage.tsx`)**:
+      * Added interactive Polar HF Tactical Radio Wire Sounder simulator with animated equalizer wave-bars (`CHANNEL 14.125 MHz · LIVE`), mute/unmute control, and station channel switcher (Maitri, Himadri, Fleet Passage).
+      * Added dynamic category badges displaying live item counts (`All 15`, `Expedition Update 5`, `Conference 1`, etc.).
+      * Integrated spring hover physics (`card-hover-spring`) and ambient floating glyphs.
+    - **Content Dissemination Studio (`StudioPage.tsx`)**:
+      * Built interactive multi-platform visual social mockups:
+        - *Instagram Post*: realistic mobile card with polar photography, handle `@polaris_ncpor`, verified badge, caption with highlighted hashtags, like/save micro-interactions.
+        - *X (Twitter) Thread*: verified account styling, timestamp, engagement metrics, character count breakdown.
+        - *LinkedIn Executive Article*: MoES official header, credential byline, structured briefing.
+        - *Press Release*: official Ministry letterhead and embargo header.
+      * Added dynamic word/char counters and reading time estimators.
+      * Added animated extraction pipeline conduits with glowing progress pulse.
+    - **Repository (`RepositoryPage.tsx`)**:
+      * Integrated `.card-hover-spring` physics across relational clusters and stream views.
+      * Verified quick query pills and cross-entity relational badges.
+    - **Verification & Zero Regressions**:
+      * `npm run build`: 0 errors (built cleanly in 1.26s).
+19. **AgentShield Hero Sizing & Standalone Ticker Marquee (Session 19)**:
+    - **Hero Architecture & Sizing (Preferred Style Retained)**:
+      * Retained the preferred grand hero layout: `h-[calc(100vh-4rem)] min-h-[680px] lg:min-h-[720px] flex flex-col items-center justify-center overflow-hidden bg-[#FAFAF8]`.
+      * Headline typography: `font-serif text-[clamp(48px,8vw,88px)] font-light tracking-[-0.045em] leading-[1.02] text-[#111111] mb-6 max-w-[820px] text-center`.
+      * Subtitle: `font-sans text-[clamp(15px,1.4vw,18px)] leading-[1.75] text-[#555558] max-w-[520px] text-center mb-8 font-light`.
+      * Aligned primary and secondary CTA buttons with AgentShield pill dimensions (`px-8 py-3.5` and `px-6 py-3.5`).
+      * Positioned 8 perimeter floating scientific icons (`Compass`, `Globe`, `Activity`, `Radio`, `Search`, `Shield`, `Sparkles`, `Database`) at AgentShield perimeter anchors (`10%`, `84%`, `6%`, `88%`, `16%`, `80%`, `50%`, `42%`) with subtle opacity (`/20`), stroke width `1.5`, and `drop-shadow(0 2px 8px currentColor)`.
+    - **Wave Canvas Ribbon Positioning (Full Vertical Sweep Down to Bottom)**:
+      * Calibrated 6 organic ribbon layers in `AgentShieldCanvas.tsx` spanning from mid-hero down to the bottom border (`height * 0.50, 0.58, 0.66, 0.75, 0.84, 0.92`).
+      * Added undulating emerald and marine teal lower ribbons (`0.84` and `0.92`) that fill the bottom of the hero section completely so no empty blank space remains at the base.
+      * Preserved 100% of the wave canvas ribbon colors (amber, sky blue, lavender, emerald, marine teal).
+    - **Standalone Ticker Marquee Below Hero**:
+      * The running telemetry marquee (`45TH ISEA ACTIVE FIELD DEPLOYMENT · NPDC STANDARDS ISO 19115 NETCDF/HDF5 · LIVE SENSOR STREAM OPEN-METEO TELEMETRY · MAITRI ...`) remains cleanly positioned as an independent, standalone full-width bar directly beneath the hero section (`w-full border-y border-[#E8E6E0] bg-[#FAFAF8] py-3.5 overflow-hidden`).
+    - **Verification**:
+      * `npm run build` compiled cleanly with 0 errors.
+      * Verified in real Chrome browser via DevTools MCP with viewport screenshots showing the grand hero layout, full bottom wave coverage, and standalone ticker bar directly underneath.
