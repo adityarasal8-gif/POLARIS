@@ -300,9 +300,9 @@ export const HomePage: React.FC = () => {
     <div className="w-full bg-[#FAFAF8] text-[#111111] selection:bg-[#111111] selection:text-[#FFFFFF]">
       
       {/* ========================================================================= */}
-      {/* 1. HERO: Clean Alabaster Canvas with Flowing Wave Ribbons & Rich Data      */}
+      {/* 1. HERO: Exact AgentShield Architecture with Sinusoidal Wave Canvas       */}
       {/* ========================================================================= */}
-      <section className="relative min-h-[85vh] sm:min-h-[90vh] flex flex-col items-center justify-center overflow-hidden bg-[#FAFAF8] pt-10 pb-20 border-b border-[#E8E6E0]">
+      <section className="relative h-[calc(100vh-4rem)] min-h-[680px] lg:min-h-[720px] flex flex-col items-center justify-center overflow-hidden bg-[#FAFAF8]">
         
         {/* Dynamic Sinusoidal Wave Canvas (Color Palette 100% Preserved) */}
         <AgentShieldCanvas />
@@ -319,106 +319,120 @@ export const HomePage: React.FC = () => {
           }} 
         />
 
-        {/* Floating Perimeter Scientific Icons (Ambient Background Accents with Low Opacity) */}
-        <div className="absolute left-[8%] top-[20%] text-[#D97706]/20 z-1 pointer-events-none hidden md:block animate-float-1">
+        {/* Floating Perimeter Scientific Icons (Styled exactly like AgentShield with low opacity & drop shadow) */}
+        <div className="absolute left-[10%] top-[20%] text-[#818cf8]/20 z-1 pointer-events-none hidden md:block animate-float-1" style={{ filter: 'drop-shadow(0 2px 8px currentColor)' }}>
           <Compass className="w-5 h-5 stroke-[1.5]" />
         </div>
-        <div className="absolute left-[88%] top-[18%] text-[#2563EB]/20 z-1 pointer-events-none hidden md:block animate-float-2">
+        <div className="absolute left-[84%] top-[18%] text-[#38bdf8]/20 z-1 pointer-events-none hidden md:block animate-float-2" style={{ filter: 'drop-shadow(0 2px 8px currentColor)' }}>
           <Globe className="w-5 h-5 stroke-[1.5]" />
         </div>
-        <div className="absolute left-[6%] top-[60%] text-[#16A34A]/20 z-1 pointer-events-none hidden md:block animate-float-3">
+        <div className="absolute left-[6%] top-[62%] text-[#34d399]/20 z-1 pointer-events-none hidden md:block animate-float-3" style={{ filter: 'drop-shadow(0 2px 8px currentColor)' }}>
           <Activity className="w-5 h-5 stroke-[1.5]" />
         </div>
-        <div className="absolute left-[89%] top-[56%] text-[#7C3AED]/20 z-1 pointer-events-none hidden md:block animate-float-1">
+        <div className="absolute left-[88%] top-[55%] text-[#a78bfa]/20 z-1 pointer-events-none hidden md:block animate-float-1" style={{ filter: 'drop-shadow(0 2px 8px currentColor)' }}>
           <Radio className="w-5 h-5 stroke-[1.5]" />
         </div>
-        <div className="absolute left-[14%] top-[78%] text-[#0EA5E9]/20 z-1 pointer-events-none hidden md:block animate-float-2">
+        <div className="absolute left-[16%] top-[76%] text-[#7dd3fc]/20 z-1 pointer-events-none hidden md:block animate-float-2" style={{ filter: 'drop-shadow(0 2px 8px currentColor)' }}>
           <Search className="w-5 h-5 stroke-[1.5]" />
         </div>
-        <div className="absolute left-[84%] top-[74%] text-[#16A34A]/20 z-1 pointer-events-none hidden md:block animate-float-3">
+        <div className="absolute left-[80%] top-[72%] text-[#6ee7b7]/20 z-1 pointer-events-none hidden md:block animate-float-3" style={{ filter: 'drop-shadow(0 2px 8px currentColor)' }}>
           <Shield className="w-5 h-5 stroke-[1.5]" />
+        </div>
+        <div className="absolute left-[50%] top-[14%] text-[#f9a8d4]/20 z-1 pointer-events-none hidden md:block animate-subtle-drift" style={{ filter: 'drop-shadow(0 2px 8px currentColor)' }}>
+          <Sparkles className="w-5 h-5 stroke-[1.5]" />
+        </div>
+        <div className="absolute left-[42%] top-[82%] text-[#93c5fd]/20 z-1 pointer-events-none hidden md:block animate-subtle-drift-rev" style={{ filter: 'drop-shadow(0 2px 8px currentColor)' }}>
+          <Database className="w-5 h-5 stroke-[1.5]" />
         </div>
 
         {/* Center Hero Body */}
-        <div className="relative z-10 flex flex-col items-center text-center px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto w-full pt-4">
+        <div className="relative z-10 flex flex-col items-center text-center px-4 sm:px-6 lg:px-8 max-w-[820px] mx-auto w-full pt-4">
 
-          {/* Headline in Playfair Display Serif with Entrance Animation */}
-          <h1 className="font-serif text-[clamp(36px,5.4vw,68px)] font-light tracking-[-0.045em] leading-[1.04] text-[#111111] mb-4 max-w-2xl text-center animate-fade-in-up">
+          {/* Headline in Playfair Display Serif with Entrance Animation - Exact AgentShield Sizing */}
+          <h1 className="font-serif text-[clamp(48px,8vw,88px)] font-light tracking-[-0.045em] leading-[1.02] text-[#111111] mb-6 max-w-[820px] text-center animate-fade-in-up">
             At the edge of the Earth,<br />
             India is <em className="italic font-normal">reading the planet.</em>
           </h1>
 
           {/* Subtitle in Inter */}
-          <p className="font-sans text-[clamp(14px,1.2vw,17px)] leading-[1.65] text-[#555558] max-w-xl text-center mb-8 animate-fade-in-up [animation-delay:120ms]">
+          <p className="font-sans text-[clamp(15px,1.4vw,18px)] leading-[1.75] text-[#555558] max-w-[520px] text-center mb-8 animate-fade-in-up [animation-delay:120ms] font-light">
             Explore India's research expeditions, polar stations, NPDC scientific datasets, and climate discoveries across Antarctica, the Arctic, the Himalayas, and the Southern Ocean.
           </p>
 
           {/* Action Button Pair with Spring Micro-Interactions */}
-          <div className="flex items-center gap-3.5 flex-wrap justify-center mb-4 animate-fade-in-up [animation-delay:200ms]">
-            <Link href="/expeditions" className="btn-primary group">
+          <div className="flex items-center gap-3 flex-wrap justify-center animate-fade-in-up [animation-delay:200ms]">
+            <Link 
+              href="/expeditions" 
+              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-[#111111] hover:bg-black text-white font-semibold text-[15px] font-sans tracking-tight shadow-[0_4px_14px_rgba(17,17,17,0.2)] hover:opacity-85 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer group"
+            >
               <span>Explore polar research</span>
               <span className="group-hover:translate-x-1 transition-transform">→</span>
             </Link>
-            <Link href="/observatory" className="btn-ghost">
+            <Link 
+              href="/observatory" 
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-white hover:bg-[#F4F2EE] text-[#111111] border-[1.5px] border-[#E8E6E0] font-semibold text-[15px] font-sans tracking-tight hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
+            >
               <Activity className="w-4 h-4 text-[#2563EB]" />
               <span>Live observatory</span>
             </Link>
           </div>
         </div>
 
-        {/* Bottom Kinetic Dual-Track Infinite Marquee Ticker */}
-        <div className="absolute bottom-0 left-0 right-0 z-3 border-t border-[#E8E6E0] bg-[#FAFAF8]/95 backdrop-blur-md py-3 overflow-hidden">
-          <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
-            <div className="animate-marquee flex items-center space-x-8 text-[11.5px] font-mono tracking-wide text-[#111111]/75 uppercase">
-              {/* Marquee Track 1 */}
-              <div className="flex items-center space-x-8 shrink-0">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-ping-subtle" />
-                  <strong className="text-[#111111]">MAITRI</strong> ({activeWeather?.temperature_c != null ? `${activeWeather.temperature_c}°C` : '-23.2°C'} · 70°S)
-                </span>
-                <span className="text-[#8E8E91]">·</span>
-                <span><strong>BHARATI</strong> (-12.2°C · LARSEMANN HILLS)</span>
-                <span className="text-[#8E8E91]">·</span>
-                <span><strong>HIMADRI</strong> (-3.7°C · SVALBARD 78°N)</span>
-                <span className="text-[#8E8E91]">·</span>
-                <span><strong>HIMANSH</strong> (+4.0°C · 4,050M HIMALAYA)</span>
-                <span className="text-[#8E8E91]">·</span>
-                <span><strong>SOUTHERN OCEAN</strong> CAMPAIGN (SUB-ANTARCTIC FRONT)</span>
-                <span className="text-[#8E8E91]">·</span>
-                <span><strong>45TH ISEA</strong> ACTIVE FIELD DEPLOYMENT</span>
-                <span className="text-[#8E8E91]">·</span>
-                <span><strong>NPDC STANDARDS</strong> ISO 19115 NETCDF/HDF5</span>
-                <span className="text-[#8E8E91]">·</span>
-                <span><strong>LIVE SENSOR STREAM</strong> OPEN-METEO TELEMETRY</span>
-                <span className="text-[#8E8E91]">·</span>
-              </div>
-              {/* Marquee Track 2 (Seamless Infinite Duplicate) */}
-              <div className="flex items-center space-x-8 shrink-0">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-ping-subtle" />
-                  <strong className="text-[#111111]">MAITRI</strong> ({activeWeather?.temperature_c != null ? `${activeWeather.temperature_c}°C` : '-23.2°C'} · 70°S)
-                </span>
-                <span className="text-[#8E8E91]">·</span>
-                <span><strong>BHARATI</strong> (-12.2°C · LARSEMANN HILLS)</span>
-                <span className="text-[#8E8E91]">·</span>
-                <span><strong>HIMADRI</strong> (-3.7°C · SVALBARD 78°N)</span>
-                <span className="text-[#8E8E91]">·</span>
-                <span><strong>HIMANSH</strong> (+4.0°C · 4,050M HIMALAYA)</span>
-                <span className="text-[#8E8E91]">·</span>
-                <span><strong>SOUTHERN OCEAN</strong> CAMPAIGN (SUB-ANTARCTIC FRONT)</span>
-                <span className="text-[#8E8E91]">·</span>
-                <span><strong>45TH ISEA</strong> ACTIVE FIELD DEPLOYMENT</span>
-                <span className="text-[#8E8E91]">·</span>
-                <span><strong>NPDC STANDARDS</strong> ISO 19115 NETCDF/HDF5</span>
-                <span className="text-[#8E8E91]">·</span>
-                <span><strong>LIVE SENSOR STREAM</strong> OPEN-METEO TELEMETRY</span>
-                <span className="text-[#8E8E91]">·</span>
-              </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 2. RUNNING TELEMETRY & NPDC STANDARDS MARQUEE (Below Hero Section)        */}
+      {/* ========================================================================= */}
+      <div className="w-full border-y border-[#E8E6E0] bg-[#FAFAF8] py-3.5 overflow-hidden relative z-10">
+        <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+          <div className="animate-marquee flex items-center space-x-8 text-[11.5px] font-mono tracking-wide text-[#111111]/75 uppercase">
+            {/* Marquee Track 1 */}
+            <div className="flex items-center space-x-8 shrink-0">
+              <span className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-ping-subtle" />
+                <strong className="text-[#111111]">MAITRI</strong> ({activeWeather?.temperature_c != null ? `${activeWeather.temperature_c}°C` : '-23.2°C'} · 70°S)
+              </span>
+              <span className="text-[#8E8E91]">·</span>
+              <span><strong className="text-[#111111]">BHARATI</strong> (-12.2°C · LARSEMANN HILLS)</span>
+              <span className="text-[#8E8E91]">·</span>
+              <span><strong className="text-[#111111]">HIMADRI</strong> (-3.7°C · SVALBARD 78°N)</span>
+              <span className="text-[#8E8E91]">·</span>
+              <span><strong className="text-[#111111]">HIMANSH</strong> (+4.0°C · 4,050M HIMALAYA)</span>
+              <span className="text-[#8E8E91]">·</span>
+              <span><strong className="text-[#111111]">SOUTHERN OCEAN</strong> CAMPAIGN (SUB-ANTARCTIC FRONT)</span>
+              <span className="text-[#8E8E91]">·</span>
+              <span><strong className="text-[#111111]">45TH ISEA</strong> ACTIVE FIELD DEPLOYMENT</span>
+              <span className="text-[#8E8E91]">·</span>
+              <span><strong className="text-[#111111]">NPDC STANDARDS</strong> ISO 19115 NETCDF/HDF5</span>
+              <span className="text-[#8E8E91]">·</span>
+              <span><strong className="text-[#111111]">LIVE SENSOR STREAM</strong> OPEN-METEO TELEMETRY</span>
+              <span className="text-[#8E8E91]">·</span>
+            </div>
+            {/* Marquee Track 2 (Seamless Infinite Duplicate) */}
+            <div className="flex items-center space-x-8 shrink-0">
+              <span className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-ping-subtle" />
+                <strong className="text-[#111111]">MAITRI</strong> ({activeWeather?.temperature_c != null ? `${activeWeather.temperature_c}°C` : '-23.2°C'} · 70°S)
+              </span>
+              <span className="text-[#8E8E91]">·</span>
+              <span><strong className="text-[#111111]">BHARATI</strong> (-12.2°C · LARSEMANN HILLS)</span>
+              <span className="text-[#8E8E91]">·</span>
+              <span><strong className="text-[#111111]">HIMADRI</strong> (-3.7°C · SVALBARD 78°N)</span>
+              <span className="text-[#8E8E91]">·</span>
+              <span><strong className="text-[#111111]">HIMANSH</strong> (+4.0°C · 4,050M HIMALAYA)</span>
+              <span className="text-[#8E8E91]">·</span>
+              <span><strong className="text-[#111111]">SOUTHERN OCEAN</strong> CAMPAIGN (SUB-ANTARCTIC FRONT)</span>
+              <span className="text-[#8E8E91]">·</span>
+              <span><strong className="text-[#111111]">45TH ISEA</strong> ACTIVE FIELD DEPLOYMENT</span>
+              <span className="text-[#8E8E91]">·</span>
+              <span><strong className="text-[#111111]">NPDC STANDARDS</strong> ISO 19115 NETCDF/HDF5</span>
+              <span className="text-[#8E8E91]">·</span>
+              <span><strong className="text-[#111111]">LIVE SENSOR STREAM</strong> OPEN-METEO TELEMETRY</span>
+              <span className="text-[#8E8E91]">·</span>
             </div>
           </div>
         </div>
-
-      </section>
+      </div>
 
       {/* ========================================================================= */}
       {/* 2. SECTION 1: "Four Regions. One Scientific Mission."                      */}

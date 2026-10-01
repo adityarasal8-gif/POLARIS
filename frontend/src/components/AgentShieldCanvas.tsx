@@ -192,12 +192,13 @@ export const AgentShieldCanvas: React.FC = () => {
       time += 0.014; // Faster animation
       ctx.clearRect(0, 0, width, height);
 
-      // 5 Organic Ribbon Layers (Tuned for faster, slightly richer wave motion)
-      drawWave(height * 0.50, height * 0.036, 0.18, 0.0046, 0.45, 1.0, 'rgba(251, 191, 36, 0.10)', 'rgba(245, 158, 11, 0.24)', 3.5);
-      drawWave(height * 0.57, height * 0.054, 0.15, 0.0058, 0.65, 0.0, 'rgba(251, 191, 36, 0.18)', 'rgba(245, 158, 11, 0.46)', 4.5);
-      drawWave(height * 0.64, height * 0.048, 0.13, 0.0074, 0.82, 2.1, 'rgba(125, 211, 252, 0.24)', 'rgba(56, 189, 248, 0.54)', 5.5);
-      drawWave(height * 0.71, height * 0.042, 0.12, 0.0092, 0.98, 4.4, 'rgba(196, 181, 253, 0.22)', 'rgba(167, 139, 250, 0.50)', 5.5);
-      drawWave(height * 0.77, height * 0.038, 0.12, 0.0080, 0.84, 3.4, 'rgba(52, 211, 153, 0.18)', 'rgba(16, 185, 129, 0.42)', 5);
+      // Organic Ribbon Layers: Extends from mid-hero down to the bottom border so the bottom is rich and active
+      drawWave(height * 0.50, height * 0.034, 0.18, 0.0044, 0.45, 1.0, 'rgba(251, 191, 36, 0.10)', 'rgba(245, 158, 11, 0.22)', 3.5);
+      drawWave(height * 0.58, height * 0.048, 0.15, 0.0056, 0.62, 0.0, 'rgba(251, 191, 36, 0.18)', 'rgba(245, 158, 11, 0.44)', 4.5);
+      drawWave(height * 0.66, height * 0.044, 0.13, 0.0070, 0.78, 2.1, 'rgba(125, 211, 252, 0.22)', 'rgba(56, 189, 248, 0.52)', 5.5);
+      drawWave(height * 0.75, height * 0.040, 0.12, 0.0084, 0.92, 4.4, 'rgba(196, 181, 253, 0.20)', 'rgba(167, 139, 250, 0.48)', 5.0);
+      drawWave(height * 0.84, height * 0.038, 0.12, 0.0078, 0.82, 3.4, 'rgba(52, 211, 153, 0.18)', 'rgba(16, 185, 129, 0.42)', 5.0);
+      drawWave(height * 0.92, height * 0.032, 0.10, 0.0068, 0.70, 1.8, 'rgba(45, 212, 191, 0.18)', 'rgba(13, 148, 136, 0.38)', 4.0);
 
       drawRipples();
       animId = requestAnimationFrame(render);
