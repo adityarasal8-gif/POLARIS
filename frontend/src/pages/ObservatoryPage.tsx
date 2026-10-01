@@ -3,7 +3,8 @@ import {
   Radio, Wind, Thermometer, Droplets, Gauge, 
   MapPin, Clock, ShieldCheck, RefreshCw, Compass, 
   ArrowUpRight, Download, Activity, Sun, Zap, Satellite,
-  Users, CheckCircle2, AlertTriangle, ChevronRight
+  Users, CheckCircle2, AlertTriangle, ChevronRight,
+  ShieldAlert, Moon, Sliders
 } from 'lucide-react';
 import { 
   LineChart, Line, XAxis, YAxis, CartesianGrid, 
@@ -21,6 +22,11 @@ export const ObservatoryPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [historyLoading, setHistoryLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+
+  // Interactive Wind Chill & Frostbite Exposure Simulation State
+  const [simTemp, setSimTemp] = useState<number>(-22);
+  const [simWind, setSimWind] = useState<number>(35);
+  const [useLiveStationForSim, setUseLiveStationForSim] = useState(true);
 
   const loadLiveData = async () => {
     try {
@@ -63,6 +69,84 @@ export const ObservatoryPage: React.FC = () => {
   }, [selectedStationId]);
 
   const activeWeather = stationsWeather.find((s) => s.station_id === selectedStationId) || stationsWeather[0];
+
+  // Sync simulator with live active weather when useLiveStationForSim is active
+  useEffect(() => {
+    if (useLiveStationForSim && activeWeather) {
+      setSimTemp(activeWeather.temperature_c);
+      setSimWind(activeWeather.wind_speed_kmh);
+    }
+  }, [useLiveStationForSim, activeWeather]);
+
+  // JAG/TI Polar Wind Chill Equivalent Temperature: 13.12 + 0.6215*T - 11.37*(V^0.16) + 0.3965*T*(V^0.16)
+  const calcWindChill = (t: number, v: number): number => {
+    if (v < 4.8) return t;
+    const wc = 13.12 + 0.6215 * t - 11.37 * Math.pow(v, 0.16) + 0.3965 * t * Math.pow(v, 0.16);
+    return Math.round(wc * 10) / 10;
+  };
+
+  const currentSimWindChill = calcWindChill(simTemp, simWind);
+
+  const getFrostbiteRisk = (wc: number) => {
+    if (wc > -27) {
+      return {
+        level: 'LOW RISK',
+        color: 'text-[#16A34A] bg-[#F0FDF4] border-[#BBF7D0]',
+        time: 'Unlikely under standard expedition attire',
+        action: 'Standard polar fleece & windbreaker layers'
+      };
+    } else if (wc > -39) {
+      return {
+        level: 'MODERATE RISK',
+        color: 'text-[#CA8A04] bg-[#FEFCE8] border-[#FEF08A]',
+        time: '10 to 30 minutes on exposed skin',
+        action: 'Deploy thermal balaclava, goggles, and double-lined gloves'
+      };
+    } else if (wc > -47) {
+      return {
+        level: 'HIGH RISK',
+        color: 'text-[#EA580C] bg-[#FFF7ED] border-[#FFEDD5]',
+        time: '5 to 10 minutes on exposed skin',
+        action: 'Mandatory buddy system, zero exposed skin, tether lines'
+      };
+    } else if (wc > -54) {
+      return {
+        level: 'SEVERE HAZARD',
+        color: 'text-[#DC2626] bg-[#FEF2F2] border-[#FECACA]',
+        time: '2 to 5 minutes on exposed skin',
+        action: 'Restrict outdoor excursions strictly to life-support emergency repairs'
+      };
+    } else {
+      return {
+        level: 'EXTREME WHITE-OUT / CRITICAL',
+        color: 'text-[#991B1B] bg-[#450A0A]/10 border-[#991B1B]/30',
+        time: 'Under 2 minutes (immediate tissue freezing)',
+        action: 'BASE CODE RED: Total outdoor movement lockdown in effect'
+      };
+    }
+  };
+
+  const simRisk = getFrostbiteRisk(currentSimWindChill);
+
+  // Station Solar Regime Calculation
+  const stationLat = activeWeather?.station_id === 'himadri' ? 78.92
+    : activeWeather?.station_id === 'himansh' ? 32.40
+    : activeWeather?.station_id === 'bharati' ? -69.41
+    : -70.76; // Maitri
+
+  // Calculate day of year
+  const now = new Date();
+  const startOfYear = new Date(now.getFullYear(), 0, 0);
+  const diff = now.getTime() - startOfYear.getTime();
+  const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+  // Solar declination (approx in degrees)
+  const solarDec = -23.44 * Math.cos((2 * Math.PI / 365) * (dayOfYear + 10));
+  const absLat = Math.abs(stationLat);
+  const absDec = Math.abs(solarDec);
+  const isMidnightSun = (90 - absLat) < absDec && (stationLat * solarDec > 0);
+  const isPolarNight = (90 - absLat) < absDec && (stationLat * solarDec < 0);
+  const solarNoonElevation = Math.max(0, Math.min(90, Math.round((90 - Math.abs(stationLat - solarDec)) * 10) / 10));
 
   // Chart data source from history readings
   const chartReadings = historyData?.readings || [];

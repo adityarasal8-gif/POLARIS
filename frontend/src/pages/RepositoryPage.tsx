@@ -85,12 +85,26 @@ export const RepositoryPage: React.FC = () => {
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#FAFAF8] text-[#111111] font-sans selection:bg-[#111111] selection:text-white">
+    <div className="w-full min-h-screen bg-[#FAFAF8] text-[#111111] font-sans selection:bg-[#111111] selection:text-white relative overflow-hidden">
+      {/* Ambient Floating Scientific & Knowledge Perimeter Glyphs */}
+      <div className="absolute top-12 left-8 text-[#111111]/10 pointer-events-none select-none animate-float-1 z-0 hidden lg:block">
+        <Search className="w-24 h-24 stroke-[1.2]" />
+      </div>
+      <div className="absolute top-20 right-12 text-[#111111]/10 pointer-events-none select-none animate-float-2 z-0 hidden lg:block">
+        <Database className="w-20 h-20 stroke-[1.2]" />
+      </div>
+      <div className="absolute top-72 right-1/4 text-[#111111]/8 pointer-events-none select-none animate-subtle-drift z-0 hidden md:block">
+        <Compass className="w-16 h-16 stroke-[1.2]" />
+      </div>
+      <div className="absolute top-96 left-16 text-[#111111]/8 pointer-events-none select-none animate-subtle-drift-rev z-0 hidden md:block">
+        <Globe className="w-28 h-28 stroke-[1.1]" />
+      </div>
+
       {/* Editorial Search Hero */}
-      <section className="relative pt-16 pb-14 px-4 sm:px-6 lg:px-8 border-b border-[#E8E6E0] bg-[#F4F2EE]">
+      <section className="relative pt-16 pb-14 px-4 sm:px-6 lg:px-8 border-b border-[#E8E6E0] bg-[#F4F2EE] z-10">
         <div className="max-w-5xl mx-auto space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-[#E8E6E0] text-xs font-mono tracking-wide text-[#555558] uppercase font-medium shadow-sm">
-            <Database className="w-3.5 h-3.5 text-[#111111]" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-[#E8E6E0] text-xs font-mono tracking-wide text-[#555558] uppercase font-medium shadow-xs">
+            <Database className="w-3.5 h-3.5 text-[#2563EB]" />
             <span>National Polar Knowledge Repository</span>
           </div>
 
@@ -103,6 +117,42 @@ export const RepositoryPage: React.FC = () => {
             A unified discovery engine indexing expeditions, in-situ sensor datasets, peer-reviewed monographs, 
             research station telemetry, and curated field imagery across Antarctica, the Arctic, and the Himalayas.
           </p>
+
+          {/* Live Knowledge Ingest & Query Telemetry Ribbon */}
+          <div className="bg-white border border-[#E8E6E0] rounded-2xl p-4 shadow-xs flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3 w-full md:w-auto">
+              <div className="w-9 h-9 rounded-xl bg-[#F4F2EE] border border-[#E8E6E0] flex items-center justify-center shrink-0">
+                <div className="flex items-end gap-0.5 h-3.5">
+                  <span className="w-1 bg-[#2563EB] rounded-full animate-wave-bar-1" />
+                  <span className="w-1 bg-[#2563EB] rounded-full animate-wave-bar-2" />
+                  <span className="w-1 bg-[#2563EB] rounded-full animate-wave-bar-3" />
+                  <span className="w-1 bg-[#2563EB] rounded-full animate-wave-bar-4" />
+                </div>
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-mono font-bold text-[#111111] tracking-wide uppercase">
+                    KNOWLEDGE INGESTION ENGINE
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full bg-[#16A34A]/10 text-[#16A34A] text-[10px] font-mono font-bold">
+                    ONLINE
+                  </span>
+                </div>
+                <p className="text-xs text-[#555558] font-mono">
+                  94 Verified Relational Entities · 6 Entity Domains · SQLite FTS5 Indexing Active
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 self-start md:self-auto text-xs font-mono text-[#555558]">
+              <span className="px-2.5 py-1 rounded-full bg-[#F4F2EE] border border-[#E8E6E0]">
+                Indexed: <strong className="text-[#111111]">Stations · Exps · Data · Papers</strong>
+              </span>
+              <span className="px-2.5 py-1 rounded-full bg-[#F4F2EE] border border-[#E8E6E0]">
+                Latency: <strong className="text-[#16A34A]">&lt; 3ms</strong>
+              </span>
+            </div>
+          </div>
 
           {/* Large Search Input */}
           <form onSubmit={handleSearchSubmit} className="pt-2">
@@ -276,7 +326,7 @@ export const RepositoryPage: React.FC = () => {
                       <div
                         key={item.id}
                         onClick={() => setLocation(item.url)}
-                        className="group p-5 rounded-2xl bg-white hover:bg-[#FAFAF8] border border-[#E8E6E0] hover:border-[#111111]/30 transition-all cursor-pointer flex flex-col justify-between shadow-sm"
+                        className="group p-5 rounded-2xl bg-white hover:bg-[#FAFAF8] border border-[#E8E6E0] hover:border-[#111111]/40 transition-all cursor-pointer flex flex-col justify-between shadow-2xs card-hover-spring"
                       >
                         <div className="space-y-2.5">
                           <div className="flex items-center justify-between gap-2">
@@ -288,7 +338,7 @@ export const RepositoryPage: React.FC = () => {
                             </span>
                           </div>
 
-                          <h3 className="text-base font-semibold text-[#111111] group-hover:text-black transition-colors leading-snug">
+                          <h3 className="text-base font-semibold text-[#111111] group-hover:text-[#2563EB] transition-colors leading-snug">
                             {item.title}
                           </h3>
 
@@ -319,7 +369,7 @@ export const RepositoryPage: React.FC = () => {
                 <div
                   key={item.id}
                   onClick={() => setLocation(item.url)}
-                  className="group p-5 rounded-2xl bg-white hover:bg-[#FAFAF8] border border-[#E8E6E0] hover:border-[#111111]/30 transition-all cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm"
+                  className="group p-5 rounded-2xl bg-white hover:bg-[#FAFAF8] border border-[#E8E6E0] hover:border-[#111111]/40 transition-all cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-2xs card-hover-spring"
                 >
                   <div className="flex items-start gap-4 flex-1">
                     <div className="w-10 h-10 rounded-xl bg-[#F4F2EE] border border-[#E8E6E0] flex items-center justify-center shrink-0 text-[#111111] mt-0.5">

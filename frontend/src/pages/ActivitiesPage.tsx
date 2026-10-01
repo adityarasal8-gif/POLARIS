@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { 
   Radio, Calendar, MapPin, ExternalLink, Globe, Tag, 
   Search, ShieldCheck, Newspaper, Award, Users, ChevronRight,
-  ArrowRight, Compass
+  ArrowRight, Compass, Volume2, VolumeX, Sparkles, Activity as ActivityIcon,
+  Headphones, Play, Pause
 } from 'lucide-react';
 import { fetchActivities } from '../api';
 import { Activity } from '../types';
@@ -16,6 +17,10 @@ export default function ActivitiesPage() {
   const [selectedType, setSelectedType] = useState('All');
   const [selectedRegion, setSelectedRegion] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Interactive Radio Sounder Simulator
+  const [radioActive, setRadioActive] = useState(true);
+  const [selectedRadioChannel, setSelectedRadioChannel] = useState<'maitri' | 'himadri' | 'fleet'>('maitri');
 
   useEffect(() => {
     async function loadData() {
@@ -57,27 +62,34 @@ export default function ActivitiesPage() {
   const featuredActivity = filteredActivities[0];
   const remainingActivities = filteredActivities.slice(1);
 
-  return (
-    <div className="min-h-screen bg-[#FAFAF8] text-[#111111] font-sans selection:bg-[#111111] selection:text-white pb-20">
-      {/* Editorial Header with Floating Perimeter Glyphs */}
-      <section className="relative overflow-hidden pt-16 pb-12 px-4 sm:px-6 lg:px-8 border-b border-[#E8E6E0] bg-gradient-to-b from-[#F4F2EE] to-[#FAFAF8]">
-        {/* Subtle Ambient Floating Background Glyphs */}
-        <div className="absolute -top-4 -right-4 text-[#111111] opacity-15 pointer-events-none animate-subtle-drift">
-          <Radio className="w-24 h-24 stroke-[1.2]" />
-        </div>
-        <div className="absolute top-1/2 -left-6 -translate-y-1/2 text-[#111111] opacity-12 pointer-events-none animate-subtle-drift-rev">
-          <Compass className="w-20 h-20 stroke-[1.2]" />
-        </div>
-        <div className="absolute -bottom-6 right-1/4 text-[#111111] opacity-14 pointer-events-none animate-float-2">
-          <Globe className="w-24 h-24 stroke-[1]" />
-        </div>
-        <div className="absolute top-4 left-1/3 text-[#111111] opacity-10 pointer-events-none animate-slow-spin">
-          <Newspaper className="w-20 h-20 stroke-[1.2]" />
-        </div>
+  // Compute category counts
+  const getCategoryCount = (type: string) => {
+    if (type === 'All') return activities.length;
+    return activities.filter(a => a.type.toLowerCase().includes(type.toLowerCase())).length;
+  };
 
-        <div className="relative z-10 max-w-6xl mx-auto space-y-4">
+  return (
+    <div className="min-h-screen bg-[#FAFAF8] text-[#111111] font-sans selection:bg-[#111111] selection:text-white pb-20 relative overflow-hidden">
+      
+      {/* Ambient Floating Perimeter Glyphs */}
+      <div className="absolute top-12 left-8 text-[#111111]/8 pointer-events-none select-none animate-float-1 z-0 hidden lg:block">
+        <Radio className="w-24 h-24 stroke-[1.2]" />
+      </div>
+      <div className="absolute top-24 right-12 text-[#111111]/8 pointer-events-none select-none animate-float-2 z-0 hidden lg:block">
+        <Newspaper className="w-20 h-20 stroke-[1.2]" />
+      </div>
+      <div className="absolute top-96 left-16 text-[#111111]/6 pointer-events-none select-none animate-subtle-drift-rev z-0 hidden md:block">
+        <Compass className="w-24 h-24 stroke-[1.1]" />
+      </div>
+      <div className="absolute top-80 right-1/4 text-[#111111]/6 pointer-events-none select-none animate-subtle-drift z-0 hidden md:block">
+        <Globe className="w-20 h-20 stroke-[1.2]" />
+      </div>
+
+      {/* Editorial Header */}
+      <section className="relative overflow-hidden pt-16 pb-12 px-4 sm:px-6 lg:px-8 border-b border-[#E8E6E0] bg-gradient-to-b from-[#F4F2EE] to-[#FAFAF8] z-10">
+        <div className="relative z-10 max-w-6xl mx-auto space-y-5">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#E8E6E0] text-xs font-mono text-[#555558] uppercase tracking-wide font-medium shadow-2xs">
-            <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-ping-subtle" />
             <span>Field Dispatches & Institutional News · National Polar Gateway</span>
           </div>
 
@@ -91,40 +103,111 @@ export default function ActivitiesPage() {
           </p>
 
           {/* Real-time Field Wire Ticker Banner */}
-          <div className="pt-2">
+          <div className="pt-1">
             <div className="bg-[#111111] text-white px-4 py-2.5 rounded-2xl flex items-center justify-between gap-3 text-xs font-mono shadow-sm">
               <div className="flex items-center gap-2 overflow-hidden">
                 <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse shrink-0" />
                 <span className="text-[#A1A1AA] uppercase font-semibold text-[10px] shrink-0 tracking-wider">REAL-TIME WIRE:</span>
                 <span className="truncate text-white/90">
-                  44th ISEA team logs 24h continuous stratospheric sounding at Maitri · Arctic Kongsfjorden ocean mooring recovered
+                  45th ISEA expedition team logs 24h continuous stratospheric sounding at Maitri · Kongsfjorden mooring telemetry synced
                 </span>
               </div>
               <span className="hidden sm:inline text-[#16A34A] text-[11px] font-semibold shrink-0">
-                ● High-Frequency SatLink Active
+                ● SatLink Active
               </span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Filter Ribbon */}
-      <div className="border-b border-[#E8E6E0] bg-[#FAFAF8]/95 sticky top-16 z-20 backdrop-blur-md">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex flex-wrap gap-1.5">
-            {types.map(t => (
+      {/* Interactive HF Tactical Radio Dispatch & Sounder Simulator */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-4 relative z-20">
+        <div className="bg-white border border-[#E8E6E0] rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 card-hover-spring">
+          <div className="flex items-center gap-3.5 w-full md:w-auto">
+            <button
+              onClick={() => setRadioActive(!radioActive)}
+              className="w-11 h-11 rounded-xl bg-[#111111] text-white flex items-center justify-center shrink-0 cursor-pointer shadow-xs hover:bg-black transition-colors"
+            >
+              {radioActive ? (
+                <div className="flex items-end gap-0.5 h-4">
+                  <span className="w-1 bg-[#2563EB] rounded-full animate-wave-bar-1" />
+                  <span className="w-1 bg-[#2563EB] rounded-full animate-wave-bar-2" />
+                  <span className="w-1 bg-[#2563EB] rounded-full animate-wave-bar-3" />
+                  <span className="w-1 bg-[#2563EB] rounded-full animate-wave-bar-4" />
+                </div>
+              ) : (
+                <VolumeX className="w-4 h-4 text-[#8E8E91]" />
+              )}
+            </button>
+
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono font-bold text-[#111111] tracking-wider uppercase">
+                  POLAR HF TACTICAL RADIO WIRE
+                </span>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                  radioActive ? 'bg-[#16A34A]/10 text-[#16A34A]' : 'bg-[#E8E6E0] text-[#555558]'
+                }`}>
+                  {radioActive ? 'CHANNEL 14.125 MHz · LIVE' : 'MUTED'}
+                </span>
+              </div>
+              <p className="text-xs text-[#555558] font-mono">
+                {selectedRadioChannel === 'maitri' && 'Maitri Station All-Sky Camera & Katabatic Acoustic Sonde · Inmarsat-C Synced'}
+                {selectedRadioChannel === 'himadri' && 'Himadri Arctic Station · Ny-Ålesund Kings Bay Meteorological Beacon · Uplink 4.2 kbps'}
+                {selectedRadioChannel === 'fleet' && 'M/V Vasiliy Golovnin Arc4 Polar Vessel · Prydz Bay Passage · SOG 11.8 kn'}
+              </p>
+            </div>
+          </div>
+
+          {/* Station Channel Selector Pills */}
+          <div className="flex items-center gap-1.5 self-start md:self-auto text-xs font-mono">
+            <span className="text-[#8E8E91] text-[11px] hidden lg:inline mr-1">Beacon Channel:</span>
+            {[
+              { id: 'maitri', label: 'Maitri (Antarctica)' },
+              { id: 'himadri', label: 'Himadri (Arctic)' },
+              { id: 'fleet', label: 'Fleet Passage' },
+            ].map(ch => (
               <button
-                key={t}
-                onClick={() => setSelectedType(t)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-mono tracking-wide transition-all cursor-pointer ${
-                  selectedType === t
+                key={ch.id}
+                onClick={() => setSelectedRadioChannel(ch.id as any)}
+                className={`px-3 py-1.5 rounded-full transition-all cursor-pointer ${
+                  selectedRadioChannel === ch.id
                     ? 'bg-[#111111] text-white font-medium shadow-xs'
-                    : 'bg-white text-[#555558] hover:text-[#111111] border border-[#E8E6E0]'
+                    : 'bg-[#F4F2EE] text-[#555558] hover:text-[#111111]'
                 }`}
               >
-                {t}
+                {ch.label}
               </button>
             ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Sticky Filter Ribbon with Category Counts */}
+      <div className="border-b border-[#E8E6E0] bg-[#FAFAF8]/95 sticky top-16 z-20 backdrop-blur-md mt-6">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex flex-wrap gap-1.5">
+            {types.map(t => {
+              const count = getCategoryCount(t);
+              return (
+                <button
+                  key={t}
+                  onClick={() => setSelectedType(t)}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-mono tracking-wide transition-all cursor-pointer flex items-center gap-1.5 ${
+                    selectedType === t
+                      ? 'bg-[#111111] text-white font-medium shadow-xs'
+                      : 'bg-white text-[#555558] hover:text-[#111111] border border-[#E8E6E0]'
+                  }`}
+                >
+                  <span>{t}</span>
+                  <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${
+                    selectedType === t ? 'bg-white/20 text-white' : 'bg-[#F4F2EE] text-[#8E8E91]'
+                  }`}>
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
           </div>
 
           <div className="flex items-center gap-2">
@@ -154,7 +237,8 @@ export default function ActivitiesPage() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+      {/* Main Dispatches Feed */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
         {loading ? (
           <div className="py-24 text-center space-y-3">
             <div className="w-8 h-8 border-2 border-[#111111] border-t-transparent rounded-full animate-spin mx-auto"></div>
@@ -174,14 +258,14 @@ export default function ActivitiesPage() {
           </div>
         ) : (
           <>
-            {/* Featured Lead Story (Institutional Journalism) */}
+            {/* Featured Lead Story */}
             {featuredActivity && (
               <article className="border border-[#E8E6E0] rounded-3xl overflow-hidden bg-white shadow-sm hover:border-[#111111]/40 transition-all card-hover-spring relative">
                 <div className="p-6 sm:p-10 space-y-6">
                   <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#E8E6E0] pb-4 text-xs font-mono">
                     <div className="flex items-center gap-2">
                       <span className="px-3 py-1 rounded-full bg-[#F4F2EE] border border-[#E8E6E0] text-[#111111] font-semibold uppercase tracking-wider flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-pulse" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-ping-subtle" />
                         {featuredActivity.type}
                       </span>
                       {featuredActivity.region && (
