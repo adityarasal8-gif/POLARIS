@@ -94,8 +94,16 @@ export default function StationsPage() {
   }, []);
 
   const activeStation = stations.find((s) => s.id === selectedStationId) || stations[0];
-  const activeWeather = activeStation ? weatherMap[activeStation.id] : null;
-  const activeLogistics = activeStation ? STATION_LOGISTICS[activeStation.id] || STATION_LOGISTICS['maitri'] : null;
+  
+  // Helper to map DB ids ('s1') to string keys ('maitri')
+  const getStationKey = (station: Station | undefined) => {
+    if (!station) return 'maitri';
+    return station.name.split(' ')[0].toLowerCase();
+  };
+  
+  const stationKey = getStationKey(activeStation);
+  const activeWeather = activeStation ? weatherMap[stationKey] : null;
+  const activeLogistics = activeStation ? STATION_LOGISTICS[stationKey] || STATION_LOGISTICS['maitri'] : null;
 
   return (
     <div className="min-h-screen bg-[#FAFAF8] text-[#111111] pb-24 font-sans selection:bg-[#111111] selection:text-white">
@@ -170,6 +178,7 @@ export default function StationsPage() {
         ) : (
           <div className="relative w-full h-[540px] bg-[#07151F] border-b border-[#E8E6E0] overflow-hidden">
             <PolarGlobe3D
+              stations={stations}
               stationsWeather={weatherList}
               selectedStationId={selectedStationId}
               onSelectStation={(id) => {

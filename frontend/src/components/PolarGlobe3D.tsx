@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, useMemo } from 'react';
 import Globe, { GlobeMethods } from 'react-globe.gl';
 import { Crosshair, MapPin, Wind, Thermometer, Info, Compass } from 'lucide-react';
 import * as THREE from 'three';
-import { StationWeather } from '../types';
+import { StationWeather, Station } from '../types';
 
 const STATION_META: Record<string, any> = {
   maitri: { color: '#2563EB', flag: '🇦🇶', crew: 25 },
@@ -13,12 +13,14 @@ const STATION_META: Record<string, any> = {
 
 // Define flight corridors
 const ARCS = [
-  { startLat: -33.924, startLng: 18.423, endLat: -70.767, endLng: 11.733, color: ['#ffffff', '#2563EB'], name: 'Cape Town to Maitri' },
-  { startLat: -33.924, startLng: 18.423, endLat: -69.407, endLng: 76.187, color: ['#ffffff', '#16A34A'], name: 'Cape Town to Bharati' },
+  { startLat: 15.40, startLng: 73.80, endLat: -70.767, endLng: 11.733, color: ['#ffffff', '#2563EB'], name: 'Goa to Maitri' },
+  { startLat: 15.40, startLng: 73.80, endLat: -69.407, endLng: 76.187, color: ['#ffffff', '#16A34A'], name: 'Goa to Bharati' },
+  { startLat: 28.61, startLng: 77.21, endLat: 78.924, endLng: 11.928, color: ['#ffffff', '#9333EA'], name: 'Delhi to Himadri' },
   { startLat: 32.239, startLng: 77.188, endLat: 32.404, endLng: 77.611, color: ['#ffffff', '#F59E0B'], name: 'Manali to Himansh' }
 ];
 
 interface PolarGlobe3DProps {
+  stations?: Station[];
   stationsWeather?: StationWeather[];
   selectedStationId?: string;
   onSelectStation: (id: string) => void;
@@ -26,6 +28,7 @@ interface PolarGlobe3DProps {
 }
 
 export const PolarGlobe3D: React.FC<PolarGlobe3DProps> = ({
+  stations = [],
   stationsWeather = [],
   selectedStationId = 'maitri',
   onSelectStation,
@@ -37,15 +40,20 @@ export const PolarGlobe3D: React.FC<PolarGlobe3DProps> = ({
 
   const activeStation = useMemo(() => {
     if (!stationsWeather || stationsWeather.length === 0) return undefined;
-    return stationsWeather.find(s => s.station_id === selectedStationId);
-  }, [stationsWeather, selectedStationId]);
+    const dbStation = stations?.find(st => st.id === selectedStationId);
+    const stationKey = dbStation ? dbStation.name.split(' ')[0].toLowerCase() : selectedStationId;
+    return stationsWeather.find(s => s.station_id === stationKey);
+  }, [stationsWeather, stations, selectedStationId]);
 
   const STATIONS = useMemo(() => {
     if (!stationsWeather || stationsWeather.length === 0) return [];
     return stationsWeather.map(s => {
+      const dbStation = stations?.find(st => st.name.split(' ')[0].toLowerCase() === s.station_id);
+      const realId = dbStation ? dbStation.id : s.station_id;
       const meta = STATION_META[s.station_id] || { color: '#ffffff', flag: '🌐', crew: 0 };
       return {
-        id: s.station_id,
+        id: realId,
+        station_id: s.station_id,
         name: s.station_name,
         region: s.region,
         lat: s.latitude,
@@ -57,7 +65,7 @@ export const PolarGlobe3D: React.FC<PolarGlobe3DProps> = ({
         crew: meta.crew
       };
     });
-  }, [stationsWeather]);
+  }, [stationsWeather, stations]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -116,15 +124,11 @@ export const PolarGlobe3D: React.FC<PolarGlobe3DProps> = ({
         atmosphereAltitude={0.15}
         
         // Data layers
-        pointsData={STATIONS}
-        pointLat="lat"
-        pointLng="lng"
-        pointColor="color"
-        pointAltitude={0.05}
-        pointRadius={0.5}
-        pointResolution={32}
-        pointsMerge={false}
-        pointThreeObject={(d: any) => {
+        objectsData={STATIONS}
+        objectLat="lat"
+        objectLng="lng"
+        objectAltitude={0.05}
+        objectThreeObject={(d: any) => {
           // Create a glowing cone marker
           const material = new THREE.MeshPhongMaterial({
             color: d.color,
@@ -147,11 +151,14 @@ export const PolarGlobe3D: React.FC<PolarGlobe3DProps> = ({
           
           return mesh;
         }}
-        onPointClick={(point: any) => {
+        onObjectClick={(point: any) => {
           onSelectStation(point.id);
           focusCamera(point.lat, point.lng, 0.8);
+          if (onViewTelemetry) {
+            setTimeout(() => onViewTelemetry(), 100);
+          }
         }}
-        onPointHover={setHoveredStation}
+        onObjectHover={setHoveredStation}
         
         // Flight corridors
         arcsData={ARCS}
@@ -252,7 +259,7 @@ export const PolarGlobe3D: React.FC<PolarGlobe3DProps> = ({
             <div className="pt-2">
               <button 
                 onClick={() => {
-                  const targetId = hoveredStation ? hoveredStation.id : activeStation?.station_id;
+                  const targetId = hoveredStation ? hoveredStation.id : STATIONS.find(s => s.station_id === activeStation?.station_id)?.id;
                   if (targetId) {
                     onSelectStation(targetId);
                   }

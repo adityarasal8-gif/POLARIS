@@ -25,8 +25,7 @@ export function ConnectivityProvider({ children }: { children: ReactNode }) {
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    // Heartbeat ping to /api/health
-    const interval = setInterval(async () => {
+    const pingHealth = async () => {
       if (navigator.onLine) {
         try {
           const res = await fetch('/api/health', { method: 'GET', cache: 'no-store' });
@@ -38,7 +37,13 @@ export function ConnectivityProvider({ children }: { children: ReactNode }) {
       } else {
         setIsOnline(false);
       }
-    }, 30000);
+    };
+
+    // Run immediately on mount
+    pingHealth();
+
+    // Heartbeat ping to /api/health every 30s
+    const interval = setInterval(pingHealth, 30000);
 
     return () => {
       window.removeEventListener('online', handleOnline);

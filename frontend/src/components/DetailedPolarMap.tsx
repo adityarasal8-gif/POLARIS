@@ -82,10 +82,11 @@ const REGION_PRESETS = [
 const SUPPLY_ROUTES = [
   {
     id: 'route_maitri',
-    name: 'Cape Town ➔ Maitri (Queen Maud Land Transit)',
+    name: 'Goa ➔ Cape Town ➔ Maitri (Antarctic Logistics)',
     color: '#3B82F6',
     dashArray: '6, 6',
     points: [
+      [15.40, 73.80],      // NCPOR Goa, India
       [-33.9249, 18.4241], // Cape Town
       [-55.0, 15.0],       // Roaring Forties / Southern Ocean transect
       [-65.0, 12.0],       // Pack Ice Edge
@@ -94,22 +95,24 @@ const SUPPLY_ROUTES = [
   },
   {
     id: 'route_bharati',
-    name: 'Cape Town ➔ Bharati (Larsemann Hills Transit)',
+    name: 'Goa ➔ Mauritius ➔ Bharati (Antarctic Logistics)',
     color: '#06B6D4',
     dashArray: '6, 6',
     points: [
-      [-33.9249, 18.4241], // Cape Town
-      [-50.0, 45.0],       // Crozet Basin
-      [-62.0, 68.0],       // Kerguelen Plateau approach
+      [15.40, 73.80],      // NCPOR Goa, India
+      [-20.16, 57.50],     // Port Louis, Mauritius (Staging)
+      [-55.0, 70.0],       // Southern Ocean Transect
       [-69.4072, 76.1872]  // Bharati Base
     ]
   },
   {
     id: 'route_himadri',
-    name: 'Longyearbyen ➔ Ny-Ålesund (Svalbard Marine Corridor)',
+    name: 'Delhi ➔ Oslo ➔ Ny-Ålesund (Arctic Aviation)',
     color: '#10B981',
     dashArray: '4, 4',
     points: [
+      [28.6139, 77.2090],  // New Delhi, India
+      [59.9139, 10.7522],  // Oslo, Norway
       [78.2232, 15.6267],  // Longyearbyen Airport
       [78.55, 13.0],       // Forlandsundet Strait
       [78.9242, 11.9286]   // Himadri Station (Kings Bay)
@@ -529,6 +532,9 @@ export const DetailedPolarMap: React.FC<DetailedPolarMapProps> = ({
           duration: 1.2,
           easeLinearity: 0.25
         });
+        if (onViewTelemetry) {
+          setTimeout(() => onViewTelemetry(), 100);
+        }
       });
 
       // Hover Tooltip
@@ -590,11 +596,17 @@ export const DetailedPolarMap: React.FC<DetailedPolarMapProps> = ({
       <div className="absolute top-4 left-4 z-10 flex flex-wrap gap-2 max-w-2xl pointer-events-auto">
         {stationsList.map((st) => {
           const isSelected = st.id === selectedStationId;
-          const weather = stationsWeather.find((w) => w.station_id === st.id);
+          const stationKey = st.name.split(' ')[0].toLowerCase();
+          const weather = stationsWeather.find((w) => w.station_id === stationKey);
           return (
             <button
               key={st.id}
-              onClick={() => onSelectStation(st.id)}
+              onClick={() => {
+                onSelectStation(st.id);
+                if (onViewTelemetry) {
+                  setTimeout(() => onViewTelemetry(), 100);
+                }
+              }}
               className={`px-3.5 py-2 rounded-2xl text-xs font-mono transition-all flex items-center gap-2.5 backdrop-blur-md border shadow-lg ${
                 isSelected
                   ? 'bg-[#111111]/95 text-white font-semibold border-[#2563EB] ring-2 ring-[#2563EB]/40'

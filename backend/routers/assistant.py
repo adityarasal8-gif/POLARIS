@@ -17,9 +17,15 @@ class ChatRequest(BaseModel):
     persona: Optional[str] = "Public"
 
 # Configure Gemini
-api_key = os.environ.get("GEMINI_API_KEY")
-if api_key:
-    genai.configure(api_key=api_key)
+from dotenv import load_dotenv
+load_dotenv()
+
+def get_api_key():
+    return os.environ.get("GEMINI_API_KEY")
+
+api_key_init = get_api_key()
+if api_key_init:
+    genai.configure(api_key=api_key_init)
 
 SYSTEM_PROMPT = """You are POLARIS Field & Science Copilot for NCPOR / MoES.
 Knowledge scope: Indian Antarctic Programme (Dakshin Gangotri, Maitri, Bharati), Arctic Programme (Himadri), Himalayan research (Himansh, Chandra Basin), oceanographic CTD protocols, and Antarctic Treaty environmental guidelines.
@@ -85,15 +91,19 @@ def fallback_answer(message: str) -> str:
 
 @router.post("/chat")
 async def chat_assistant(req: ChatRequest):
-    if not api_key:
+    load_dotenv(override=True) # Reload in case file changed
+    current_key = get_api_key()
+    if not current_key:
         return {"response": fallback_answer(req.message)}
+    
+    genai.configure(api_key=current_key)
     
     try:
         dynamic_context = build_dynamic_context()
         full_system_prompt = SYSTEM_PROMPT + "\n\nDATABASE CONTEXT:\n" + dynamic_context
         
         model = genai.GenerativeModel(
-            model_name="gemini-1.5-flash",
+            model_name="gemini-flash-latest",
             system_instruction=full_system_prompt
         )
         
