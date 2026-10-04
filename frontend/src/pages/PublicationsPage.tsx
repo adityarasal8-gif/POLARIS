@@ -32,7 +32,12 @@ export default function PublicationsPage() {
       try {
         setLoading(true);
         const [pubsData, topicsData] = await Promise.all([
-          fetchPublications(),
+          fetchPublications({
+            topic: selectedTopic === 'All' ? undefined : selectedTopic,
+            region: selectedRegion === 'All' ? undefined : selectedRegion,
+            year: selectedYear === 'All' ? undefined : parseInt(selectedYear),
+            q: searchQuery.trim() || undefined
+          }),
           fetchTopics()
         ]);
         setPublications(pubsData);
@@ -44,7 +49,7 @@ export default function PublicationsPage() {
       }
     }
     loadData();
-  }, []);
+  }, [selectedTopic, selectedRegion, selectedYear, searchQuery]);
 
   const regions = ['All', 'Antarctica', 'Arctic', 'Himalaya', 'Southern Ocean'];
   const years = ['All', '2025', '2024', '2023', '2022', '2021', '2020'];
@@ -298,13 +303,22 @@ ER  - `;
                 <span className="text-[#16A34A] font-semibold">Open Access PDF Available</span>
               </div>
 
-              <button
-                onClick={() => setCitationModalPub(featuredPaper)}
-                className="px-5 py-2.5 rounded-full bg-[#111111] hover:bg-black text-white text-xs font-mono font-medium flex items-center gap-1.5 transition shadow-sm"
-              >
-                <Quote className="w-3.5 h-3.5 text-white" />
-                <span>Export Formatted Citation</span>
-              </button>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => window.open(`https://doi.org/${featuredPaper.doi}`, '_blank')}
+                  className="px-5 py-2.5 rounded-full bg-[#F0FDF4] hover:bg-[#DCFCE7] border border-[#16A34A]/20 text-[#166534] text-xs font-mono font-medium flex items-center gap-1.5 transition cursor-pointer"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Read Full Publication ↗</span>
+                </button>
+                <button
+                  onClick={() => setCitationModalPub(featuredPaper)}
+                  className="px-5 py-2.5 rounded-full bg-[#111111] hover:bg-black text-white text-xs font-mono font-medium flex items-center gap-1.5 transition shadow-sm cursor-pointer"
+                >
+                  <Quote className="w-3.5 h-3.5 text-white" />
+                  <span>Export Formatted Citation</span>
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -423,6 +437,14 @@ ER  - `;
                       >
                         <span>{isExpanded ? 'Hide Abstract' : 'Read Abstract'}</span>
                         {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                      </button>
+
+                      <button
+                        onClick={() => window.open(`https://doi.org/${pub.doi}`, '_blank')}
+                        className="px-4 py-1.5 rounded-full bg-[#F0FDF4] hover:bg-[#DCFCE7] border border-[#16A34A]/20 text-[#166534] text-xs font-mono font-medium flex items-center gap-1.5 transition cursor-pointer"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        <span>Read Full Publication ↗</span>
                       </button>
 
                       <button

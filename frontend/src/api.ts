@@ -1,7 +1,8 @@
 import {
   Station, StationWeather, Expedition, Dataset, Publication,
   MediaAsset, Activity, Researcher, ScienceTopic, ContentDraft,
-  SearchResponse, Stats, KnowledgeGraphResponse, StationHistoryResponse
+  SearchResponse, Stats, KnowledgeGraphResponse, StationHistoryResponse,
+  NetCDFPreviewResponse
 } from './types';
 
 const API_BASE = '/api';
@@ -181,4 +182,15 @@ export async function fetchKnowledgeGraph(): Promise<KnowledgeGraphResponse> {
   const res = await fetch(`${API_BASE}/knowledge-graph`);
   if (!res.ok) throw new Error('Failed to fetch knowledge graph');
   return res.json();
+}
+
+export async function fetchNetCDFPreview(datasetId: string): Promise<NetCDFPreviewResponse | null> {
+  try {
+    const res = await fetch(`${API_BASE}/datasets/${datasetId}/netcdf-preview`);
+    if (res.status === 404) return null; // Dataset doesn't support NetCDF
+    if (!res.ok) throw new Error('Failed to fetch NetCDF preview');
+    return res.json();
+  } catch {
+    return null;
+  }
 }

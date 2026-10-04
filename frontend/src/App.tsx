@@ -3,6 +3,8 @@ import { Route, Switch, useLocation } from 'wouter';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
+import { SyncQueueBanner } from './components/sync/SyncQueueBanner';
+import { PolarisCopilot } from './components/chat/PolarisCopilot';
 
 // Primary Instant Route
 import { HomePage } from './pages/HomePage';
@@ -20,9 +22,12 @@ const StationsPage = React.lazy(() => import('./pages/StationsPage'));
 const ObservatoryPage = React.lazy(() => import('./pages/ObservatoryPage').then(m => ({ default: m.ObservatoryPage })));
 const KnowledgeGraphPage = React.lazy(() => import('./pages/KnowledgeGraphPage').then(m => ({ default: m.KnowledgeGraphPage })));
 const LearnPage = React.lazy(() => import('./pages/LearnPage'));
+const ExploreFeed = React.lazy(() => import('./pages/ExploreFeed').then(m => ({ default: m.ExploreFeed })));
 const StudioPage = React.lazy(() => import('./pages/StudioPage').then(m => ({ default: m.StudioPage })));
 const CalendarPage = React.lazy(() => import('./pages/CalendarPage').then(m => ({ default: m.CalendarPage })));
 const AdminPage = React.lazy(() => import('./pages/AdminPage'));
+const ScientistDashboard = React.lazy(() => import('./pages/ScientistDashboard').then(m => ({ default: m.ScientistDashboard })));
+const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard').then(m => ({ default: m.AdminDashboard })));
 
 function PolarSuspenseFallback() {
   return (
@@ -110,12 +115,15 @@ export default function App() {
             
             {/* Smart Education Hub */}
             <Route path="/learn" component={LearnPage} />
+            <Route path="/explore" component={ExploreFeed} />
             
             {/* AI Content Dissemination Studio */}
             <Route path="/studio" component={StudioPage} />
             <Route path="/studio/calendar" component={CalendarPage} />
             
             {/* Admin & Scientist Portal */}
+            <Route path="/scientist-dashboard" component={ScientistDashboard} />
+            <Route path="/admin-dashboard" component={AdminDashboard} />
             <Route path="/admin">
               <AdminPage currentRole={currentRole} onRoleChange={(r) => setCurrentRole(r)} />
             </Route>
@@ -140,6 +148,8 @@ export default function App() {
         </React.Suspense>
       </main>
 
+      <SyncQueueBanner />
+      <PolarisCopilot />
       {/* Global Footer */}
       <Footer />
 

@@ -120,6 +120,8 @@ export interface Dataset {
   doi?: string;
   last_updated: string;
   provenance: string;
+  source_url?: string;
+  download_url?: string;
   sample_data?: any[];
 }
 
@@ -148,6 +150,8 @@ export interface Expedition {
   datasets_detail?: any[];
   publications_detail?: any[];
   media_detail?: any[];
+  milestones?: { date: string; description: string }[];
+  source_urls?: { title: string; url: string }[];
 }
 
 export interface Publication {
@@ -287,4 +291,55 @@ export interface KnowledgeGraphLink {
 export interface KnowledgeGraphResponse {
   nodes: KnowledgeGraphNode[];
   links: KnowledgeGraphLink[];
+}
+
+// ─── NetCDF CTD Profile Types ──────────────────────────────────────────
+
+export interface NetCDFVariableInfo {
+  name: string;
+  shape: number[];
+  standard_name?: string;
+  long_name?: string;
+  units?: string;
+  instrument?: string;
+  accuracy?: string;
+}
+
+export interface NetCDFMetadata {
+  title: string;
+  institution: string;
+  source: string;
+  conventions: string;
+  references: string;
+  cast_date: string;
+  latitude: number;
+  longitude: number;
+  depth_levels: number;
+  max_depth_m: number;
+  feature_type: string;
+  temporal_resolution?: string;
+  raw_resolution?: string;
+  total_raw_observations?: number;
+}
+
+export interface CTDProfilePoint {
+  depth: number;
+  temperature: number;
+  salinity: number;
+  dissolved_oxygen?: number;
+  sigma_theta?: number;
+}
+
+export interface MooringTimeSeriesPoint {
+  day_of_year: number;
+  temperature: number;
+  salinity: number;
+}
+
+export interface NetCDFPreviewResponse {
+  dataset_id: string;
+  type: 'vertical_profile' | 'time_series';
+  metadata: NetCDFMetadata;
+  variables: NetCDFVariableInfo[];
+  profile: (CTDProfilePoint | MooringTimeSeriesPoint)[];
 }

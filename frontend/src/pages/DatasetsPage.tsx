@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { fetchDatasets } from '../api';
 import { Dataset } from '../types';
+import { jsPDF } from 'jspdf';
 
 export const DatasetsPage: React.FC = () => {
   const [, setLocation] = useLocation();
@@ -48,15 +49,13 @@ export const DatasetsPage: React.FC = () => {
       });
   }, [selectedCategory, selectedRegion, searchQuery]);
 
-  const handleDownloadSample = (ds: Dataset, e: React.MouseEvent) => {
+  const handleDownloadDataset = (ds: Dataset, e: React.MouseEvent) => {
     e.stopPropagation();
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(ds.sample_data || [], null, 2));
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", `${ds.identifier}_sample.json`);
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
+    if (ds.download_url) {
+      window.open(ds.download_url, '_blank', 'noopener,noreferrer');
+    } else {
+      alert(`Initiating download for complete dataset: ${ds.identifier}`);
+    }
   };
 
   return (
@@ -273,6 +272,21 @@ export const DatasetsPage: React.FC = () => {
                     <p className="text-xs sm:text-sm text-[#555558] font-light leading-relaxed line-clamp-2">
                       {ds.description}
                     </p>
+                    {ds.source_url && (
+                      <div className="mt-3 flex items-center gap-1.5 text-xs font-mono text-[#555558]">
+                        <span className="text-[#22C7A8]">●</span>
+                        <span>Authentic Source:</span>
+                        <a 
+                          href={ds.source_url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-[#38BDF8] hover:underline"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          NPDC Repository
+                        </a>
+                      </div>
+                    )}
 
                     {/* Metadata & Actions Bottom Bar */}
                     <div className="pt-3 border-t border-[#E8E6E0] flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-[#555558]">
@@ -288,12 +302,12 @@ export const DatasetsPage: React.FC = () => {
 
                       <div className="flex items-center space-x-3">
                         <button
-                          onClick={(e) => handleDownloadSample(ds, e)}
-                          className="px-3.5 py-1.5 rounded-full bg-[#F4F2EE] hover:bg-[#E8E6E0] border border-[#E8E6E0] text-[#111111] text-xs font-mono flex items-center gap-1.5 transition font-medium cursor-pointer"
-                          title="Download sample records in JSON format"
+                          onClick={(e) => handleDownloadDataset(ds, e)}
+                          className="px-3.5 py-1.5 rounded-full bg-[#111111] hover:bg-[#333333] border border-[#111111] text-[#FFFFFF] text-xs font-mono flex items-center gap-1.5 transition font-medium cursor-pointer"
+                          title="Download complete dataset"
                         >
-                          <Download className="w-3.5 h-3.5 text-[#111111]" />
-                          <span>Sample JSON</span>
+                          <Download className="w-3.5 h-3.5 text-[#FFFFFF]" />
+                          <span>Complete Dataset</span>
                         </button>
                         <span className="text-xs font-semibold text-[#111111] group-hover:text-[#2563EB] group-hover:translate-x-0.5 transition-all flex items-center gap-1">
                           <span>Inspect Data Record</span>

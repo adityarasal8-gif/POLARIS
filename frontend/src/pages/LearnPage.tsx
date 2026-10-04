@@ -4,6 +4,7 @@ import {
   XCircle, ArrowRight, RotateCcw, Sparkles, Layers, 
   Thermometer, Wind, Mountain, ChevronRight, Globe, Award, Search
 } from 'lucide-react';
+import { JuniorGlaciologistQuiz } from '../components/JuniorGlaciologistQuiz';
 
 interface QuizQuestion {
   id: number;
@@ -571,131 +572,7 @@ export default function LearnPage() {
         {/* TAB 3: QUIZ CHALLENGE */}
         {activeTab === 'quiz' && (
           <div className="max-w-3xl mx-auto space-y-8">
-            <div className="bg-white border border-[#E8E6E0] rounded-3xl p-6 sm:p-10 space-y-8 shadow-sm">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E8E6E0] pb-6">
-                <div>
-                  <span className="text-xs font-mono uppercase tracking-widest text-[#8E8E91] font-semibold">
-                    Interactive Assessment
-                  </span>
-                  <h2 className="font-serif text-3xl text-[#111111] font-medium mt-1">
-                    Polar Science Knowledge Challenge
-                  </h2>
-                </div>
-
-                {quizSubmitted ? (
-                  <div className="flex items-center gap-4">
-                    <div className="text-right">
-                      <span className="text-xs font-mono text-[#8E8E91] block">FINAL SCORE</span>
-                      <span className="text-2xl font-bold font-mono text-[#111111]">
-                        {calculateScore()} / {QUIZ_QUESTIONS.length}
-                      </span>
-                    </div>
-                    <button
-                      onClick={resetQuiz}
-                      className="p-2.5 rounded-full bg-[#FAFAF8] border border-[#E8E6E0] text-[#111111] hover:bg-white transition-colors cursor-pointer"
-                      title="Reset Quiz"
-                    >
-                      <RotateCcw className="w-4 h-4" />
-                    </button>
-                  </div>
-                ) : (
-                  <span className="text-xs font-mono text-[#8E8E91]">
-                    Answer all 5 questions
-                  </span>
-                )}
-              </div>
-
-              {/* Questions */}
-              <div className="space-y-8">
-                {QUIZ_QUESTIONS.map((q) => {
-                  const userAnswer = selectedAnswers[q.id];
-                  const isAnswered = userAnswer !== undefined;
-
-                  return (
-                    <div key={q.id} className="space-y-4">
-                      <div className="flex items-start gap-3">
-                        <span className="w-7 h-7 rounded-full bg-[#111111] text-white text-xs font-mono flex items-center justify-center shrink-0 mt-0.5 font-bold">
-                          {q.id}
-                        </span>
-                        <h3 className="text-base font-medium text-[#111111] leading-snug">
-                          {q.question}
-                        </h3>
-                      </div>
-
-                      <div className="space-y-2.5 pl-10">
-                        {q.options.map((opt, optIdx) => {
-                          const isSelected = userAnswer === optIdx;
-                          let optionClass = "bg-[#FAFAF8] border-[#E8E6E0] text-[#111111] hover:border-[#111111]/30";
-
-                          if (quizSubmitted) {
-                            if (optIdx === q.correctIndex) {
-                              optionClass = "bg-emerald-50 border-emerald-500 text-emerald-900 font-medium";
-                            } else if (isSelected && optIdx !== q.correctIndex) {
-                              optionClass = "bg-red-50 border-red-500 text-red-900";
-                            } else {
-                              optionClass = "bg-[#FAFAF8] border-[#E8E6E0] text-[#8E8E91] opacity-50";
-                            }
-                          } else if (isSelected) {
-                            optionClass = "bg-[#111111] border-[#111111] text-white font-medium shadow-sm";
-                          }
-
-                          return (
-                            <div
-                              key={optIdx}
-                              onClick={() => handleSelectOption(q.id, optIdx)}
-                              className={`p-3.5 rounded-2xl border text-sm transition-all flex items-center justify-between cursor-pointer ${optionClass}`}
-                            >
-                              <span>{opt}</span>
-                              {quizSubmitted && optIdx === q.correctIndex && (
-                                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 ml-2" />
-                              )}
-                              {quizSubmitted && isSelected && optIdx !== q.correctIndex && (
-                                <XCircle className="w-4 h-4 text-red-600 shrink-0 ml-2" />
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-
-                      {quizSubmitted && (
-                        <div className="ml-10 p-4 rounded-2xl bg-[#FAFAF8] border border-[#E8E6E0] text-xs space-y-1.5 font-light">
-                          <span className="font-mono text-[#111111] font-bold uppercase text-[10px] block">
-                            Scientific Rationale
-                          </span>
-                          <p className="text-[#555558] leading-relaxed">{q.explanation}</p>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Action Bar */}
-              <div className="pt-6 border-t border-[#E8E6E0] flex items-center justify-between">
-                <span className="text-xs font-mono text-[#8E8E91]">
-                  {Object.keys(selectedAnswers).length} of {QUIZ_QUESTIONS.length} selected
-                </span>
-
-                {!quizSubmitted ? (
-                  <button
-                    onClick={() => setQuizSubmitted(true)}
-                    disabled={Object.keys(selectedAnswers).length < QUIZ_QUESTIONS.length}
-                    className="px-6 py-2.5 bg-[#111111] hover:bg-black disabled:opacity-40 disabled:cursor-not-allowed text-white font-mono text-xs font-medium rounded-full transition-all flex items-center gap-2 cursor-pointer shadow-sm"
-                  >
-                    <span>Evaluate Responses</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                ) : (
-                  <button
-                    onClick={resetQuiz}
-                    className="px-6 py-2.5 bg-white border border-[#E8E6E0] hover:bg-[#FAFAF8] text-[#111111] font-mono text-xs font-medium rounded-full transition-all flex items-center gap-2 cursor-pointer"
-                  >
-                    <RotateCcw className="w-4 h-4" />
-                    <span>Retake Assessment</span>
-                  </button>
-                )}
-              </div>
-            </div>
+            <JuniorGlaciologistQuiz />
           </div>
         )}
       </div>

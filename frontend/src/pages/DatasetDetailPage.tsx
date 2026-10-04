@@ -10,6 +10,8 @@ import {
   CartesianGrid, Tooltip, ResponsiveContainer 
 } from 'recharts';
 import { fetchDatasetDetail } from '../api';
+import { CTDProfileViewer } from '../components/CTDProfileViewer';
+import { jsPDF } from 'jspdf';
 
 export const DatasetDetailPage: React.FC = () => {
   const [, params] = useRoute('/datasets/:id');
@@ -54,13 +56,11 @@ export const DatasetDetailPage: React.FC = () => {
   const xKey = Object.keys(firstItem).find((k) => ['date', 'month', 'year', 'decade', 'hour', 'depth_m', 'distance_km', 'latitude', 'elevation_m'].includes(k)) || 'date';
 
   const handleDownload = () => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(sampleData, null, 2));
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", `${dataset.identifier}_sample.json`);
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
+    if (dataset.download_url) {
+      window.open(dataset.download_url, '_blank', 'noopener,noreferrer');
+    } else {
+      alert(`Initiating download for complete dataset: ${dataset.identifier}`);
+    }
   };
 
   return (
@@ -97,10 +97,10 @@ export const DatasetDetailPage: React.FC = () => {
 
             <button
               onClick={handleDownload}
-              className="px-5 py-2.5 rounded-full bg-[#111111] hover:bg-black text-white font-medium text-xs font-mono tracking-wider transition flex items-center space-x-2 shadow-sm"
+              className="px-5 py-2.5 rounded-full bg-[#111111] hover:bg-black text-white font-medium text-xs font-mono tracking-wider transition flex items-center space-x-2 shadow-sm cursor-pointer"
             >
               <Download className="w-3.5 h-3.5 text-white" />
-              <span>Download Sample JSON</span>
+              <span>Complete Dataset</span>
             </button>
           </div>
 
@@ -130,8 +130,26 @@ export const DatasetDetailPage: React.FC = () => {
               <span className="text-[#8E8E91] block text-[10px] uppercase">DOI Reference</span>
               <span className="font-semibold text-[#111111]">{dataset.doi || 'NPDC/MOES-2025-01'}</span>
             </div>
+            <div className="p-3 bg-[#F4F2EE] rounded-xl border border-[#E8E6E0] md:col-span-2">
+              <span className="text-[#8E8E91] block text-[10px] uppercase mb-0.5">Authentic Source</span>
+              {dataset.source_url ? (
+                <a 
+                  href={dataset.source_url} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="font-medium text-[#111111] hover:text-[#38BDF8] underline break-all flex items-center gap-1"
+                >
+                  <span className="text-[#22C7A8] text-[10px]">●</span> NPDC Repository
+                </a>
+              ) : (
+                <span className="font-medium text-[#111111]">N/A</span>
+              )}
+            </div>
           </div>
         </div>
+
+        {/* NetCDF Binary Scientific Profile Inspector */}
+        <CTDProfileViewer datasetId={dsId} />
 
         {/* Interactive Sensor Telemetry Preview Chart */}
         {sampleData.length > 0 && dataKeys.length > 0 && (

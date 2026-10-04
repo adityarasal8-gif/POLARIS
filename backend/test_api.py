@@ -247,6 +247,37 @@ def test_knowledge_graph():
     assert res_filtered.status_code == 200
     assert len(res_filtered.json()["nodes"]) > 0
 
+def test_netcdf_ctd_preview():
+    """Tests the NetCDF binary CTD profile endpoint for the Southern Ocean dataset."""
+    response = client.get("/api/datasets/ds_southern_ocean_ctd_2024/netcdf-preview")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["dataset_id"] == "ds_southern_ocean_ctd_2024"
+    assert data["type"] == "vertical_profile"
+    assert data["metadata"]["conventions"] == "CF-1.8"
+    assert data["metadata"]["institution"] == "NCPOR, Ministry of Earth Sciences, Government of India"
+    assert data["metadata"]["latitude"] < 0  # Southern hemisphere
+    assert len(data["variables"]) >= 4  # depth, temp, salinity, oxygen, sigma_theta
+    assert len(data["profile"]) == 52  # 52 depth levels
+    # Verify profile structure
+    first_point = data["profile"][0]
+    assert "depth" in first_point
+    assert "temperature" in first_point
+    assert "salinity" in first_point
+    assert first_point["depth"] == 0.0  # Surface
+
+def test_netcdf_not_found():
+    """Tests that non-NetCDF datasets return 404 for netcdf-preview."""
+    response = client.get("/api/datasets/ds_maitri_atmo_2025/netcdf-preview")
+    assert response.status_code == 404
+
+def test_netcdf_capable_list():
+    """Tests the list of NetCDF-capable datasets."""
+    response = client.get("/api/datasets/netcdf-capable")
+    assert response.status_code == 200
+    data = response.json()
+    assert "ds_southern_ocean_ctd_2024" in data["datasets"]
+
 if __name__ == "__main__":
     tests = [
         test_health_check,
@@ -268,7 +299,10 @@ if __name__ == "__main__":
         test_researchers_and_topics,
         test_unified_search,
         test_content_draft_lifecycle,
-        test_knowledge_graph
+        test_knowledge_graph,
+        test_netcdf_ctd_preview,
+        test_netcdf_not_found,
+        test_netcdf_capable_list,
     ]
     passed = 0
     failed = 0

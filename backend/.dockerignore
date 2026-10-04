@@ -1,0 +1,18 @@
+# Ignore Python virtual environments
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore SQLite database (will be auto-seeded on first boot)
+polaris.db
+polaris.db-journal
+polaris.db-wal
+polaris.db-shm
+
+# Generated data files (will be re-created at runtime)
+data/
+
+# Environment files
+.env
+.env.local

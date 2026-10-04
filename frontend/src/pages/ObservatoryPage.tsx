@@ -13,8 +13,10 @@ import {
 import { fetchLiveObservatory, fetchStationHistory, getStationTelemetryExportUrl } from '../api';
 import { StationWeather, StationHistoryResponse, TelemetryHourlyReading } from '../types';
 import { DetailedPolarMap } from '../components/DetailedPolarMap';
+import { PolarGlobe3D } from '../components/PolarGlobe3D';
 
 export const ObservatoryPage: React.FC = () => {
+  const [use3DMap, setUse3DMap] = useState(true);
   const [stationsWeather, setStationsWeather] = useState<StationWeather[]>([]);
   const [selectedStationId, setSelectedStationId] = useState<string>('maitri');
   const [historyData, setHistoryData] = useState<StationHistoryResponse | null>(null);
@@ -208,6 +210,15 @@ export const ObservatoryPage: React.FC = () => {
               <span>Export CSV (ISO-19115)</span>
             </a>
 
+            {/* Map Toggle Button */}
+            <button
+              onClick={() => setUse3DMap(!use3DMap)}
+              className="px-4 py-2.5 rounded-full bg-white hover:bg-[#F4F2EE] border border-[#E8E6E0] text-xs font-mono text-[#111111] flex items-center gap-2 transition shadow-sm font-medium hover:border-[#111111] cursor-pointer"
+            >
+              <Compass className="w-3.5 h-3.5 text-[#2563EB]" />
+              <span>{use3DMap ? 'Switch to Tactical 2D Cartography' : 'Switch to 3D Globe'}</span>
+            </button>
+
             {/* Sync Button */}
             <button
               onClick={handleRefresh}
@@ -222,15 +233,26 @@ export const ObservatoryPage: React.FC = () => {
       </div>
 
       {/* 2. Scientific Polar Command Map Explorer */}
-      <DetailedPolarMap
-        stationsWeather={stationsWeather}
-        selectedStationId={selectedStationId}
-        onSelectStation={setSelectedStationId}
-        height="540px"
-        onViewTelemetry={() => {
-          document.getElementById('instrumentation-console')?.scrollIntoView({ behavior: 'smooth' });
-        }}
-      />
+      {use3DMap ? (
+        <PolarGlobe3D 
+          stationsWeather={stationsWeather}
+          selectedStationId={selectedStationId}
+          onSelectStation={setSelectedStationId}
+          onViewTelemetry={() => {
+            document.getElementById('instrumentation-console')?.scrollIntoView({ behavior: 'smooth' });
+          }}
+        />
+      ) : (
+        <DetailedPolarMap
+          stationsWeather={stationsWeather}
+          selectedStationId={selectedStationId}
+          onSelectStation={setSelectedStationId}
+          height="540px"
+          onViewTelemetry={() => {
+            document.getElementById('instrumentation-console')?.scrollIntoView({ behavior: 'smooth' });
+          }}
+        />
+      )}
 
       {/* 3. Instrumentation Telemetry Console */}
       <div id="instrumentation-console" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 space-y-12">
@@ -766,7 +788,14 @@ export const ObservatoryPage: React.FC = () => {
                         </span>
                       </td>
                       <td className="py-4 px-4 text-right">
-                        <span className="inline-flex items-center gap-1 text-[11px] text-[#2563EB] hover:underline font-mono">
+                        <span 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedStationId(s.station_id);
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }}
+                          className="inline-flex items-center gap-1 text-[11px] text-[#2563EB] hover:underline font-mono cursor-pointer"
+                        >
                           <span>Focus Station</span>
                           <ChevronRight className="w-3.5 h-3.5" />
                         </span>

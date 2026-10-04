@@ -1,4 +1,6 @@
 import uuid
+import os
+import json
 from datetime import datetime, timezone
 from typing import Dict, Any, List
 from models import ContentDraft
@@ -10,6 +12,50 @@ def generate_grounded_outreach(source_type: str, source_data: Dict[str, Any]) ->
     """
     draft_id = f"draft_{uuid.uuid4().hex[:8]}"
     created_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+
+    api_key = os.getenv("GEMINI_API_KEY")
+    if api_key:
+        try:
+            import google.generativeai as genai
+            genai.configure(api_key=api_key)
+            model = genai.GenerativeModel('gemini-1.5-flash', generation_config={"response_mime_type": "application/json"})
+            prompt = f"""
+            Generate a multi-platform dissemination package strictly grounded in the provided scientific metadata.
+            Source Type: {source_type}
+            Source Data: {json.dumps(source_data)}
+            
+            Return a JSON object with EXACTLY these keys:
+            - title: A short catchy title
+            - website_article: Markdown formatted article overview.
+            - instagram_post: Text for an Instagram post including emojis and hashtags.
+            - x_post: Text for a Twitter/X post.
+            - linkedin_post: Text for a LinkedIn post.
+            - youtube_description: Text for a YouTube video description.
+            - newsletter_summary: A short summary for a newsletter.
+            - citations: A list of objects, each with "source_field" and "reference" string keys.
+            """
+            response = model.generate_content(prompt)
+            data = json.loads(response.text)
+            
+            return ContentDraft(
+                id=draft_id,
+                source_type=source_type,
+                source_id=str(source_data.get("id", "source_1")),
+                source_title=source_data.get("name", source_data.get("title", "Polar Record")),
+                title=data.get("title", f"AI Generated: {source_data.get('name', 'Record')}"),
+                created_at=created_at,
+                status="Draft",
+                website_article=data.get("website_article", "").strip(),
+                instagram_post=data.get("instagram_post", "").strip(),
+                x_post=data.get("x_post", "").strip(),
+                linkedin_post=data.get("linkedin_post", "").strip(),
+                youtube_description=data.get("youtube_description", "").strip(),
+                newsletter_summary=data.get("newsletter_summary", "").strip(),
+                citations=data.get("citations", [])
+            )
+        except Exception as e:
+            print(f"Warning: Gemini generation failed ({e}). Falling back to static templates.")
+            pass
 
     if source_type == "expedition":
         code = source_data.get("code", "ISEA")

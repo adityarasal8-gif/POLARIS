@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { fetchExpeditions } from '../api';
 import { Expedition } from '../types';
+import { ExpeditionLogSubmitter } from '../components/ExpeditionLogSubmitter';
 
 const CHRONOLOGY_MILESTONES = [
   { year: '1981', code: 'EXP-01', title: 'Operation Gangotri', region: 'Antarctica', label: '1st Landing' },
@@ -33,7 +34,8 @@ export const ExpeditionsPage: React.FC = () => {
     fetchExpeditions({
       region: selectedRegion === 'All' ? undefined : selectedRegion,
       status: selectedStatus === 'All' ? undefined : selectedStatus,
-      q: searchQuery.trim() || undefined
+      q: searchQuery.trim() || undefined,
+      year: activeMilestoneYear ? parseInt(activeMilestoneYear) : undefined
     })
       .then((data) => {
         setExpeditions(data);
@@ -43,7 +45,7 @@ export const ExpeditionsPage: React.FC = () => {
         console.error('Expeditions fetch error:', err);
         setLoading(false);
       });
-  }, [selectedRegion, selectedStatus, searchQuery]);
+  }, [selectedRegion, selectedStatus, searchQuery, activeMilestoneYear]);
 
   const REGIONS = ['All', 'Antarctica', 'Arctic', 'Himalaya', 'Southern Ocean'];
   const STATUSES = ['All', 'Active', 'Completed'];
@@ -151,6 +153,9 @@ export const ExpeditionsPage: React.FC = () => {
             })}
           </div>
         </div>
+
+        {/* Scientist Workflow: Expedition Log Submitter */}
+        <ExpeditionLogSubmitter />
 
         {/* 3. Filter & Search Bar with Micro-Interactions */}
         <div className="bg-[#F4F2EE] p-4 sm:p-5 rounded-2xl border border-[#E8E6E0] flex flex-col md:flex-row gap-4 items-center justify-between shadow-2xs">

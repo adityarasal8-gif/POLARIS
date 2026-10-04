@@ -112,6 +112,13 @@ def init_db():
             access_status TEXT,
             provider TEXT,
             doi TEXT,
+            source_repository TEXT,
+            source_url TEXT,
+            doi_url TEXT,
+            license TEXT,
+            verification_hash TEXT,
+            citation_text TEXT,
+            institution_credit TEXT,
             last_updated TEXT,
             provenance TEXT,
             sample_data TEXT -- JSON array
@@ -131,7 +138,14 @@ def init_db():
             expedition_id TEXT,
             station_id TEXT,
             citation_count INTEGER,
-            pdf_available INTEGER
+            pdf_available INTEGER,
+            source_repository TEXT,
+            source_url TEXT,
+            doi_url TEXT,
+            license TEXT,
+            verification_hash TEXT,
+            citation_text TEXT,
+            institution_credit TEXT
         );
 
         CREATE TABLE IF NOT EXISTS media_assets (
@@ -148,7 +162,14 @@ def init_db():
             credit TEXT,
             source TEXT,
             license TEXT,
-            tags TEXT -- JSON array
+            tags TEXT, -- JSON array
+            source_repository TEXT,
+            source_url TEXT,
+            doi TEXT,
+            doi_url TEXT,
+            verification_hash TEXT,
+            citation_text TEXT,
+            institution_credit TEXT
         );
 
         CREATE TABLE IF NOT EXISTS activities (

@@ -170,8 +170,13 @@ export default function StationsPage() {
         ) : (
           <div className="relative w-full h-[540px] bg-[#07151F] border-b border-[#E8E6E0] overflow-hidden">
             <PolarGlobe3D
+              stationsWeather={weatherList}
+              selectedStationId={selectedStationId}
               onSelectStation={(id) => {
                 setSelectedStationId(id);
+                document.getElementById('station-dossier-section')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              onViewTelemetry={() => {
                 document.getElementById('station-dossier-section')?.scrollIntoView({ behavior: 'smooth' });
               }}
             />

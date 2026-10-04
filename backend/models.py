@@ -67,6 +67,8 @@ class Dataset(BaseModel):
     doi: Optional[str] = None
     last_updated: str
     provenance: str
+    source_url: Optional[str] = None
+    download_url: Optional[str] = None
     sample_data: Optional[List[Dict[str, Any]]] = None
 
 class Publication(BaseModel):
@@ -111,6 +113,7 @@ class Activity(BaseModel):
     region: Optional[str] = None
     expedition_id: Optional[str] = None
     source: str
+    url: Optional[str] = None
     image_url: Optional[str] = None
 
 class Expedition(BaseModel):
@@ -135,6 +138,8 @@ class Expedition(BaseModel):
     connected_datasets: List[str] = []
     connected_publications: List[str] = []
     connected_media: List[str] = []
+    milestones: Optional[List[dict]] = []
+    source_urls: Optional[List[dict]] = []
 
 class ContentDraft(BaseModel):
     id: str

@@ -5,6 +5,9 @@ import {
   BookOpen, Database, Image, FileText, 
   Activity as ActivityIcon, Globe, Lock
 } from 'lucide-react';
+import { usePersona, Persona } from '../context/PersonaContext';
+import { AuthModal } from './AuthModal';
+import { LogIn, LogOut, User } from 'lucide-react';
 
 interface HeaderProps {
   onOpenSearch?: () => void;
@@ -13,10 +16,10 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ onOpenSearch }) => {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [exploreOpen, setExploreOpen] = useState(false);
-  const [researchOpen, setResearchOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const { persona, setPersona } = usePersona();
 
   return (
     <header className="sticky top-0 z-40 w-full bg-[#FAFAF8]/95 backdrop-blur-md border-b border-[#E8E6E0] transition-colors">
@@ -52,21 +55,17 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch }) => {
           </Link>
 
           {/* Explore Dropdown */}
-          <div className="relative" onMouseLeave={() => setExploreOpen(false)}>
+          <div className="relative group">
             <button
-              onMouseEnter={() => setExploreOpen(true)}
-              onClick={() => setExploreOpen(!exploreOpen)}
               className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full hover:text-[#111111] hover:bg-[#111111]/5 transition-all"
             >
-              <span>Explore</span>
+              <span>Discover</span>
               <ChevronDown className="w-3.5 h-3.5 text-[#8E8E91]" />
             </button>
 
-            {exploreOpen && (
-              <div 
-                className="absolute top-full left-0 w-64 pt-2 z-50 animate-in fade-in duration-150"
-                onMouseEnter={() => setExploreOpen(true)}
-              >
+            <div 
+              className="absolute top-full left-0 w-64 pt-2 z-50 animate-in fade-in duration-150 hidden group-hover:block"
+            >
                 <div className="bg-[#FFFFFF] p-2.5 rounded-2xl shadow-xl border border-[#E8E6E0] space-y-1">
                   <Link href="/expeditions" className="flex items-center space-x-3 px-3 py-2.5 rounded-xl hover:bg-[#F4F2EE] text-xs text-[#111111] group">
                     <Compass className="w-4 h-4 text-[#2563EB] group-hover:scale-110 transition-transform" />
@@ -98,25 +97,20 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch }) => {
                   </Link>
                 </div>
               </div>
-            )}
-          </div>
+            </div>
 
           {/* Research Dropdown */}
-          <div className="relative" onMouseLeave={() => setResearchOpen(false)}>
+          <div className="relative group">
             <button
-              onMouseEnter={() => setResearchOpen(true)}
-              onClick={() => setResearchOpen(!researchOpen)}
               className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full hover:text-[#111111] hover:bg-[#111111]/5 transition-all"
             >
               <span>Research</span>
               <ChevronDown className="w-3.5 h-3.5 text-[#8E8E91]" />
             </button>
 
-            {researchOpen && (
-              <div 
-                className="absolute top-full left-0 w-64 pt-2 z-50 animate-in fade-in duration-150"
-                onMouseEnter={() => setResearchOpen(true)}
-              >
+            <div 
+              className="absolute top-full left-0 w-64 pt-2 z-50 animate-in fade-in duration-150 hidden group-hover:block"
+            >
                 <div className="bg-[#FFFFFF] p-2.5 rounded-2xl shadow-xl border border-[#E8E6E0] space-y-1">
                   <Link href="/datasets" className="flex items-center space-x-3 px-3 py-2.5 rounded-xl hover:bg-[#F4F2EE] text-xs text-[#111111] group">
                     <Database className="w-4 h-4 text-[#2563EB] group-hover:scale-110 transition-transform" />
@@ -148,21 +142,16 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch }) => {
                   </Link>
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+
+
 
           <Link 
-            href="/expeditions" 
-            className={`px-3.5 py-1.5 rounded-full transition-all ${location === '/expeditions' ? 'text-[#111111] bg-[#111111]/5 font-semibold' : 'hover:text-[#111111] hover:bg-[#111111]/5'}`}
+            href="/explore" 
+            className={`px-3.5 py-1.5 rounded-full transition-all flex items-center space-x-1.5 ${location === '/explore' ? 'text-[#111111] bg-[#111111]/5 font-semibold' : 'hover:text-[#111111] hover:bg-[#111111]/5'}`}
           >
-            Expeditions
-          </Link>
-
-          <Link 
-            href="/datasets" 
-            className={`px-3.5 py-1.5 rounded-full transition-all ${location === '/datasets' ? 'text-[#111111] bg-[#111111]/5 font-semibold' : 'hover:text-[#111111] hover:bg-[#111111]/5'}`}
-          >
-            Data
+            <Compass className="w-3.5 h-3.5 text-[#2563EB]" />
+            <span>Explore</span>
           </Link>
 
           <Link 
@@ -172,10 +161,31 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch }) => {
             <BookOpen className="w-3.5 h-3.5 text-[#2563EB]" />
             <span>Learn</span>
           </Link>
+
+          {persona === 'MoES Scientist' && (
+            <Link 
+              href="/scientist-dashboard" 
+              className={`px-3.5 py-1.5 rounded-full transition-all flex items-center space-x-1.5 ${location === '/scientist-dashboard' ? 'text-[#111111] bg-[#111111]/5 font-semibold' : 'hover:text-[#111111] hover:bg-[#111111]/5'}`}
+            >
+              <ActivityIcon className="w-3.5 h-3.5 text-[#DC2626]" />
+              <span>Scientist Dashboard</span>
+            </Link>
+          )}
+
+          {persona === 'MoES Admin' && (
+            <Link 
+              href="/admin-dashboard" 
+              className={`px-3.5 py-1.5 rounded-full transition-all flex items-center space-x-1.5 ${location === '/admin-dashboard' ? 'text-[#111111] bg-[#111111]/5 font-semibold' : 'hover:text-[#111111] hover:bg-[#111111]/5'}`}
+            >
+              <Lock className="w-3.5 h-3.5 text-[#16A34A]" />
+              <span>Admin Center</span>
+            </Link>
+          )}
         </nav>
 
         {/* Right Action Buttons */}
         <div className="flex items-center space-x-3">
+          
           {/* Quick Search Trigger Pill */}
           <button
             type="button"
@@ -190,14 +200,47 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch }) => {
             </kbd>
           </button>
 
-          {/* Live Observatory Direct CTA (Solid Black AgentShield Pill) */}
-          <Link
-            href="/observatory"
-            className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-[#111111] hover:opacity-85 text-white text-xs font-semibold shadow-[0_4px_14px_rgba(17,17,17,0.18)] transition-all"
-          >
-            <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse" />
-            <span>Live Observatory</span>
-          </Link>
+          {/* Authentication System */}
+          {persona === 'Public' ? (
+            <button
+              onClick={() => setIsAuthModalOpen(true)}
+              className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-[#111111] hover:opacity-85 text-white text-xs font-semibold shadow-[0_4px_14px_rgba(17,17,17,0.18)] transition-all cursor-pointer"
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              <span>Login / Sign Up</span>
+            </button>
+          ) : (
+            <div className="relative group">
+              <button
+                className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-[#111111] text-white text-xs font-mono font-semibold transition-all shadow-xs"
+              >
+                <User className="w-3.5 h-3.5" />
+                <span>{persona === 'MoES Scientist' ? 'Scientist' : 'Admin'}</span>
+                <ChevronDown className="w-3.5 h-3.5 opacity-60" />
+              </button>
+
+              <div className="absolute right-0 top-full pt-2 w-48 z-50 animate-in fade-in slide-in-from-top-2 hidden group-hover:block">
+                <div className="bg-[#FFFFFF] rounded-2xl shadow-xl border border-[#E8E6E0] py-2">
+                  <div className="px-4 py-2 border-b border-[#E8E6E0] mb-1">
+                    <p className="text-[10px] text-[#8E8E91] uppercase tracking-wider">Signed in as</p>
+                    <p className="text-xs font-bold text-[#111111] truncate">{persona}</p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setPersona('Public');
+                      setLocation('/');
+                    }}
+                    className="w-full text-left px-4 py-2 text-xs font-mono text-[#DC2626] hover:bg-[#FEF2F2] transition-colors flex items-center space-x-2"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>Secure Sign Out</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+
 
           {/* Mobile Hamburger Toggle */}
           <button
@@ -235,6 +278,15 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch }) => {
           <Link href="/publications" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-[#555558]">Publications & Research</Link>
           <Link href="/repository" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-[#555558]">Knowledge Repository Search</Link>
           <Link href="/learn" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-[#2563EB]">Student Hub & Quiz</Link>
+          <Link href="/explore" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-[#2563EB]">Explore Feed & DOIs</Link>
+          
+          {persona === 'MoES Scientist' && (
+            <Link href="/scientist-dashboard" onClick={() => setMobileMenuOpen(false)} className="block py-2 font-semibold text-[#DC2626]">Scientist Dashboard</Link>
+          )}
+          {persona === 'MoES Admin' && (
+            <Link href="/admin-dashboard" onClick={() => setMobileMenuOpen(false)} className="block py-2 font-semibold text-[#16A34A]">Admin Center</Link>
+          )}
+
           <Link href="/media" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-[#555558]">Media Gallery</Link>
           <Link href="/activities" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-[#555558]">Institutional Dispatches</Link>
           <Link href="/studio" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-[#111111]">AI Outreach Studio</Link>
@@ -246,6 +298,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch }) => {
           </div>
         </div>
       )}
+      
+      {/* Official Auth Modal */}
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
     </header>
   );
 };

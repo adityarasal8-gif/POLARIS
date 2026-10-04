@@ -176,7 +176,7 @@ export default function MediaPage() {
                   <img
                     src={item.thumbnail_url || item.media_url}
                     alt={item.title}
-                    className="w-full h-full object-cover opacity-85 group-hover:opacity-100 group-hover:scale-108 transition-all duration-500"
+                    className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-90" />
                   <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between text-[10px] font-mono text-white/90">
@@ -308,24 +308,24 @@ export default function MediaPage() {
             onClick={() => setLightboxIndex(null)}
           >
             <div 
-              className="max-w-5xl w-full bg-white border border-[#E8E6E0] rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh] relative"
+              className="max-w-5xl w-full bg-white border border-[#E8E6E0] rounded-3xl overflow-y-auto shadow-2xl flex flex-col max-h-[95vh] relative"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Image Stage with Previous / Next Arrows */}
-              <div className="relative flex-1 bg-black flex items-center justify-center min-h-[360px] sm:min-h-[500px] select-none p-4">
+              <div className="relative flex-shrink-0 bg-black flex items-center justify-center min-h-[300px] sm:min-h-[450px] select-none p-4">
                 {activeLightboxItem.type === 'video' ? (
                   <video
                     src={activeLightboxItem.media_url}
                     poster={activeLightboxItem.thumbnail_url}
                     controls
                     autoPlay
-                    className="max-h-[62vh] w-auto max-w-full rounded-xl shadow-lg"
+                    className="max-h-[55vh] w-auto max-w-full rounded-xl shadow-lg"
                   />
                 ) : (
                   <img
                     src={activeLightboxItem.media_url}
                     alt={activeLightboxItem.title}
-                    className="max-h-[62vh] w-auto object-contain transition-all duration-300"
+                    className="max-h-[55vh] w-auto object-contain transition-all duration-300"
                   />
                 )}
 

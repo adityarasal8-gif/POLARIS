@@ -338,9 +338,9 @@ export const KnowledgeGraphPage: React.FC = () => {
                       y1={p1.y}
                       x2={p2.x}
                       y2={p2.y}
-                      stroke={isConnected ? '#111111' : '#E8E6E0'}
-                      strokeWidth={isConnected ? 2.2 : 1}
-                      strokeDasharray={isConnected ? 'none' : '3 3'}
+                      stroke={isConnected ? '#111111' : '#B0B0B0'}
+                      strokeWidth={isConnected ? 2.2 : 1.5}
+                      strokeDasharray={isConnected ? 'none' : '4 4'}
                       className="transition-colors duration-300"
                     />
 

@@ -817,7 +817,7 @@ def seed_all():
             json.dumps([{"year": 2021, "extent_sqkm": 850000}, {"year": 2022, "extent_sqkm": 790000}, {"year": 2023, "extent_sqkm": 720000}, {"year": 2024, "extent_sqkm": 680000}, {"year": 2025, "extent_sqkm": 650000}])
         )
     ]
-    cursor.executemany("INSERT INTO datasets VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", datasets)
+    cursor.executemany("INSERT INTO datasets (id, name, type, region, start_date, end_date, station_id, expedition_id, format, size_mb, url, access_level, status, doi, parameters, instruments, summary, pi_name) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", datasets)
 
     # 6. PUBLICATIONS (15 Peer-Reviewed Papers with genuine DOI structures and abstracts)
     publications = [
@@ -1063,7 +1063,7 @@ def seed_all():
             1
         )
     ]
-    cursor.executemany("INSERT INTO publications VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", publications)
+    cursor.executemany("INSERT INTO publications (id, title, authors, journal, year, volume_issue, doi, abstract, region, research_topic, expedition_id, station_id, citation_count, pdf_available) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", publications)
 
     # 7. MEDIA ASSETS (30 Curated authentic polar photographic and video assets with real attribution)
     media_items = [

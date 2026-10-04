@@ -61,6 +61,10 @@ export const StudioPage: React.FC = () => {
       exps.forEach(e => items.push({ id: e.id, name: `${e.code} — ${e.name}`, type: 'expedition' }));
       dss.forEach(d => items.push({ id: d.id, name: `${d.identifier}: ${d.title}`, type: 'dataset' }));
       setSourcesList(items);
+      const firstExp = items.find(i => i.type === 'expedition');
+      if (firstExp && !selectedSourceId) {
+        setSelectedSourceId(firstExp.id);
+      }
 
       // Pre-fetch draft if available
       fetchContentDrafts().then((drafts) => {

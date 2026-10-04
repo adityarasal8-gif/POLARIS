@@ -19,15 +19,120 @@ export default function ActivitiesPage() {
   const [searchQuery, setSearchQuery] = useState('');
 
   // Interactive Radio Sounder Simulator
-  const [radioActive, setRadioActive] = useState(true);
+  const [radioActive, setRadioActive] = useState(false);
   const [selectedRadioChannel, setSelectedRadioChannel] = useState<'maitri' | 'himadri' | 'fleet'>('maitri');
+
+  // Procedural Web Audio API telemetry sound generation
+  useEffect(() => {
+    if (!radioActive) return;
+
+    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioContext) return;
+    
+    let ctx: AudioContext;
+    try {
+      ctx = new AudioContext();
+    } catch (e) {
+      console.warn("AudioContext creation failed", e);
+      return;
+    }
+
+    let intervalId: any;
+    let isPlaying = true;
+
+    const playBeep = (freq: number, duration: number, vol: number, type: OscillatorType = 'sine') => {
+      if (!isPlaying || ctx.state === 'closed') return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      gain.gain.setValueAtTime(vol, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+      
+      osc.start();
+      osc.stop(ctx.currentTime + duration);
+    };
+
+    const playNoise = (duration: number, vol: number) => {
+      if (!isPlaying || ctx.state === 'closed') return;
+      const bufferSize = ctx.sampleRate * duration;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+      
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+      const gain = ctx.createGain();
+      
+      noise.connect(gain);
+      gain.connect(ctx.destination);
+      
+      gain.gain.setValueAtTime(vol, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+      
+      noise.start();
+    };
+
+    if (selectedRadioChannel === 'maitri') {
+      // Maitri: Atmospheric sounding (fast, high-pitch rhythmic telemetry)
+      intervalId = setInterval(() => {
+        playBeep(800 + Math.random() * 200, 0.1, 0.03, 'sine');
+        if (Math.random() > 0.7) {
+          setTimeout(() => playBeep(1200, 0.05, 0.02, 'square'), 100);
+        }
+      }, 400);
+    } else if (selectedRadioChannel === 'himadri') {
+      // Himadri: Arctic mooring (deep sonar pings + cold wind static)
+      intervalId = setInterval(() => {
+        playBeep(300, 0.5, 0.06, 'sine');
+        setTimeout(() => playBeep(600, 0.2, 0.02, 'sine'), 400);
+        if (Math.random() > 0.5) {
+          setTimeout(() => playNoise(0.3, 0.01), 600);
+        }
+      }, 2500);
+    } else if (selectedRadioChannel === 'fleet') {
+      // Fleet Passage: VHF static chatter + ship radar sweeps
+      intervalId = setInterval(() => {
+        playNoise(0.1, 0.02);
+        setTimeout(() => playBeep(1500, 0.05, 0.01, 'triangle'), 150);
+        if (Math.random() > 0.8) {
+          setTimeout(() => playNoise(0.4, 0.03), 300);
+        }
+      }, 1200);
+    }
+
+    return () => {
+      isPlaying = false;
+      clearInterval(intervalId);
+      if (ctx.state !== 'closed') {
+        ctx.close().catch(console.error);
+      }
+    };
+  }, [radioActive, selectedRadioChannel]);
 
   useEffect(() => {
     async function loadData() {
       try {
         setLoading(true);
-        const data = await fetchActivities();
-        setActivities(data);
+        const data = await fetchActivities({
+          type: selectedType,
+          region: selectedRegion
+        });
+        
+        let filtered = data;
+        if (searchQuery.trim() !== '') {
+          const q = searchQuery.toLowerCase();
+          filtered = data.filter(item => 
+            item.title.toLowerCase().includes(q) || 
+            item.summary.toLowerCase().includes(q)
+          );
+        }
+        setActivities(filtered);
       } catch (err: any) {
         setError(err.message || 'Failed to fetch institutional activities');
       } finally {
@@ -35,7 +140,7 @@ export default function ActivitiesPage() {
       }
     }
     loadData();
-  }, []);
+  }, [selectedType, selectedRegion, searchQuery]);
 
   const types = [
     'All',

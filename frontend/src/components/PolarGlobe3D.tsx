@@ -1,339 +1,283 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState, useEffect, useMemo } from 'react';
+import Globe, { GlobeMethods } from 'react-globe.gl';
+import { Crosshair, MapPin, Wind, Thermometer, Info, Compass } from 'lucide-react';
 import * as THREE from 'three';
+import { StationWeather } from '../types';
 
-interface StationMarker {
-  id: string;
-  name: string;
-  region: string;
-  lat: number;
-  lon: number;
-  color: string;
-  role: string;
-}
+const STATION_META: Record<string, any> = {
+  maitri: { color: '#2563EB', flag: '🇦🇶', crew: 25 },
+  bharati: { color: '#16A34A', flag: '🇦🇶', crew: 47 },
+  himadri: { color: '#9333EA', flag: '🇸🇯', crew: 8 },
+  himansh: { color: '#F59E0B', flag: '🇮🇳', crew: 5 }
+};
 
-const STATIONS: StationMarker[] = [
-  { id: 'maitri', name: 'Maitri Station', region: 'Antarctica', lat: -70.7667, lon: 11.7333, color: '#38BDF8', role: 'Atmospheric & Geomagnetic' },
-  { id: 'bharati', name: 'Bharati Station', region: 'Antarctica', lat: -69.4072, lon: 76.1872, color: '#22C7A8', role: 'Oceanography & Satellite' },
-  { id: 'himadri', name: 'Himadri Station', region: 'Arctic', lat: 78.9242, lon: 11.9286, color: '#6EC5E9', role: 'Fjord & Teleconnections' },
-  { id: 'himansh', name: 'Himansh Hub', region: 'Himalaya', lat: 32.4000, lon: 77.6000, color: '#E7A93B', role: 'Cryosphere & Glacier Mass' },
-  { id: 'india_hub', name: 'NCPOR Goa (HQ)', region: 'India', lat: 15.3991, lon: 73.8052, color: '#FFFFFF', role: 'National Command Center' },
+// Define flight corridors
+const ARCS = [
+  { startLat: -33.924, startLng: 18.423, endLat: -70.767, endLng: 11.733, color: ['#ffffff', '#2563EB'], name: 'Cape Town to Maitri' },
+  { startLat: -33.924, startLng: 18.423, endLat: -69.407, endLng: 76.187, color: ['#ffffff', '#16A34A'], name: 'Cape Town to Bharati' },
+  { startLat: 32.239, startLng: 77.188, endLat: 32.404, endLng: 77.611, color: ['#ffffff', '#F59E0B'], name: 'Manali to Himansh' }
 ];
 
-function latLonToVector3(lat: number, lon: number, radius: number): THREE.Vector3 {
-  const phi = (90 - lat) * (Math.PI / 180);
-  const theta = (lon + 180) * (Math.PI / 180);
-  const x = -(radius * Math.sin(phi) * Math.cos(theta));
-  const z = radius * Math.sin(phi) * Math.sin(theta);
-  const y = radius * Math.cos(phi);
-  return new THREE.Vector3(x, y, z);
+interface PolarGlobe3DProps {
+  stationsWeather?: StationWeather[];
+  selectedStationId?: string;
+  onSelectStation: (id: string) => void;
+  onViewTelemetry?: () => void;
 }
 
-function createArcCurve(p1: THREE.Vector3, p2: THREE.Vector3, altitude = 1.35): THREE.CubicBezierCurve3 {
-  const distance = p1.distanceTo(p2);
-  const mid = p1.clone().add(p2).multiplyScalar(0.5);
-  const midLength = mid.length();
-  mid.normalize().multiplyScalar(midLength + distance * 0.25 * altitude);
-  return new THREE.CubicBezierCurve3(p1, mid, mid, p2);
-}
+export const PolarGlobe3D: React.FC<PolarGlobe3DProps> = ({
+  stationsWeather = [],
+  selectedStationId = 'maitri',
+  onSelectStation,
+  onViewTelemetry
+}) => {
+  const globeEl = useRef<GlobeMethods | undefined>(undefined);
+  const [hoveredStation, setHoveredStation] = useState<any | null>(null);
+  const [dimensions, setDimensions] = useState({ width: window.innerWidth, height: 600 });
 
-export const PolarGlobe3D: React.FC<{ onSelectStation?: (id: string) => void }> = ({ onSelectStation }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [hoveredStation, setHoveredStation] = useState<StationMarker | null>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const activeStation = useMemo(() => {
+    if (!stationsWeather || stationsWeather.length === 0) return undefined;
+    return stationsWeather.find(s => s.station_id === selectedStationId);
+  }, [stationsWeather, selectedStationId]);
+
+  const STATIONS = useMemo(() => {
+    if (!stationsWeather || stationsWeather.length === 0) return [];
+    return stationsWeather.map(s => {
+      const meta = STATION_META[s.station_id] || { color: '#ffffff', flag: '🌐', crew: 0 };
+      return {
+        id: s.station_id,
+        name: s.station_name,
+        region: s.region,
+        lat: s.latitude,
+        lng: s.longitude,
+        temp: `${s.temperature_c}°C`,
+        wind: `${s.wind_speed_kmh} km/h`,
+        color: meta.color,
+        flag: meta.flag,
+        crew: meta.crew
+      };
+    });
+  }, [stationsWeather]);
 
   useEffect(() => {
-    if (!containerRef.current) return;
-    const container = containerRef.current;
-    const width = container.clientWidth || 600;
-    const height = container.clientHeight || 550;
-
-    // 1. Scene, Camera, Renderer
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 1000);
-    // Position camera to emphasize Southern Hemisphere and Indian Ocean vantage
-    camera.position.set(0, -2.4, 4.2);
-    camera.lookAt(0, -0.6, 0);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    container.appendChild(renderer.domElement);
-
-    const globeGroup = new THREE.Group();
-    scene.add(globeGroup);
-
-    const GLOBE_RADIUS = 1.8;
-
-    // 2. Base Sphere with rich oceanic sheen
-    const sphereGeo = new THREE.SphereGeometry(GLOBE_RADIUS, 64, 64);
-    const sphereMat = new THREE.MeshPhongMaterial({
-      color: 0x0D2735,
-      emissive: 0x07151F,
-      specular: 0x74B8CC,
-      shininess: 40,
-      transparent: true,
-      opacity: 0.98,
-      wireframe: false,
-    });
-    const globeMesh = new THREE.Mesh(sphereGeo, sphereMat);
-    globeGroup.add(globeMesh);
-
-    // 3. Latitude & Longitude Coordinate Grid Rings (Brighter Glacial Lines)
-    const gridMat = new THREE.LineBasicMaterial({ color: 0x74B8CC, transparent: true, opacity: 0.32 });
-    for (let lat = -80; lat <= 80; lat += 20) {
-      const radius = GLOBE_RADIUS * Math.cos((lat * Math.PI) / 180);
-      const y = GLOBE_RADIUS * Math.sin((lat * Math.PI) / 180);
-      const ringGeo = new THREE.BufferGeometry();
-      const points: THREE.Vector3[] = [];
-      for (let i = 0; i <= 64; i++) {
-        const theta = (i / 64) * Math.PI * 2;
-        points.push(new THREE.Vector3(radius * Math.cos(theta), y, radius * Math.sin(theta)));
-      }
-      ringGeo.setFromPoints(points);
-      const ring = new THREE.Line(ringGeo, gridMat);
-      globeGroup.add(ring);
-    }
-
-    // Longitude Meridians
-    for (let lon = 0; lon < 360; lon += 45) {
-      const ringGeo = new THREE.BufferGeometry();
-      const points: THREE.Vector3[] = [];
-      const rad = (lon * Math.PI) / 180;
-      for (let i = 0; i <= 64; i++) {
-        const phi = (i / 64) * Math.PI - Math.PI / 2;
-        const x = GLOBE_RADIUS * Math.cos(phi) * Math.sin(rad);
-        const y = GLOBE_RADIUS * Math.sin(phi);
-        const z = GLOBE_RADIUS * Math.cos(phi) * Math.cos(rad);
-        points.push(new THREE.Vector3(x, y, z));
-      }
-      ringGeo.setFromPoints(points);
-      const ring = new THREE.Line(ringGeo, gridMat);
-      globeGroup.add(ring);
-    }
-
-    // 4. Polar Atmosphere Glow Layer
-    const glowGeo = new THREE.SphereGeometry(GLOBE_RADIUS * 1.05, 32, 32);
-    const glowMat = new THREE.ShaderMaterial({
-      vertexShader: `
-        varying vec3 vNormal;
-        void main() {
-          vNormal = normalize(normalMatrix * normal);
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-      `,
-      fragmentShader: `
-        varying vec3 vNormal;
-        void main() {
-          float intensity = pow(0.65 - dot(vNormal, vec3(0, 0, 1.0)), 2.2);
-          gl_FragColor = vec4(0.45, 0.72, 0.85, 1.0) * intensity * 0.65;
-        }
-      `,
-      blending: THREE.AdditiveBlending,
-      side: THREE.BackSide,
-      transparent: true
-    });
-    const glowMesh = new THREE.Mesh(glowGeo, glowMat);
-    scene.add(glowMesh);
-
-    // 5. Starfield Dust Particles
-    const particlesCount = 350;
-    const particleGeo = new THREE.BufferGeometry();
-    const particlePositions = new Float32Array(particlesCount * 3);
-    for (let i = 0; i < particlesCount * 3; i += 3) {
-      const r = GLOBE_RADIUS * (1.1 + Math.random() * 0.6);
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(Math.random() * 2 - 1);
-      particlePositions[i] = r * Math.sin(phi) * Math.cos(theta);
-      particlePositions[i + 1] = r * Math.sin(phi) * Math.sin(theta);
-      particlePositions[i + 2] = r * Math.cos(phi);
-    }
-    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-    const particleMat = new THREE.PointsMaterial({
-      size: 0.022,
-      color: 0x6EC5E9,
-      transparent: true,
-      opacity: 0.6,
-      blending: THREE.AdditiveBlending
-    });
-    const particles = new THREE.Points(particleGeo, particleMat);
-    globeGroup.add(particles);
-
-    // 6. Station Markers & Pins
-    const stationMeshes: { mesh: THREE.Mesh; station: StationMarker }[] = [];
-    const indiaPos = latLonToVector3(15.3991, 73.8052, GLOBE_RADIUS);
-
-    STATIONS.forEach((st) => {
-      const pos = latLonToVector3(st.lat, st.lon, GLOBE_RADIUS);
-
-      // Pin Head
-      const pinGeo = new THREE.SphereGeometry(st.id === 'india_hub' ? 0.05 : 0.042, 16, 16);
-      const pinMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(st.color) });
-      const pinMesh = new THREE.Mesh(pinGeo, pinMat);
-      pinMesh.position.copy(pos);
-      globeGroup.add(pinMesh);
-
-      // Pulse Ring
-      const pulseGeo = new THREE.RingGeometry(0.045, 0.075, 32);
-      const pulseMat = new THREE.MeshBasicMaterial({
-        color: new THREE.Color(st.color),
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 0.8
-      });
-      const pulseMesh = new THREE.Mesh(pulseGeo, pulseMat);
-      pulseMesh.position.copy(pos.clone().multiplyScalar(1.005));
-      pulseMesh.lookAt(new THREE.Vector3(0, 0, 0));
-      globeGroup.add(pulseMesh);
-
-      stationMeshes.push({ mesh: pinMesh, station: st });
-
-      // Animated Arcs from India HQ to Polar Stations
-      if (st.id !== 'india_hub') {
-        const curve = createArcCurve(indiaPos, pos, 1.25);
-        const tubeGeo = new THREE.TubeGeometry(curve, 48, 0.009, 8, false);
-        const tubeMat = new THREE.MeshBasicMaterial({
-          color: new THREE.Color(st.color),
-          transparent: true,
-          opacity: 0.55,
-          blending: THREE.AdditiveBlending
-        });
-        const arc = new THREE.Mesh(tubeGeo, tubeMat);
-        globeGroup.add(arc);
-      }
-    });
-
-    // 7. Lighting
-    const dirLight = new THREE.DirectionalLight(0xEAF4F7, 1.8);
-    dirLight.position.set(4, 3, 5);
-    scene.add(dirLight);
-
-    const ambientLight = new THREE.AmbientLight(0x0B2538, 1.4);
-    scene.add(ambientLight);
-
-    // Initial globe orientation to show India and Antarctica
-    globeGroup.rotation.y = 1.35;
-    globeGroup.rotation.x = 0.35;
-
-    // 8. Raycaster for Hover Interaction
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2(-100, -100);
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = container.getBoundingClientRect();
-      mouse.x = ((e.clientX - rect.left) / width) * 2 - 1;
-      mouse.y = -((e.clientY - rect.top) / height) * 2 + 1;
-      setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-    };
-
-    container.addEventListener('mousemove', handleMouseMove);
-
-    // 9. Animation Loop
-    let animationId: number;
-    let clock = new THREE.Clock();
-
-    const animate = () => {
-      animationId = requestAnimationFrame(animate);
-      const delta = clock.getDelta();
-      const elapsedTime = clock.getElapsedTime();
-
-      // Slow, majestic rotation (subtle and dignified)
-      globeGroup.rotation.y += delta * 0.07;
-
-      // Raycast for hover
-      raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObjects(stationMeshes.map(s => s.mesh));
-
-      if (intersects.length > 0) {
-        const found = stationMeshes.find(s => s.mesh === intersects[0].object);
-        if (found) {
-          setHoveredStation(found.station);
-          container.style.cursor = 'pointer';
-        }
-      } else {
-        setHoveredStation(null);
-        container.style.cursor = 'default';
-      }
-
-      // Gentle pulsing of station markers
-      stationMeshes.forEach(({ mesh }, idx) => {
-        const scale = 1 + 0.18 * Math.sin(elapsedTime * 3 + idx);
-        mesh.scale.set(scale, scale, scale);
-      });
-
-      renderer.render(scene, camera);
-    };
-
-    animate();
-
     const handleResize = () => {
-      if (!container) return;
-      const newW = container.clientWidth;
-      const newH = container.clientHeight;
-      camera.aspect = newW / newH;
-      camera.updateProjectionMatrix();
-      renderer.setSize(newW, newH);
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      cancelAnimationFrame(animationId);
-      window.removeEventListener('resize', handleResize);
-      container.removeEventListener('mousemove', handleMouseMove);
-      if (renderer.domElement.parentNode) {
-        renderer.domElement.parentNode.removeChild(renderer.domElement);
+      // Find parent container width for responsive sizing
+      const container = document.getElementById('globe-container');
+      if (container) {
+        setDimensions({ width: container.clientWidth, height: Math.min(window.innerHeight - 150, 700) });
+      } else {
+        setDimensions({ width: window.innerWidth, height: 600 });
       }
-      renderer.dispose();
     };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    // Give it a tiny delay to ensure layout is done
+    setTimeout(handleResize, 100);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  return (
-    <div className="relative w-full h-full min-h-[500px] flex items-center justify-center overflow-visible">
-      {/* Three.js Container */}
-      <div ref={containerRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
+  useEffect(() => {
+    // Initial camera setup - fly to South Pole
+    if (globeEl.current) {
+      globeEl.current.controls().enableZoom = true;
+      globeEl.current.controls().autoRotate = true;
+      globeEl.current.controls().autoRotateSpeed = 0.5;
+      globeEl.current.pointOfView({ lat: -90, lng: 0, altitude: 2.0 }, 2000);
+    }
+  }, []);
 
-      {/* Program Pillar Legend (Bottom) */}
-      <div className="absolute bottom-2 z-10 hidden sm:flex items-center space-x-3 bg-[#07151F]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-[#B9DDE7]/15 text-[11px] text-[#8E9EA7] font-mono">
-        <span className="flex items-center space-x-1.5">
-          <span className="w-2 h-2 rounded-full bg-[#74B8CC]" />
-          <span>Maitri</span>
-        </span>
-        <span className="flex items-center space-x-1.5">
-          <span className="w-2 h-2 rounded-full bg-[#5BB7A5]" />
-          <span>Bharati</span>
-        </span>
-        <span className="flex items-center space-x-1.5">
-          <span className="w-2 h-2 rounded-full bg-[#B9DDE7]" />
-          <span>Himadri</span>
-        </span>
-        <span className="flex items-center space-x-1.5">
-          <span className="w-2 h-2 rounded-full bg-[#D7A75D]" />
-          <span>Himansh</span>
-        </span>
+  useEffect(() => {
+    if (activeStation && globeEl.current) {
+      focusCamera(activeStation.latitude, activeStation.longitude, 0.8);
+    }
+  }, [activeStation]);
+
+  const focusCamera = (lat: number, lng: number, altitude: number = 1.5) => {
+    if (globeEl.current) {
+      globeEl.current.controls().autoRotate = false;
+      globeEl.current.pointOfView({ lat, lng, altitude }, 1500);
+    }
+  };
+
+  return (
+    <div id="globe-container" className="relative w-full min-h-[500px] h-[600px] lg:h-[calc(100vh-200px)] bg-[#050505] rounded-3xl overflow-hidden border border-[#2a2a2a] shadow-2xl flex items-center justify-center">
+      
+      {/* 3D Canvas */}
+      <Globe
+        ref={globeEl}
+        width={dimensions.width}
+        height={dimensions.height}
+        globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+        bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
+        backgroundImageUrl="//unpkg.com/three-globe/example/img/night-sky.png"
+        
+        // Custom Atmosphere glow
+        atmosphereColor="#3b82f6"
+        atmosphereAltitude={0.15}
+        
+        // Data layers
+        pointsData={STATIONS}
+        pointLat="lat"
+        pointLng="lng"
+        pointColor="color"
+        pointAltitude={0.05}
+        pointRadius={0.5}
+        pointResolution={32}
+        pointsMerge={false}
+        pointThreeObject={(d: any) => {
+          // Create a glowing cone marker
+          const material = new THREE.MeshPhongMaterial({
+            color: d.color,
+            emissive: d.color,
+            emissiveIntensity: 0.6,
+            shininess: 100,
+            transparent: true,
+            opacity: 0.9
+          });
+          const geometry = new THREE.ConeGeometry(0.8, 2, 16);
+          geometry.translate(0, 1, 0); // shift pivot to bottom
+          const mesh = new THREE.Mesh(geometry, material);
+          
+          // Add a subtle glowing ring
+          const ringGeo = new THREE.RingGeometry(1, 1.2, 32);
+          const ringMat = new THREE.MeshBasicMaterial({ color: d.color, side: THREE.DoubleSide, transparent: true, opacity: 0.4 });
+          const ring = new THREE.Mesh(ringGeo, ringMat);
+          ring.rotation.x = Math.PI / 2;
+          mesh.add(ring);
+          
+          return mesh;
+        }}
+        onPointClick={(point: any) => {
+          onSelectStation(point.id);
+          focusCamera(point.lat, point.lng, 0.8);
+        }}
+        onPointHover={setHoveredStation}
+        
+        // Flight corridors
+        arcsData={ARCS}
+        arcStartLat="startLat"
+        arcStartLng="startLng"
+        arcEndLat="endLat"
+        arcEndLng="endLng"
+        arcColor="color"
+        arcDashLength={0.4}
+        arcDashGap={4}
+        arcDashInitialGap={() => Math.random() * 5}
+        arcDashAnimateTime={2000}
+        arcAltitudeAutoScale={0.3}
+        arcStroke={0.5}
+      />
+
+      {/* Camera Preset Controls */}
+      <div className="absolute top-6 left-6 flex flex-col gap-3 z-10">
+        <div className="bg-[#111111]/80 backdrop-blur-md p-3 rounded-2xl border border-white/10 shadow-lg mb-2">
+          <h4 className="text-white font-mono text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+            <Crosshair className="w-4 h-4 text-[#3b82f6]" />
+            Camera Presets
+          </h4>
+        </div>
+        
+        <button 
+          onClick={() => focusCamera(-90, 0, 1.5)}
+          className="px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 rounded-xl text-white text-xs font-mono font-medium transition-all text-left flex items-center justify-between group"
+        >
+          <span>Antarctic Focus</span>
+          <Compass className="w-3.5 h-3.5 opacity-50 group-hover:opacity-100 transition-opacity" />
+        </button>
+        <button 
+          onClick={() => focusCamera(90, 0, 1.5)}
+          className="px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 rounded-xl text-white text-xs font-mono font-medium transition-all text-left flex items-center justify-between group"
+        >
+          <span>Arctic Focus</span>
+          <Compass className="w-3.5 h-3.5 opacity-50 group-hover:opacity-100 transition-opacity" />
+        </button>
+        <button 
+          onClick={() => focusCamera(30, 80, 1.2)}
+          className="px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 rounded-xl text-white text-xs font-mono font-medium transition-all text-left flex items-center justify-between group"
+        >
+          <span>Third Pole Focus</span>
+          <Compass className="w-3.5 h-3.5 opacity-50 group-hover:opacity-100 transition-opacity" />
+        </button>
+        <button 
+          onClick={() => {
+            if (globeEl.current) {
+              globeEl.current.controls().autoRotate = true;
+              globeEl.current.pointOfView({ lat: 0, lng: 80, altitude: 2.5 }, 2000);
+            }
+          }}
+          className="px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 rounded-xl text-[#3b82f6] text-xs font-mono font-medium transition-all text-left flex items-center justify-between group mt-2"
+        >
+          <span>Auto-Orbit Overview</span>
+        </button>
       </div>
 
-      {/* Hover Card Tooltip */}
-      {hoveredStation && (
-        <div
-          className="absolute z-20 pointer-events-none transform -translate-x-1/2 -translate-y-full mb-3 bg-[#071A2B]/95 backdrop-blur-xl border border-[#38BDF8]/40 px-4 py-3 rounded-xl shadow-2xl text-left w-56 animate-fade-in"
-          style={{ left: mousePos.x, top: mousePos.y }}
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] uppercase font-mono tracking-widest text-[#38BDF8] font-bold">
-              {hoveredStation.region}
-            </span>
-            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: hoveredStation.color }} />
+      {/* Glassmorphism Info Card (Hover/Active) */}
+      {(hoveredStation || activeStation) && (
+        <div className="absolute right-6 top-6 w-80 bg-[#111111]/80 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-2xl animate-in slide-in-from-right-4 duration-300 z-10">
+          
+          <div className="flex items-center justify-between mb-4 pb-4 border-b border-white/10">
+            <div>
+              <span className="text-[10px] font-mono text-[#8E8E91] uppercase tracking-widest block">
+                {(hoveredStation || STATIONS.find(s => s.id === activeStation?.station_id))?.region}
+              </span>
+              <h3 className="text-2xl font-serif text-white font-medium mt-1">
+                {(hoveredStation || STATIONS.find(s => s.id === activeStation?.station_id))?.name}
+              </h3>
+            </div>
+            <div className="text-4xl">{(hoveredStation || STATIONS.find(s => s.id === activeStation?.station_id))?.flag}</div>
           </div>
-          <h4 className="text-white font-semibold text-sm mt-0.5">{hoveredStation.name}</h4>
-          <p className="text-xs text-[#94A3B8] mt-1 line-clamp-2">{hoveredStation.role}</p>
-          <div className="mt-2 pt-2 border-t border-[#6EC5E9]/15 flex items-center justify-between text-[11px] text-[#38BDF8]">
-            <span className="font-mono">
-              {hoveredStation.lat > 0 ? `${hoveredStation.lat.toFixed(1)}°N` : `${Math.abs(hoveredStation.lat).toFixed(1)}°S`}
-            </span>
-            <span className="font-medium underline">Explore Station →</span>
+
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-white/5 p-3 rounded-xl border border-white/5">
+                <Thermometer className="w-4 h-4 text-[#F59E0B] mb-1" />
+                <span className="block text-[10px] font-mono text-[#8E8E91] uppercase">Temp</span>
+                <span className="text-sm font-mono text-white font-bold">{(hoveredStation || STATIONS.find(s => s.id === activeStation?.station_id))?.temp}</span>
+              </div>
+              <div className="bg-white/5 p-3 rounded-xl border border-white/5">
+                <Wind className="w-4 h-4 text-[#38BDF8] mb-1" />
+                <span className="block text-[10px] font-mono text-[#8E8E91] uppercase">Wind</span>
+                <span className="text-sm font-mono text-white font-bold">{(hoveredStation || STATIONS.find(s => s.id === activeStation?.station_id))?.wind}</span>
+              </div>
+            </div>
+            
+            <div className="bg-white/5 p-3 rounded-xl border border-white/5 flex items-center justify-between">
+              <div>
+                <span className="block text-[10px] font-mono text-[#8E8E91] uppercase">Active Crew</span>
+                <span className="text-sm font-mono text-white font-bold">{(hoveredStation || STATIONS.find(s => s.id === activeStation?.station_id))?.crew} Members</span>
+              </div>
+              <div className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse" />
+            </div>
+
+            <div className="pt-2">
+              <button 
+                onClick={() => {
+                  const targetId = hoveredStation ? hoveredStation.id : activeStation?.station_id;
+                  if (targetId) {
+                    onSelectStation(targetId);
+                  }
+                  onViewTelemetry?.();
+                }}
+                className="w-full py-3 bg-white hover:bg-gray-100 text-[#111111] text-xs font-mono font-bold rounded-xl transition-colors shadow-lg flex items-center justify-center gap-2 cursor-pointer">
+                <Info className="w-4 h-4" />
+                Explore Station Data
+              </button>
+            </div>
           </div>
         </div>
       )}
+
+      {/* Subtitle / Legend */}
+      <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between pointer-events-none">
+        <div className="bg-[#111111]/80 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 flex items-center gap-3">
+          <span className="w-2 h-2 rounded-full bg-[#2563EB] animate-pulse" />
+          <span className="text-xs font-mono text-white tracking-widest uppercase">Live Telemetry Link Active</span>
+        </div>
+        <div className="hidden md:flex gap-4 bg-[#111111]/80 backdrop-blur-md px-4 py-2 rounded-full border border-white/10">
+          <span className="text-[10px] font-mono text-white flex items-center gap-1"><span className="w-4 h-0.5 bg-white"></span> Supply Route</span>
+          <span className="text-[10px] font-mono text-white flex items-center gap-1"><MapPin className="w-3 h-3 text-[#2563EB]" /> Research Base</span>
+        </div>
+      </div>
     </div>
   );
 };

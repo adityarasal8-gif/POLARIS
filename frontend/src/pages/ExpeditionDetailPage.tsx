@@ -177,6 +177,23 @@ export const ExpeditionDetailPage: React.FC = () => {
                   ))}
                 </div>
               </div>
+              
+              {/* Mission Milestones */}
+              {expedition.milestones && expedition.milestones.length > 0 && (
+                <div className="pt-6 border-t border-[#E8E6E0] space-y-4">
+                  <span className="text-xs font-mono uppercase tracking-wider text-[#8E8E91] block mb-4">
+                    Expedition Milestones
+                  </span>
+                  <div className="space-y-4">
+                    {expedition.milestones.map((m, i) => (
+                      <div key={i} className="flex gap-4 group">
+                        <div className="w-24 shrink-0 text-xs font-mono text-[#8E8E91] pt-0.5 group-hover:text-[#2563EB] transition-colors">{m.date}</div>
+                        <div className="flex-1 text-sm text-[#111111] pb-4 border-b border-[#E8E6E0] last:border-0 group-hover:text-black transition-colors">{m.description}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Side Key Facts */}
@@ -205,6 +222,19 @@ export const ExpeditionDetailPage: React.FC = () => {
                 <span className="text-[#8E8E91] block text-[10px] uppercase">Field Stations Supported</span>
                 <span className="text-[#111111] font-semibold">Maitri · Bharati (Antarctic Sector)</span>
               </div>
+              {expedition.source_urls && expedition.source_urls.length > 0 && (
+                <div className="pt-4 mt-4 border-t border-[#E8E6E0]">
+                  <span className="text-[#8E8E91] block text-[10px] uppercase mb-2">Verified Sources</span>
+                  <div className="space-y-2">
+                    {expedition.source_urls.map((source, i) => (
+                      <a key={i} href={source.url} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-xs text-[#2563EB] hover:underline">
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        <span className="truncate">{source.title}</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
