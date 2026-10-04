@@ -21,6 +21,7 @@ export const ExploreFeed: React.FC = () => {
   const [activeRegion, setActiveRegion] = useState('All Regions');
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedAsset, setSelectedAsset] = useState<ProvenanceData | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   
   const [feedItems, setFeedItems] = useState<FeedItemType[]>([]);
   const [trendingResearch, setTrendingResearch] = useState<any[]>([]);
@@ -99,6 +100,27 @@ export const ExploreFeed: React.FC = () => {
     setModalOpen(true);
   };
 
+  const filteredFeedItems = feedItems.filter(item => {
+    const matchesCategory = activeCategory === 'All Disciplines' || item.category === activeCategory || (activeCategory === 'Oceanography & CTD' && item.title.toLowerCase().includes('ctd'));
+    
+    let matchesRegion = true;
+    if (activeRegion !== 'All Regions') {
+      const r = activeRegion.toLowerCase();
+      const content = (item.title + ' ' + item.abstract + ' ' + item.expedition).toLowerCase();
+      if (r.includes('antarctica')) matchesRegion = content.includes('antarctic') || content.includes('maitri') || content.includes('bharati');
+      else if (r.includes('arctic')) matchesRegion = content.includes('arctic') || content.includes('himadri') || content.includes('svalbard');
+      else if (r.includes('himalaya')) matchesRegion = content.includes('himalaya') || content.includes('himansh') || content.includes('spiti');
+      else if (r.includes('southern ocean')) matchesRegion = content.includes('ocean') || content.includes('marine') || content.includes('sea');
+    }
+
+    const matchesSearch = !searchQuery || 
+      item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      item.abstract.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (item.doi && item.doi.toLowerCase().includes(searchQuery.toLowerCase()));
+
+    return matchesCategory && matchesRegion && matchesSearch;
+  });
+
   return (
     <div className="min-h-screen bg-[#FAFAF8] pb-24">
       {/* Header & Title */}
@@ -154,6 +176,8 @@ export const ExploreFeed: React.FC = () => {
             <div className="relative">
               <input 
                 type="text" 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search DOIs, keywords..."
                 className="w-full bg-[#FAFAF8] border border-[#E8E6E0] rounded-xl pl-10 pr-4 py-2.5 text-sm font-mono focus:outline-none focus:border-[#111111]"
               />
@@ -170,11 +194,11 @@ export const ExploreFeed: React.FC = () => {
               <div className="w-full py-12 flex items-center justify-center text-[#8E8E91] font-mono text-xs">
                 Fetching latest research and telemetry streams...
               </div>
-            ) : feedItems.length === 0 ? (
+            ) : filteredFeedItems.length === 0 ? (
               <div className="w-full py-12 flex items-center justify-center text-[#8E8E91] font-mono text-xs">
                 No matching findings discovered in this sector.
               </div>
-            ) : feedItems.map((item) => (
+            ) : filteredFeedItems.map((item) => (
               <div key={item.id} className="bg-white rounded-2xl border border-[#E8E6E0] overflow-hidden shadow-sm hover:shadow-md transition-shadow group flex flex-col md:flex-row">
                 
                 <div className="md:w-2/5 h-48 md:h-auto overflow-hidden relative">
