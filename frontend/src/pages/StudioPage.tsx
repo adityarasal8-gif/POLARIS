@@ -71,6 +71,7 @@ export const StudioPage: React.FC = () => {
   const handleGenerate = async () => {
     setGenerating(true);
     setGenerationStep(0);
+    setGenerationError(null);
 
     const stepInterval = setInterval(() => {
       setGenerationStep(prev => (prev < GENERATION_STEPS.length - 1 ? prev + 1 : prev));
@@ -85,6 +86,7 @@ export const StudioPage: React.FC = () => {
     } catch (err) {
       clearInterval(stepInterval);
       console.error('Generation failed:', err);
+      setGenerationError("The AI backend timed out or failed. This can happen if the server is waking up. Please try again in a few seconds.");
     } finally {
       setGenerating(false);
     }

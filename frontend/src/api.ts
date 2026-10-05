@@ -5,7 +5,9 @@ import {
   NetCDFPreviewResponse
 } from './types';
 
-const API_BASE = '/api';
+const API_BASE = import.meta.env.PROD 
+  ? 'https://polaris-backend-7tjc.onrender.com/api' 
+  : '/api';
 
 export async function fetchStats(): Promise<Stats> {
   const res = await fetch(`${API_BASE}/stats`);
