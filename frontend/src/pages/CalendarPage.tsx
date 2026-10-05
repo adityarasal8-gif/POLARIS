@@ -44,53 +44,6 @@ export const CalendarPage: React.FC = () => {
     { day: 'Friday', date: 'Oct 16' },
   ];
 
-  const SCHEDULED_DEMO = [
-    {
-      id: 'sch_1',
-      day: 'Monday',
-      time: '10:00 AM',
-      title: '45th ISEA Mission Kickoff Press Release',
-      platform: 'website',
-      status: 'Approved',
-      source: 'Expedition Charter'
-    },
-    {
-      id: 'sch_2',
-      day: 'Tuesday',
-      time: '02:30 PM',
-      title: 'IndArc Arctic Mooring Telemetry Highlights',
-      platform: 'instagram',
-      status: 'Scheduled',
-      source: 'NPDC-ARCT-2025-01'
-    },
-    {
-      id: 'sch_3',
-      day: 'Wednesday',
-      time: '11:15 AM',
-      title: 'Chhota Shigri Mass Balance Annual Report',
-      platform: 'linkedin',
-      status: 'Scheduled',
-      source: 'Himalayan Cryosphere Wing'
-    },
-    {
-      id: 'sch_4',
-      day: 'Thursday',
-      time: '04:00 PM',
-      title: 'Southern Ocean Bio-Argo Float Deployments',
-      platform: 'x',
-      status: 'Approved',
-      source: '12th SOE Voyage'
-    },
-    {
-      id: 'sch_5',
-      day: 'Friday',
-      time: '06:00 PM',
-      title: 'Wintering Over at Himadri: Polar Documentary',
-      platform: 'youtube',
-      status: 'Scheduled',
-      source: 'NCPOR Outreach Video'
-    }
-  ];
 
   const getPlatformIcon = (platform: string) => {
     switch (platform) {
@@ -101,6 +54,21 @@ export const CalendarPage: React.FC = () => {
       default: return <FileText className="w-3.5 h-3.5 text-[#111111]" />;
     }
   };
+
+  const processedItems = scheduledItems.map((item, i) => {
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+    const times = ['10:00 AM', '02:30 PM', '11:15 AM', '04:00 PM', '06:00 PM'];
+    const platforms = ['instagram', 'website', 'linkedin', 'x', 'youtube'];
+    return {
+      id: item.id,
+      day: days[i % 5],
+      time: times[i % 5],
+      title: item.title,
+      platform: platforms[i % 5],
+      status: item.status,
+      source: item.source_type
+    };
+  });
 
   return (
     <div className="w-full min-h-screen bg-[#FAFAF8] text-[#111111] py-12 px-4 sm:px-6 lg:px-8 font-sans selection:bg-[#111111] selection:text-white">
@@ -138,7 +106,7 @@ export const CalendarPage: React.FC = () => {
         {/* 5-Day Editorial Board Grid (Mon - Fri) */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           {DAYS.map((d) => {
-            const itemsForDay = SCHEDULED_DEMO.filter((item) => item.day === d.day);
+            const itemsForDay = processedItems.filter((item) => item.day === d.day);
             return (
               <div key={d.day} className="border border-[#E8E6E0] rounded-2xl bg-white p-4 flex flex-col justify-between min-h-[380px] shadow-sm">
                 <div>
@@ -167,7 +135,7 @@ export const CalendarPage: React.FC = () => {
                           <h4 className="text-xs font-semibold text-[#111111] leading-snug">{item.title}</h4>
                         </div>
 
-                        <div className="text-[10px] text-[#8E8E91] font-mono truncate">
+                        <div className="text-[10px] text-[#8E8E91] font-mono truncate uppercase">
                           Ref: {item.source}
                         </div>
                       </div>
