@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://polaris-backend.onrender.com/api/$1"
+    }
+  ]
+}
