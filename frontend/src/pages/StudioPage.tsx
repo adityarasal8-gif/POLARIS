@@ -432,9 +432,6 @@ export const StudioPage: React.FC = () => {
                             alt={activeDraft.source_title}
                             className="w-full h-full object-cover"
                           />
-                          <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-black/60 text-white text-[10px] font-mono">
-                            1/3
-                          </div>
                         </div>
 
                         {/* Action Icons */}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'wouter';
-import { Calendar, FileText, ArrowLeft, Plus } from 'lucide-react';
-import { fetchContentCalendar } from '../api';
+import { Calendar, FileText, ArrowLeft, Plus, X } from 'lucide-react';
+import { fetchContentCalendar, reviewContentDraft } from '../api';
 
 const InstagramIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -31,6 +31,17 @@ const YoutubeIcon = ({ className }: { className?: string }) => (
 
 export const CalendarPage: React.FC = () => {
   const [scheduledItems, setScheduledItems] = useState<any[]>([]);
+  const [selectedItem, setSelectedItem] = useState<any | null>(null);
+
+  const handleRemove = async (id: string) => {
+    try {
+      await reviewContentDraft(id, 'reject');
+      setScheduledItems(prev => prev.filter(item => item.id !== id));
+      setSelectedItem(null);
+    } catch (err) {
+      console.error('Failed to remove item', err);
+    }
+  };
 
   useEffect(() => {
     fetchContentCalendar().then(setScheduledItems).catch(console.error);
@@ -119,7 +130,8 @@ export const CalendarPage: React.FC = () => {
                     {itemsForDay.map((item) => (
                       <div
                         key={item.id}
-                        className="p-3 rounded-xl bg-[#FAFAF8] border border-[#E8E6E0] space-y-2 hover:border-[#111111]/30 transition-all"
+                        onClick={() => setSelectedItem(item)}
+                        className="p-3 rounded-xl bg-[#FAFAF8] border border-[#E8E6E0] space-y-2 hover:border-[#111111]/30 transition-all cursor-pointer"
                       >
                         <div className="flex items-center justify-between text-[10px] font-mono">
                           <span className="text-[#8E8E91]">{item.time}</span>
@@ -153,6 +165,38 @@ export const CalendarPage: React.FC = () => {
           })}
         </div>
       </div>
+
+      {/* Item Details Modal */}
+      {selectedItem && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl p-6 max-w-md w-full border border-[#E8E6E0] shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
+            <button
+              onClick={() => setSelectedItem(null)}
+              className="absolute top-4 right-4 p-2 rounded-full hover:bg-[#F4F2EE] text-[#555558] transition-colors cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-xs font-mono text-[#8E8E91] uppercase">
+                {getPlatformIcon(selectedItem.platform)}
+                <span>{selectedItem.platform} · {selectedItem.day} {selectedItem.time}</span>
+              </div>
+              <div>
+                <h3 className="font-serif text-xl text-[#111111] leading-snug">{selectedItem.title}</h3>
+                <p className="text-xs font-mono text-[#8E8E91] mt-2 uppercase">Ref: {selectedItem.source}</p>
+              </div>
+              <div className="pt-4 flex gap-3">
+                <button
+                  onClick={() => handleRemove(selectedItem.id)}
+                  className="px-4 py-2 rounded-full bg-[#111111] hover:bg-black text-white text-xs font-mono font-medium transition-colors w-full cursor-pointer"
+                >
+                  Remove from Schedule
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
