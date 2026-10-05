@@ -15,4 +15,4 @@ jobs:
           # Use curl to ping the health endpoint and fail the job if it doesn't return HTTP 200
           # We use --fail to ensure non-200 responses return an error code
           # We don't fail the whole action immediately on error to allow for temporary deployment downtime
-          curl --fail -sS "https://polaris-backend.onrender.com/api/health" || echo "Ping failed, but continuing..."
+          curl --fail -sS "https://polaris-backend-7tjc.onrender.com/api/health" || echo "Ping failed, but continuing..."
