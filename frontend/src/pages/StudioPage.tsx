@@ -38,8 +38,8 @@ const YoutubeIcon = ({ className }: { className?: string }) => (
 
 export const StudioPage: React.FC = () => {
   const [sourcesList, setSourcesList] = useState<{ id: string; name: string; type: string; image_url?: string }[]>([]);
-  const [selectedSourceType, setSelectedSourceType] = useState('expedition');
-  const [selectedSourceId, setSelectedSourceId] = useState('exp_45_isea');
+  const [selectedSourceType, setSelectedSourceType] = useState('');
+  const [selectedSourceId, setSelectedSourceId] = useState('');
   const [generating, setGenerating] = useState(false);
   const [generationStep, setGenerationStep] = useState(0);
   const [activeDraft, setActiveDraft] = useState<ContentDraft | null>(null);
@@ -47,6 +47,8 @@ export const StudioPage: React.FC = () => {
   const [viewMode, setViewMode] = useState<'mockup' | 'raw'>('mockup');
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [reviewSuccess, setReviewSuccess] = useState<string | null>(null);
+  const [showSchedulePicker, setShowSchedulePicker] = useState(false);
+  const [scheduleDate, setScheduleDate] = useState('');
 
   const GENERATION_STEPS = [
     'Parsing authoritative source record & charter...',
@@ -63,15 +65,6 @@ export const StudioPage: React.FC = () => {
       stations.forEach(s => items.push({ id: s.id, name: s.name, type: 'station', image_url: s.image_url }));
       pubs.forEach(p => items.push({ id: p.id, name: p.title, type: 'publication' }));
       setSourcesList(items);
-      const firstExp = items.find(i => i.type === 'expedition');
-      if (firstExp && !selectedSourceId) {
-        setSelectedSourceId(firstExp.id);
-      }
-
-      // Pre-fetch draft if available
-      fetchContentDrafts().then((drafts) => {
-        if (drafts.length > 0) setActiveDraft(drafts[0]);
-      }).catch(console.error);
     }).catch(console.error);
   }, []);
 
@@ -97,10 +90,10 @@ export const StudioPage: React.FC = () => {
     }
   };
 
-  const handleReviewAction = async (action: 'approve' | 'reject' | 'schedule') => {
+  const handleReviewAction = async (action: 'approve' | 'reject' | 'schedule', scheduledFor?: string) => {
     if (!activeDraft) return;
     try {
-      const updated = await reviewContentDraft(activeDraft.id, action);
+      const updated = await reviewContentDraft(activeDraft.id, action, undefined, scheduledFor);
       setActiveDraft({ ...activeDraft, status: updated.status });
       setReviewSuccess(`Draft state changed to: ${updated.status}`);
       setTimeout(() => setReviewSuccess(null), 3000);
@@ -251,6 +244,7 @@ export const StudioPage: React.FC = () => {
                   }}
                   className="w-full bg-[#FAFAF8] border border-[#E8E6E0] rounded-xl px-3 py-2.5 text-[#111111] focus:outline-none focus:border-[#111111] cursor-pointer"
                 >
+                  <option value="" disabled>Select Document Domain...</option>
                   <option value="expedition">Expedition Charter & Log</option>
                   <option value="dataset">Validated NPDC Dataset</option>
                   <option value="station">Polar Station Telemetry</option>
@@ -265,6 +259,7 @@ export const StudioPage: React.FC = () => {
                   onChange={(e) => setSelectedSourceId(e.target.value)}
                   className="w-full bg-[#FAFAF8] border border-[#E8E6E0] rounded-xl px-3 py-2.5 text-[#111111] focus:outline-none focus:border-[#111111] cursor-pointer"
                 >
+                  <option value="" disabled>Select Reference Record...</option>
                   {filteredSources.map((s) => (
                     <option key={s.id} value={s.id}>
                       {s.name}
@@ -276,7 +271,7 @@ export const StudioPage: React.FC = () => {
               <div className="pt-2">
                 <button
                   onClick={handleGenerate}
-                  disabled={generating}
+                  disabled={generating || !selectedSourceId || !selectedSourceType}
                   className="w-full py-3 rounded-full bg-[#111111] hover:bg-black text-white font-medium text-xs font-mono transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm disabled:opacity-50"
                 >
                   {generating ? (
@@ -541,12 +536,40 @@ export const StudioPage: React.FC = () => {
                   >
                     Approve Package
                   </button>
-                  <button
-                    onClick={() => handleReviewAction('schedule')}
-                    className="px-4 py-2 rounded-full bg-[#F4F2EE] hover:bg-[#E8E6E0] border border-[#E8E6E0] text-[#111111] text-xs font-mono font-medium transition-colors cursor-pointer"
-                  >
-                    Schedule for Release
-                  </button>
+                  {showSchedulePicker ? (
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="datetime-local"
+                        value={scheduleDate}
+                        onChange={(e) => setScheduleDate(e.target.value)}
+                        className="px-3 py-1.5 rounded-xl border border-[#E8E6E0] text-xs font-mono bg-white outline-none focus:border-[#111111]"
+                      />
+                      <button
+                        onClick={() => {
+                          if (scheduleDate) {
+                            handleReviewAction('schedule', scheduleDate);
+                            setShowSchedulePicker(false);
+                          }
+                        }}
+                        className="px-3 py-1.5 rounded-full bg-[#111111] text-white text-xs font-mono font-medium cursor-pointer"
+                      >
+                        Confirm
+                      </button>
+                      <button
+                        onClick={() => setShowSchedulePicker(false)}
+                        className="px-3 py-1.5 rounded-full bg-[#F4F2EE] hover:bg-[#E8E6E0] border border-[#E8E6E0] text-[#111111] text-xs font-mono cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setShowSchedulePicker(true)}
+                      className="px-4 py-2 rounded-full bg-[#F4F2EE] hover:bg-[#E8E6E0] border border-[#E8E6E0] text-[#111111] text-xs font-mono font-medium transition-colors cursor-pointer"
+                    >
+                      Schedule for Release
+                    </button>
+                  )}
                   <button
                     onClick={() => handleReviewAction('reject')}
                     className="px-4 py-2 rounded-full bg-white hover:bg-[#F4F2EE] border border-[#E8E6E0] text-[#555558] text-xs font-mono transition-colors cursor-pointer"
