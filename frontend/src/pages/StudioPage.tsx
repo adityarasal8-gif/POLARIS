@@ -37,7 +37,7 @@ const YoutubeIcon = ({ className }: { className?: string }) => (
 );
 
 export const StudioPage: React.FC = () => {
-  const [sourcesList, setSourcesList] = useState<{ id: string; name: string; type: string }[]>([]);
+  const [sourcesList, setSourcesList] = useState<{ id: string; name: string; type: string; image_url?: string }[]>([]);
   const [selectedSourceType, setSelectedSourceType] = useState('expedition');
   const [selectedSourceId, setSelectedSourceId] = useState('exp_45_isea');
   const [generating, setGenerating] = useState(false);
@@ -57,10 +57,10 @@ export const StudioPage: React.FC = () => {
 
   useEffect(() => {
     Promise.all([fetchExpeditions(), fetchDatasets(), fetchStations(), fetchPublications()]).then(([exps, dss, stations, pubs]) => {
-      const items: { id: string; name: string; type: string }[] = [];
-      exps.forEach(e => items.push({ id: e.id, name: `${e.code} — ${e.name}`, type: 'expedition' }));
+      const items: { id: string; name: string; type: string; image_url?: string }[] = [];
+      exps.forEach(e => items.push({ id: e.id, name: `${e.code} — ${e.name}`, type: 'expedition', image_url: e.hero_image }));
       dss.forEach(d => items.push({ id: d.id, name: `${d.identifier}: ${d.title}`, type: 'dataset' }));
-      stations.forEach(s => items.push({ id: s.id, name: s.name, type: 'station' }));
+      stations.forEach(s => items.push({ id: s.id, name: s.name, type: 'station', image_url: s.image_url }));
       pubs.forEach(p => items.push({ id: p.id, name: p.title, type: 'publication' }));
       setSourcesList(items);
       const firstExp = items.find(i => i.type === 'expedition');
@@ -433,8 +433,8 @@ export const StudioPage: React.FC = () => {
                         {/* Photo Placeholder / Thumbnail */}
                         <div className="aspect-square bg-[#F4F2EE] relative overflow-hidden">
                           <img 
-                            src="https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=800&q=80" 
-                            alt="Antarctic Field Campaign"
+                            src={sourcesList.find(s => s.id === activeDraft.source_id)?.image_url || "https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=800&q=80"} 
+                            alt={activeDraft.source_title}
                             className="w-full h-full object-cover"
                           />
                           <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-black/60 text-white text-[10px] font-mono">
