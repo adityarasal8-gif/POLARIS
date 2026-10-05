@@ -99,7 +99,7 @@ export const StudioPage: React.FC = () => {
     if (!activeDraft) return;
     try {
       const updated = await reviewContentDraft(activeDraft.id, action);
-      setActiveDraft(updated);
+      setActiveDraft({ ...activeDraft, status: updated.status });
       setReviewSuccess(`Draft state changed to: ${updated.status}`);
       setTimeout(() => setReviewSuccess(null), 3000);
     } catch (err) {
