@@ -7,8 +7,8 @@ import {
   Sparkles, Send, Eye, Code, Heart, Bookmark, MessageCircle, Repeat2,
   ExternalLink, UserCheck
 } from 'lucide-react';
-import { generateContent, fetchContentDrafts, reviewContentDraft, fetchExpeditions, fetchDatasets } from '../api';
-import { ContentDraft, Expedition, Dataset } from '../types';
+import { generateContent, fetchContentDrafts, reviewContentDraft, fetchExpeditions, fetchDatasets, fetchStations, fetchPublications } from '../api';
+import { ContentDraft, Expedition, Dataset, Station, Publication } from '../types';
 
 const InstagramIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -56,10 +56,12 @@ export const StudioPage: React.FC = () => {
   ];
 
   useEffect(() => {
-    Promise.all([fetchExpeditions(), fetchDatasets()]).then(([exps, dss]) => {
+    Promise.all([fetchExpeditions(), fetchDatasets(), fetchStations(), fetchPublications()]).then(([exps, dss, stations, pubs]) => {
       const items: { id: string; name: string; type: string }[] = [];
       exps.forEach(e => items.push({ id: e.id, name: `${e.code} — ${e.name}`, type: 'expedition' }));
       dss.forEach(d => items.push({ id: d.id, name: `${d.identifier}: ${d.title}`, type: 'dataset' }));
+      stations.forEach(s => items.push({ id: s.id, name: s.name, type: 'station' }));
+      pubs.forEach(p => items.push({ id: p.id, name: p.title, type: 'publication' }));
       setSourcesList(items);
       const firstExp = items.find(i => i.type === 'expedition');
       if (firstExp && !selectedSourceId) {
@@ -251,6 +253,8 @@ export const StudioPage: React.FC = () => {
                 >
                   <option value="expedition">Expedition Charter & Log</option>
                   <option value="dataset">Validated NPDC Dataset</option>
+                  <option value="station">Polar Station Telemetry</option>
+                  <option value="publication">Scientific Publication</option>
                 </select>
               </div>
 
